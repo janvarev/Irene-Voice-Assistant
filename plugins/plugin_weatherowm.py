@@ -83,10 +83,7 @@ def run_weather(core:VoiceAssCore,phrase:str,addparam:str):
                            params={'lon': options["lon"], 'lat': options["lat"], 'units': 'metric', 'lang': 'ru', 'APPID': options["apiKey"]})
         data_one_call = res.json()
         print(data_one_call)
-        # print("conditions:", data['weather'][0]['description'])
-        # print("temp:", data['main']['temp'])
-        # print("temp_min:", data['main']['temp_min'])
-        # print("temp_max:", data['main']['temp_max'])
+
         from utils.num_to_text_ru import num2text
 
         if addparam == "" and (phrase == "" or phrase == "сейчас"):
@@ -159,7 +156,7 @@ def run_weather(core:VoiceAssCore,phrase:str,addparam:str):
 
             print(text)
             core.play_voice_assistant_speech(text)
-            # поскольку все ошибки предсказать сложно, то будет произведен отлов с последующим выводом без остановки программы
+
     except:
         import traceback
         traceback.print_exc()
@@ -167,23 +164,5 @@ def run_weather(core:VoiceAssCore,phrase:str,addparam:str):
 
         return
 
-    # разбивание данных на части для удобства работы с ними
-    # status = weather.detailed_status
-    # temperature = weather.temperature('celsius')["temp"]
-    # wind_speed = weather.wind()["speed"]
-    # pressure = int(weather.pressure["press"] / 1.333)  # переведено из гПА в мм рт.ст.
-    #
-    # # вывод логов
-    # print(colored("Weather in " + city_name +
-    #               ":\n * Status: " + status +
-    #               "\n * Wind speed (m/sec): " + str(wind_speed) +
-    #               "\n * Temperature (Celsius): " + str(temperature) +
-    #               "\n * Pressure (mm Hg): " + str(pressure), "yellow"))
-
-    # озвучивание текущего состояния погоды ассистентом (здесь для мультиязычности требуется дополнительная работа)
-    # play_voice_assistant_speech(translator.get("It is {0} in {1}").format(status, city_name))
-    # play_voice_assistant_speech(translator.get("The temperature is {} degrees Celsius").format(str(temperature)))
-    # play_voice_assistant_speech(translator.get("The wind speed is {} meters per second").format(str(wind_speed)))
-    # play_voice_assistant_speech(translator.get("The pressure is {} mm Hg").format(str(pressure)))
 
 
