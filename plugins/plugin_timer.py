@@ -63,6 +63,12 @@ def set_timer(core:VACore, phrase:str):
             set_timer_real(core,i,txt)
             return
 
+        txt3 = str(i) + " секунд "
+        if phrase.startswith(txt3):
+            #print(txt,txt2)
+            set_timer_real(core,i,txt)
+            return
+
     # ставим минуты?
     for i in range(1,100):
         txt = num_to_text.num2text(i, female_units_min) + " "
@@ -75,11 +81,23 @@ def set_timer(core:VACore, phrase:str):
             set_timer_real(core,i*60,txt)
             return
 
+        txt3 = str(i) + " минут "
+        if phrase.startswith(txt3):
+            #print(txt,txt2)
+            set_timer_real(core,i*60,txt)
+            return
+
     # без указания единиц измерения - ставим минуты
     for i in range(1,100):
         txt = num_to_text.num2text(i, female_units_min) + " "
         txt2 = num_to_text.num2text(i) + " "
         if phrase.startswith(txt2):
+            set_timer_real(core,i*60,txt)
+            return
+
+        txt3 = str(i)
+        if phrase.startswith(txt3):
+            #print(txt,txt2)
             set_timer_real(core,i*60,txt)
             return
 
