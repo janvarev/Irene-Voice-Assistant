@@ -95,7 +95,7 @@ def set_timer(core:VACore, phrase:str):
             set_timer_real(core,i*60,txt)
             return
 
-        txt3 = str(i)
+        txt3 = str(i)+" "
         if phrase.startswith(txt3):
             #print(txt,txt2)
             set_timer_real(core,i*60,txt)
