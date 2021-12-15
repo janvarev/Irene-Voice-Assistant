@@ -1,10 +1,10 @@
 # Core plugin
 # author: Vladislav Janvarev
 
-from voiceasscore import VoiceAssCore
+from vacore import VACore
 
 # функция на старте
-def start(core:VoiceAssCore):
+def start(core:VACore):
     manifest = {
         "name": "Core plugin",
         "version": "1.7",
@@ -24,7 +24,7 @@ def start(core:VoiceAssCore):
     }
     return manifest
 
-def start_with_options(core:VoiceAssCore,manifest:dict):
+def start_with_options(core:VACore, manifest:dict):
     #print(manifest["options"])
     options = manifest["options"]
     #core.setup_assistant_voice(options["ttsIndex"])

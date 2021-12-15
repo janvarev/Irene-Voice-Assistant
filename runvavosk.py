@@ -7,7 +7,7 @@ import sys
 import traceback
 import json
 
-from voiceasscore import VoiceAssCore
+from vacore import VACore
 
 mic_blocked = False
 
@@ -87,7 +87,7 @@ if __name__ == "__main__":
             rec = vosk.KaldiRecognizer(model, args.samplerate)
 
             # initing core
-            core = VoiceAssCore()
+            core = VACore()
             #core.init_plugin("core")
             #core.init_plugins(["core"])
             core.init_with_plugins()

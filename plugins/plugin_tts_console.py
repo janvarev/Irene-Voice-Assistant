@@ -3,13 +3,13 @@
 
 import os
 
-from voiceasscore import VoiceAssCore
+from vacore import VACore
 import pyttsx3
 
 modname = os.path.basename(__file__)[:-3] # calculating modname
 
 # функция на старте
-def start(core:VoiceAssCore):
+def start(core:VACore):
     manifest = {
         "name": "TTS console (for debug)",
         "version": "1.0",
@@ -21,9 +21,9 @@ def start(core:VoiceAssCore):
     }
     return manifest
 
-def init(core:VoiceAssCore):
+def init(core:VACore):
     pass
 
-def say(core:VoiceAssCore,text_to_speech:str):
+def say(core:VACore, text_to_speech:str):
     # просто выводим текст в консоль
     print("TTS: {}".format(text_to_speech))

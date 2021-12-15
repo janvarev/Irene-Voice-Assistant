@@ -5,12 +5,12 @@
 
 import os
 
-from voiceasscore import VoiceAssCore
+from vacore import VACore
 
 modname = os.path.basename(__file__)[:-3] # calculating modname
 
 # функция на старте
-def start(core:VoiceAssCore):
+def start(core:VACore):
     manifest = {
         "name": "TTS silero",
         "version": "1.0",
@@ -26,10 +26,10 @@ def start(core:VoiceAssCore):
     }
     return manifest
 
-def start_with_options(core:VoiceAssCore,manifest:dict):
+def start_with_options(core:VACore, manifest:dict):
     pass
 
-def init(core:VoiceAssCore):
+def init(core:VACore):
     options = core.plugin_options(modname)
 
     import os
@@ -51,7 +51,7 @@ def init(core:VoiceAssCore):
     #core.model.
 
 
-def say(core:VoiceAssCore,text_to_speech:str):
+def say(core:VACore, text_to_speech:str):
     # simple way
     paths = core.model.save_wav(texts=[text_to_speech],
                                 sample_rate=16000)

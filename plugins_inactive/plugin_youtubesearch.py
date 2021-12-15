@@ -3,11 +3,11 @@ import time
 import os
 
 #from voiceassmain import play_voice_assistant_speech
-from voiceasscore import VoiceAssCore
+from vacore import VACore
 # based on EnjiRouz realization https://github.com/EnjiRouz/Voice-Assistant-App/blob/master/app.py
 
 # функция на старте
-def start(core:VoiceAssCore):
+def start(core:VACore):
     manifest = {
         "name": "Ютуб (поиск)",
         "version": "1.0",
@@ -19,7 +19,7 @@ def start(core:VoiceAssCore):
     }
     return manifest
 
-def run_youtube(core:VoiceAssCore,phrase:str):
+def run_youtube(core:VACore, phrase:str):
     if core != None:
         core.play_voice_assistant_speech("Ищу на ютуб {}".format(phrase))
 

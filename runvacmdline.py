@@ -1,13 +1,13 @@
 import traceback
 
-from voiceasscore import VoiceAssCore
+from vacore import VACore
 import time
 
 # ------------------- main loop ------------------
 if __name__ == "__main__":
-    cmd_core = VoiceAssCore()
+    cmd_core = VACore()
     cmd_core.init_with_plugins()
-    print("Command-line for VoiceAssCore.")
+    print("Command-line for VoiceAssistantCore.")
     print("Enter command (user text like 'привет') or 'exit'")
 
     # почему бы сразу не отладить какую-то команду?

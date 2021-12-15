@@ -4,13 +4,13 @@
 import subprocess
 
 #from voiceassmain import play_voice_assistant_speech
-from voiceasscore import VoiceAssCore
+from vacore import VACore
 
 
 multPath = ""
 
 # функция на старте
-def start(core:VoiceAssCore):
+def start(core:VACore):
     manifest = {
         "name": "MPC-HC проигрывание мультиков",
         "version": "1.2",
@@ -27,7 +27,7 @@ def start(core:VoiceAssCore):
     }
     return manifest
 
-def start_with_options(core:VoiceAssCore,manifest:dict):
+def start_with_options(core:VACore, manifest:dict):
     #print(manifest["options"])
     global multPath
     options = manifest["options"]
@@ -36,10 +36,10 @@ def start_with_options(core:VoiceAssCore,manifest:dict):
 
     return manifest
 
-def run_player(core:VoiceAssCore, phrase: str):
+def run_player(core:VACore, phrase: str):
     subprocess.Popen([core.mpcHcPath])
 
-def play_mult(core:VoiceAssCore, phrase: str):
+def play_mult(core:VACore, phrase: str):
     if phrase == "":
         core.play_voice_assistant_speech("Пожалуйста, уточни какой именно мультик")
         # здесь надо вернуть контекст, чтобы не добавлять Ирина. но это позже

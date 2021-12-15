@@ -4,10 +4,10 @@ import pyautogui
 import time
 import os
 
-from voiceasscore import VoiceAssCore
+from vacore import VACore
 
 # функция на старте
-def start(core:VoiceAssCore):
+def start(core:VACore):
     manifest = {
         "name": "Яндекс Музыка",
         "version": "1.0",
@@ -19,7 +19,7 @@ def start(core:VoiceAssCore):
     }
     return manifest
 
-def run_yamus(core:VoiceAssCore,phrase:str):
+def run_yamus(core:VACore, phrase:str):
     if core != None:
         core.play_voice_assistant_speech("Запускаю музыку")
 

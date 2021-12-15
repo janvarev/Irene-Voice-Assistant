@@ -2,10 +2,10 @@
 # author: Vladislav Janvarev (inspired by EnjiRouz)
 
 import random
-from voiceasscore import VoiceAssCore
+from vacore import VACore
 
 # функция на старте
-def start(core:VoiceAssCore):
+def start(core:VACore):
     manifest = {
         "name": "Привет",
         "version": "1.0",
@@ -17,7 +17,7 @@ def start(core:VoiceAssCore):
     }
     return manifest
 
-def play_greetings(core:VoiceAssCore, phrase: str):
+def play_greetings(core:VACore, phrase: str):
     """
     Проигрывание случайной приветственной речи
     """

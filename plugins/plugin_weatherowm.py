@@ -5,12 +5,12 @@
 
 import os
 
-from voiceasscore import VoiceAssCore
+from vacore import VACore
 
 modname = os.path.basename(__file__)[:-3] # calculating modname
 
 # функция на старте
-def start(core:VoiceAssCore):
+def start(core:VACore):
     manifest = {
         "name": "Погода (open weather map)",
         "version": "1.0",
@@ -32,7 +32,7 @@ def start(core:VoiceAssCore):
     }
     return manifest
 
-def start_with_options(core:VoiceAssCore,manifest:dict):
+def start_with_options(core:VACore, manifest:dict):
 
     options = manifest["options"]
 
@@ -67,7 +67,7 @@ def start_with_options(core:VoiceAssCore,manifest:dict):
 
             return
 
-def run_weather(core:VoiceAssCore,phrase:str,addparam:str):
+def run_weather(core:VACore, phrase:str, addparam:str):
 
     options = core.plugin_options(modname)
 

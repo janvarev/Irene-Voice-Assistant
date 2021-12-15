@@ -4,7 +4,7 @@
 import time
 import os
 
-from voiceasscore import VoiceAssCore
+from vacore import VACore
 import utils.num_to_text_ru as num_to_text
 
 female_units_min2 = ((u'минуту', u'минуты', u'минут'), 'f')
@@ -16,7 +16,7 @@ female_units_sec = ((u'секунда', u'секунды', u'секунд'), 'f'
 modname = os.path.basename(__file__)[:-3] # calculating modname
 
 # функция на старте
-def start(core:VoiceAssCore):
+def start(core:VACore):
     manifest = {
         "name": "Таймер",
         "version": "1.2",
@@ -33,10 +33,10 @@ def start(core:VoiceAssCore):
     }
     return manifest
 
-def start_with_options(core:VoiceAssCore,manifest:dict):
+def start_with_options(core:VACore, manifest:dict):
     pass
 
-def set_timer(core:VoiceAssCore,phrase:str):
+def set_timer(core:VACore, phrase:str):
     if phrase == "":
         # таймер по умолчанию - на 5 минут
         txt = num_to_text.num2text(5, female_units_min)
@@ -89,11 +89,11 @@ def set_timer(core:VoiceAssCore,phrase:str):
         set_timer_real(core,1*60,txt)
         return
 
-def set_timer_real(core:VoiceAssCore,num:int,txt:str):
+def set_timer_real(core:VACore, num:int, txt:str):
     core.set_timer(num,(after_timer, txt))
     core.play_voice_assistant_speech("Ставлю таймер на "+txt)
 
-def after_timer(core:VoiceAssCore,txt:str):
+def after_timer(core:VACore, txt:str):
     options = core.plugin_options(modname)
 
     for i in range(options["wavRepeatTimes"]):

@@ -10,7 +10,7 @@ from jaa import JaaCore
 
 version = "2.0"
 
-class VoiceAssCore(JaaCore):
+class VACore(JaaCore):
     def __init__(self):
         JaaCore.__init__(self)
 
@@ -20,29 +20,9 @@ class VoiceAssCore(JaaCore):
         self.timersDuration = [0,0,0,0,0,0,0,0]
 
         self.commands = {
-            #"привет|доброе утро": play_greetings,
-            #"мультик": play_mult,
-
-
-            # ("привет"): play_greetings,
-            # ("мультик"): play_mult,
-            # ("пауза"): play_pause,
-            # ("дальше", "вперед"): play_next,
-            # ("назад"): play_prev,
-
-            # ("bye", "goodbye", "quit", "exit", "stop", "пока"): play_farewell_and_quit,
-            # ("search", "google", "find", "найди"): search_for_term_on_google,
-            # ("video", "youtube", "watch", "видео"): search_for_video_on_youtube,
-            # ("wikipedia", "definition", "about", "определение", "википедия"): search_for_definition_on_wikipedia,
-            # ("translate", "interpretation", "translation", "перевод", "перевести", "переведи"): get_translation,
-            # ("language", "язык"): change_language,
-            # ("weather", "forecast", "погода", "прогноз"): get_weather_forecast,
-            # ("facebook", "person", "run", "пробей", "контакт"): run_person_through_social_nets_databases,
-            # ("toss", "coin", "монета", "подбрось"): toss_coin,
         }
 
         self.ttss = {
-
         }
 
         # more options
@@ -65,9 +45,9 @@ class VoiceAssCore(JaaCore):
     def init_with_plugins(self):
         self.init_plugins(["core"])
         if self.isOnline:
-            print("VoiceAssCore v{0}: run online".format(version))
+            print("VoiceAssistantCore v{0}: run online".format(version))
         else:
-            print("VoiceAssCore v{0}: run OFFLINE".format(version))
+            print("VoiceAssistantCore v{0}: run OFFLINE".format(version))
         print("TTS engines: ",self.ttss.keys())
         print("Commands list: ",self.commands.keys())
         print("Assistant names: ",self.voiceAssNames)

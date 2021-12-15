@@ -6,7 +6,7 @@ import time
 import os
 
 #from voiceassmain import play_voice_assistant_speech
-from voiceasscore import VoiceAssCore
+from vacore import VACore
 
 # опции
 useYandexMusicShortcuts = False
@@ -14,7 +14,7 @@ useMPCHCRemote = False
 mpchc = None
 
 # функция на старте
-def start(core:VoiceAssCore):
+def start(core:VACore):
     manifest = {
         "name": "Команды управления мультимедия",
         "version": "1.1",
@@ -46,14 +46,14 @@ def start(core:VoiceAssCore):
 
     return manifest
 
-def start_with_options(core:VoiceAssCore,manifest:dict):
+def start_with_options(core:VACore, manifest:dict):
     #print(manifest["options"])
     global useYandexMusicShortcuts
     options = manifest["options"]
 
     useYandexMusicShortcuts = options["useYandexMusicShortcuts"]
 
-def play_pause(core:VoiceAssCore, phrase: str):
+def play_pause(core:VACore, phrase: str):
     print("Команда пауза")
     #pyautogui.keyDown("space")
     if useMPCHCRemote:
@@ -66,7 +66,7 @@ def play_pause(core:VoiceAssCore, phrase: str):
     pyautogui.press("space") # универсально для всех
 
 
-def play_next(core:VoiceAssCore, phrase: str):
+def play_next(core:VACore, phrase: str):
     print("Команда дальше")
 
     if useMPCHCRemote:
@@ -81,7 +81,7 @@ def play_next(core:VoiceAssCore, phrase: str):
     if useYandexMusicShortcuts:
         pyautogui.press("l")
 
-def play_prev(core:VoiceAssCore, phrase: str):
+def play_prev(core:VACore, phrase: str):
     print("Команда назад")
 
     if useMPCHCRemote:
@@ -95,7 +95,7 @@ def play_prev(core:VoiceAssCore, phrase: str):
     if useYandexMusicShortcuts:
         pyautogui.press("k")
 
-def toggle_mute(core:VoiceAssCore, phrase: str):
+def toggle_mute(core:VACore, phrase: str):
     if useMPCHCRemote:
         try:
             mpchc.volume_mute()
@@ -105,17 +105,17 @@ def toggle_mute(core:VoiceAssCore, phrase: str):
 
     pyautogui.press("volumemute")
 
-def volume_upX(core:VoiceAssCore, phrase: str, param:int):
+def volume_upX(core:VACore, phrase: str, param:int):
     for i in range(param):
         volume_up1(core,phrase)
 
-def volume_downX(core:VoiceAssCore, phrase: str, param:int):
+def volume_downX(core:VACore, phrase: str, param:int):
     for i in range(param):
         volume_down1(core,phrase)
 
 
 
-def volume_up1(core:VoiceAssCore, phrase: str):
+def volume_up1(core:VACore, phrase: str):
     if useMPCHCRemote:
         try:
             mpchc.volume_up()
@@ -125,7 +125,7 @@ def volume_up1(core:VoiceAssCore, phrase: str):
 
     pyautogui.press("volumeup")
 
-def volume_down1(core:VoiceAssCore, phrase: str):
+def volume_down1(core:VACore, phrase: str):
     if useMPCHCRemote:
         try:
             mpchc.volume_down()
@@ -135,7 +135,7 @@ def volume_down1(core:VoiceAssCore, phrase: str):
 
     pyautogui.press("volumedown")
 
-def close(core:VoiceAssCore, phrase: str):
+def close(core:VACore, phrase: str):
     if useMPCHCRemote:
         try:
             mpchc.exit()

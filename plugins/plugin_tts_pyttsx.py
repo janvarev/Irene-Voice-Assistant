@@ -3,13 +3,13 @@
 
 import os
 
-from voiceasscore import VoiceAssCore
+from vacore import VACore
 import pyttsx3
 
 modname = os.path.basename(__file__)[:-3] # calculating modname
 
 # функция на старте
-def start(core:VoiceAssCore):
+def start(core:VACore):
     manifest = {
         "name": "TTS pyttsx",
         "version": "1.0",
@@ -25,10 +25,10 @@ def start(core:VoiceAssCore):
     }
     return manifest
 
-def start_with_options(core:VoiceAssCore,manifest:dict):
+def start_with_options(core:VACore, manifest:dict):
     pass
 
-def init(core:VoiceAssCore):
+def init(core:VACore):
     options = core.plugin_options(modname)
 
     core.ttsEngine = pyttsx3.init()
@@ -56,7 +56,7 @@ def init(core:VoiceAssCore):
     core.ttsEngine.setProperty("voice", voices[options["sysId"]].id)
     core.ttsEngine.setProperty("volume", 1.0)
 
-def say(core:VoiceAssCore,text_to_speech:str):
+def say(core:VACore, text_to_speech:str):
     """
     Проигрывание речи ответов голосового ассистента (без сохранения аудио)
     :param text_to_speech: текст, который нужно преобразовать в речь
