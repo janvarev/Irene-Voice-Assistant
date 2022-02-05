@@ -46,13 +46,15 @@ import os
 import traceback
 import json
 
-version = "1.3"
+version = "1.5"
 
 class JaaCore:
     def __init__(self):
-        self.jaaOptionsPath = "options"
+
         self.jaaPluginPrefix = "plugin_"
         self.jaaVersion = version
+        self.jaaRootFolder = os.path.dirname(__file__)
+        self.jaaOptionsPath = self.jaaRootFolder+os.path.sep+"options"
         print("JAA.PY v{0} class created!".format(version))
 
     # ------------- plugins -----------------
@@ -66,7 +68,7 @@ class JaaCore:
         # 2. run all plugins from plugins folder
         from os import listdir
         from os.path import isfile, join
-        pluginpath = os.path.dirname(__file__)+"/plugins"
+        pluginpath = self.jaaRootFolder+"/plugins"
         files = [f for f in listdir(pluginpath) if isfile(join(pluginpath, f))]
 
         for fil in files:
