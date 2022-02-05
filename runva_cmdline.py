@@ -12,7 +12,7 @@ if __name__ == "__main__":
 
     # почему бы сразу не отладить какую-то команду?
     time.sleep(0.5)
-    cmd_core.execute_next("погода",None)
+    cmd_core.execute_next("брось кубик",None)
 
     while True:
         cmd = input("> ")
