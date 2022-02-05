@@ -7,7 +7,7 @@ from vacore import VACore
 def start(core:VACore):
     manifest = {
         "name": "Core plugin",
-        "version": "1.7",
+        "version": "1.8",
 
         "default_options": {
             "mpcIsUse": True,
@@ -19,6 +19,9 @@ def start(core:VACore):
             "ttsEngineId": "pyttsx",
             "voiceAssNames": "ирина|ирины|ирину",
             "logPolicy": "cmd", # all | cmd | none
+
+            "replyNoCommandFound": "Извини, я не поняла",
+            "replyOnlineRequired": "Для этой команды необходим онлайн",
         },
 
     }

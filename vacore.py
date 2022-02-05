@@ -77,7 +77,7 @@ class VACore(JaaCore):
                 self.ttss[cmd] = manifest["tts"][cmd]
 
     def stub_online_required(self,core,phrase):
-        self.play_voice_assistant_speech("Для этой команды необходим онлайн")
+        self.play_voice_assistant_speech(self.plugin_options("core")["replyOnlineRequired"])
 
     # ----------- text-to-speech functions ------
 
@@ -91,7 +91,7 @@ class VACore(JaaCore):
         self.play_voice_assistant_speech(text_to_speech)
 
 
-    # -------- основная функция ----------
+    # -------- main function ----------
 
     def execute_next(self,command,context):
         if context == None:
@@ -124,15 +124,14 @@ class VACore(JaaCore):
                         return
                     else:
                         #print("Command not found", command_name)
-                        #play_voice_assistant_speech("Извини, я не поняла")
                         pass
 
             # if not founded
-            self.play_voice_assistant_speech("Извини, я не поняла")
+            self.play_voice_assistant_speech(self.plugin_options("core")["replyNoCommandFound"])
         except Exception as err:
             print(traceback.format_exc())
 
-    # ----------- таймеры -----------
+    # ----------- timers -----------
     def set_timer(self, duration, timerFuncEnd, timerFuncUpd = None):
         # print "Start set_timer!"
         curtime = time.time()
@@ -190,10 +189,4 @@ class VACore(JaaCore):
         sound_device.play(data_set, fsample)
         # Wait until file is done playing
         status = sound_device.wait()
-
-
-
-# ------------- команды и их обработка ---------------
-
-
 
