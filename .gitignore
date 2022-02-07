@@ -1,9 +1,11 @@
+__pycache__/
+/.idea/
+/.venv/
 /options/
 /plugins_my/
 /timer/
-/silero_*
-/.idea/
-/plugins/plugin_tts_rhvoice.py
-/rhvoice_temp.wav
 /temp/
+/plugins/plugin_tts_rhvoice.py
 /plugins/plugin_tts_silero.py
+/rhvoice_temp.wav
+/silero_*
