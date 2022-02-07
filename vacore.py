@@ -8,7 +8,7 @@ import soundfile as sound_file
 
 from jaa import JaaCore
 
-version = "3.0"
+version = "3.1"
 
 class VACore(JaaCore):
     def __init__(self):
