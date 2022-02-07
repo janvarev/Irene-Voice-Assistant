@@ -8,7 +8,7 @@ import soundfile as sound_file
 
 from jaa import JaaCore
 
-version = "2.1"
+version = "2.2"
 
 class VACore(JaaCore):
     def __init__(self):
@@ -38,9 +38,13 @@ class VACore(JaaCore):
         self.ttsEngineId = ""
 
         self.logPolicy = ""
+        self.tmpdir = "temp"
+        self.tmpcnt = 0
 
         import mpcapi.core
         self.mpchc = mpcapi.core.MpcAPI()
+
+
 
     def init_with_plugins(self):
         self.init_plugins(["core"])
@@ -85,11 +89,28 @@ class VACore(JaaCore):
         self.ttss[self.ttsEngineId][0](self)
 
     def play_voice_assistant_speech(self,text_to_speech:str):
-        self.ttss[self.ttsEngineId][1](self,text_to_speech)
+        if self.ttss[self.ttsEngineId][1] != None:
+            self.ttss[self.ttsEngineId][1](self,text_to_speech)
+        else:
+            tempfilename = self.get_tempfilename()+".wav"
+            #print('Temp TTS filename: ', tempfilename)
+            self.tts_to_filewav(text_to_speech,tempfilename)
+            self.play_wav(tempfilename)
+            if os.path.exists(tempfilename):
+                os.unlink(tempfilename)
 
     def say(self,text_to_speech:str): # alias for play_voice_assistant_speech
         self.play_voice_assistant_speech(text_to_speech)
 
+    def tts_to_filewav(self,text_to_speech:str,filename:str):
+        if len(self.ttss[self.ttsEngineId]) > 2:
+            self.ttss[self.ttsEngineId][2](self,text_to_speech,filename)
+        else:
+            print("File save not supported by this TTS")
+
+    def get_tempfilename(self):
+        self.tmpcnt += 1
+        return self.tmpdir+"/vacore_"+str(self.tmpcnt)
 
     # -------- main function ----------
 

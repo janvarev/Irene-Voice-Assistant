@@ -7,7 +7,7 @@ from vacore import VACore
 def start(core:VACore):
     manifest = {
         "name": "Core plugin",
-        "version": "1.8",
+        "version": "1.9",
 
         "default_options": {
             "mpcIsUse": True,
@@ -22,6 +22,8 @@ def start(core:VACore):
 
             "replyNoCommandFound": "Извини, я не поняла",
             "replyOnlineRequired": "Для этой команды необходим онлайн",
+
+            "tempDir": "temp",
         },
 
     }
@@ -40,6 +42,11 @@ def start_with_options(core:VACore, manifest:dict):
     core.voiceAssNames = options["voiceAssNames"].split("|")
     core.ttsEngineId = options["ttsEngineId"]
     core.logPolicy = options["logPolicy"]
+
+    core.tmpdir = options["tempDir"]
+    import os
+    if not os.path.exists(core.tmpdir):
+        os.mkdir(core.tmpdir)
 
 
 

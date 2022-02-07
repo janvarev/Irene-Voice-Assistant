@@ -12,7 +12,7 @@ modname = os.path.basename(__file__)[:-3] # calculating modname
 def start(core:VACore):
     manifest = {
         "name": "TTS pyttsx",
-        "version": "1.0",
+        "version": "1.1",
         "require_online": False,
 
         "default_options": {
@@ -20,7 +20,8 @@ def start(core:VACore):
         },
 
         "tts": {
-            "pyttsx": (init,say) # первая функция инициализации, вторая - говорить
+            "pyttsx": (init,say,towavfile) # первая функция инициализации, вторая - говорить, третья - в wav file
+                                            # если вторая - None, то используется 3-я с проигрыванием файла
         }
     }
     return manifest
@@ -62,4 +63,12 @@ def say(core:VACore, text_to_speech:str):
     :param text_to_speech: текст, который нужно преобразовать в речь
     """
     core.ttsEngine.say(str(text_to_speech))
+    core.ttsEngine.runAndWait()
+
+def towavfile(core:VACore, text_to_speech:str,wavfile:str):
+    """
+    Проигрывание речи ответов голосового ассистента (без сохранения аудио)
+    :param text_to_speech: текст, который нужно преобразовать в речь
+    """
+    core.ttsEngine.save_to_file(str(text_to_speech),wavfile)
     core.ttsEngine.runAndWait()
