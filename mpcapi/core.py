@@ -11,8 +11,7 @@ import requests
 import mpcapi.commands as commands
 
 
-class MpcAPI():
-
+class MpcAPI:
     def __init__(self, host=None, port=None, https=False):
         self.host = host if host else "127.0.0.1"
         self.port = str(port) if port else "13579"
@@ -22,10 +21,18 @@ class MpcAPI():
         self.browse_commands = commands.browse_mapping.copy()
 
         for command_id, command_data in self.commands.items():
-            setattr(self, command_data["command_name"], Command(self, command_id, command_data.get("descr", "No Descr")))
+            setattr(
+                self,
+                command_data["command_name"],
+                Command(self, command_id, command_data.get("descr", "No Descr")),
+            )
 
         for command_id, command_data in self.browse_commands.items():
-            setattr(self, command_data["command_name"], Browser(self, command_id, command_data.get("descr", "No Descr")))
+            setattr(
+                self,
+                command_data["command_name"],
+                Browser(self, command_id, command_data.get("descr", "No Descr")),
+            )
 
     def url(self, endpoint):
         """
@@ -59,7 +66,6 @@ class MpcAPI():
 
 
 class BaseCallable(Callable):
-
     def __init__(self, api, method, descr):
         self.api = api
         self.method = method
@@ -67,7 +73,6 @@ class BaseCallable(Callable):
 
 
 class Command(BaseCallable):
-
     def __init__(self, *args, **kwargs):
         super(Command, self).__init__(*args, **kwargs)
 
@@ -77,7 +82,6 @@ class Command(BaseCallable):
 
 
 class Browser(BaseCallable):
-
     def __init__(self, api, method, descr):
         super(Browser, self).__init__(api, method, descr)
 

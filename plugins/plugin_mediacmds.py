@@ -1,11 +1,12 @@
 # Команды управления мультимедия
 # author: Vladislav Janvarev
 
-import pyautogui
-import time
 import os
+import time
 
-#from voiceassmain import play_voice_assistant_speech
+import pyautogui
+
+# from voiceassmain import play_voice_assistant_speech
 from vacore import VACore
 
 # опции
@@ -14,17 +15,15 @@ useMPCHCRemote = False
 mpchc = None
 
 # функция на старте
-def start(core:VACore):
+def start(core: VACore):
     manifest = {
         "name": "Команды управления мультимедия",
         "version": "1.1",
         "require_online": False,
-
         "default_options": {
             "useYandexMusicShortcuts": False,
-                # использовать специальные клавиши l и k для след/пред трека в Яндекс.Музыке онлайн
+            # использовать специальные клавиши l и k для след/пред трека в Яндекс.Музыке онлайн
         },
-
         "commands": {
             "пауза|паузу": play_pause,
             "дальше|вперед": play_next,
@@ -37,42 +36,44 @@ def start(core:VACore):
             "сильно тише": (volume_downX, 9),
             "сильно громче": (volume_upX, 9),
             "выключи плеер|закрой плеер": close,
-        }
+        },
     }
 
-    global useMPCHCRemote,mpchc
+    global useMPCHCRemote, mpchc
     useMPCHCRemote = core.mpcIsUseHttpRemote
     mpchc = core.mpchc
 
     return manifest
 
-def start_with_options(core:VACore, manifest:dict):
-    #print(manifest["options"])
+
+def start_with_options(core: VACore, manifest: dict):
+    # print(manifest["options"])
     global useYandexMusicShortcuts
     options = manifest["options"]
 
     useYandexMusicShortcuts = options["useYandexMusicShortcuts"]
 
-def play_pause(core:VACore, phrase: str):
+
+def play_pause(core: VACore, phrase: str):
     print("Команда пауза")
-    #pyautogui.keyDown("space")
+    # pyautogui.keyDown("space")
     if useMPCHCRemote:
         try:
             mpchc.play_pause()
-            return # если команда отработала, то дальше ничего не нужно
+            return  # если команда отработала, то дальше ничего не нужно
         except Exception as e:
             pass
 
-    pyautogui.press("space") # универсально для всех
+    pyautogui.press("space")  # универсально для всех
 
 
-def play_next(core:VACore, phrase: str):
+def play_next(core: VACore, phrase: str):
     print("Команда дальше")
 
     if useMPCHCRemote:
         try:
             mpchc.next()
-            return # если команда отработала, то дальше ничего не нужно
+            return  # если команда отработала, то дальше ничего не нужно
         except Exception as e:
             pass
 
@@ -81,13 +82,14 @@ def play_next(core:VACore, phrase: str):
     if useYandexMusicShortcuts:
         pyautogui.press("l")
 
-def play_prev(core:VACore, phrase: str):
+
+def play_prev(core: VACore, phrase: str):
     print("Команда назад")
 
     if useMPCHCRemote:
         try:
             mpchc.previous()
-            return # если команда отработала, то дальше ничего не нужно
+            return  # если команда отработала, то дальше ничего не нужно
         except Exception as e:
             pass
 
@@ -95,53 +97,58 @@ def play_prev(core:VACore, phrase: str):
     if useYandexMusicShortcuts:
         pyautogui.press("k")
 
-def toggle_mute(core:VACore, phrase: str):
+
+def toggle_mute(core: VACore, phrase: str):
     if useMPCHCRemote:
         try:
             mpchc.volume_mute()
-            return # если команда отработала, то дальше ничего не нужно
+            return  # если команда отработала, то дальше ничего не нужно
         except Exception as e:
             pass
 
     pyautogui.press("volumemute")
 
-def volume_upX(core:VACore, phrase: str, param:int):
+
+def volume_upX(core: VACore, phrase: str, param: int):
     for i in range(param):
-        volume_up1(core,phrase)
+        volume_up1(core, phrase)
 
-def volume_downX(core:VACore, phrase: str, param:int):
+
+def volume_downX(core: VACore, phrase: str, param: int):
     for i in range(param):
-        volume_down1(core,phrase)
+        volume_down1(core, phrase)
 
 
-
-def volume_up1(core:VACore, phrase: str):
+def volume_up1(core: VACore, phrase: str):
     if useMPCHCRemote:
         try:
             mpchc.volume_up()
-            return # если команда отработала, то дальше ничего не нужно
+            return  # если команда отработала, то дальше ничего не нужно
         except Exception as e:
             pass
 
     pyautogui.press("volumeup")
 
-def volume_down1(core:VACore, phrase: str):
+
+def volume_down1(core: VACore, phrase: str):
     if useMPCHCRemote:
         try:
             mpchc.volume_down()
-            return # если команда отработала, то дальше ничего не нужно
+            return  # если команда отработала, то дальше ничего не нужно
         except Exception as e:
             pass
 
     pyautogui.press("volumedown")
 
-def close(core:VACore, phrase: str):
+
+def close(core: VACore, phrase: str):
     if useMPCHCRemote:
         try:
             mpchc.exit()
-            return # если команда отработала, то дальше ничего не нужно
+            return  # если команда отработала, то дальше ничего не нужно
         except Exception as e:
             pass
 
+
 if __name__ == "__main__":
-    play_pause(None,"")
+    play_pause(None, "")
