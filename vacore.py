@@ -8,7 +8,7 @@ import soundfile as sound_file
 
 from jaa import JaaCore
 
-version = "2.2"
+version = "3.0"
 
 class VACore(JaaCore):
     def __init__(self):
@@ -40,6 +40,10 @@ class VACore(JaaCore):
         self.logPolicy = ""
         self.tmpdir = "temp"
         self.tmpcnt = 0
+
+        self.lastSay = ""
+        self.remoteTTS = "none"
+        self.remoteTTSResult = None
 
         import mpcapi.core
         self.mpchc = mpcapi.core.MpcAPI()
@@ -89,15 +93,38 @@ class VACore(JaaCore):
         self.ttss[self.ttsEngineId][0](self)
 
     def play_voice_assistant_speech(self,text_to_speech:str):
-        if self.ttss[self.ttsEngineId][1] != None:
-            self.ttss[self.ttsEngineId][1](self,text_to_speech)
-        else:
+        self.lastSay = text_to_speech
+        if self.remoteTTS == "none": # no remote tts, do locally anything
+            self.remoteTTSResult = "" # anywhere, set it ""
+
+            if self.ttss[self.ttsEngineId][1] != None:
+                self.ttss[self.ttsEngineId][1](self,text_to_speech)
+            else:
+                tempfilename = self.get_tempfilename()+".wav"
+                #print('Temp TTS filename: ', tempfilename)
+                self.tts_to_filewav(text_to_speech,tempfilename)
+                self.play_wav(tempfilename)
+                if os.path.exists(tempfilename):
+                    os.unlink(tempfilename)
+
+        if self.remoteTTS == "saytxt": # return only last say txt
+            self.remoteTTSResult = text_to_speech
+
+        if self.remoteTTS == "saywav":
             tempfilename = self.get_tempfilename()+".wav"
-            #print('Temp TTS filename: ', tempfilename)
+
             self.tts_to_filewav(text_to_speech,tempfilename)
-            self.play_wav(tempfilename)
+            #self.play_wav(tempfilename)
+            import base64
+
+            with open(tempfilename, "rb") as wav_file:
+                encoded_string = base64.b64encode(wav_file.read())
+
             if os.path.exists(tempfilename):
                 os.unlink(tempfilename)
+
+            self.remoteTTSResult = {"wav_base64":encoded_string}
+
 
     def say(self,text_to_speech:str): # alias for play_voice_assistant_speech
         self.play_voice_assistant_speech(text_to_speech)
