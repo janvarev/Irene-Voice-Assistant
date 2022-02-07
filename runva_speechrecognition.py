@@ -82,7 +82,7 @@ if __name__ == "__main__":
                             [
                                 str(input_part)
                                 for input_part in voice_input[
-                                    (ind + 1): len(voice_input)
+                                    (ind + 1) : len(voice_input)
                                 ]
                             ]
                         )
