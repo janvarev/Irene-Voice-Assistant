@@ -1,7 +1,7 @@
+import time
 import traceback
 
 from vacore import VACore
-import time
 
 # ------------------- main loop ------------------
 if __name__ == "__main__":
@@ -12,11 +12,11 @@ if __name__ == "__main__":
 
     # почему бы сразу не отладить какую-то команду?
     time.sleep(0.5)
-    cmd_core.execute_next("погода",None)
+    cmd_core.execute_next("погода", None)
 
     while True:
         cmd = input("> ")
         if cmd == "exit":
             break
 
-        cmd_core.execute_next(cmd,None)
+        cmd_core.execute_next(cmd, None)

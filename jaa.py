@@ -42,11 +42,12 @@ main.init_plugins()
 Python 3.5+ (due to dict mix in final_options calc), can be relaxed
 """
 
+import json
 import os
 import traceback
-import json
 
 version = "1.5"
+
 
 class JaaCore:
     def __init__(self):
@@ -54,11 +55,11 @@ class JaaCore:
         self.jaaPluginPrefix = "plugin_"
         self.jaaVersion = version
         self.jaaRootFolder = os.path.dirname(__file__)
-        self.jaaOptionsPath = self.jaaRootFolder+os.path.sep+"options"
+        self.jaaOptionsPath = self.jaaRootFolder + os.path.sep + "options"
         print("JAA.PY v{0} class created!".format(version))
 
     # ------------- plugins -----------------
-    def init_plugins(self, list_first_plugins = []):
+    def init_plugins(self, list_first_plugins=[]):
         self.plugin_manifests = {}
 
         # 1. run first plugins first!
@@ -68,7 +69,8 @@ class JaaCore:
         # 2. run all plugins from plugins folder
         from os import listdir
         from os.path import isfile, join
-        pluginpath = self.jaaRootFolder+"/plugins"
+
+        pluginpath = self.jaaRootFolder + "/plugins"
         files = [f for f in listdir(pluginpath) if isfile(join(pluginpath, f))]
 
         for fil in files:
@@ -77,12 +79,10 @@ class JaaCore:
                 modfile = fil[:-3]
                 self.init_plugin(modfile)
 
-
-
-    def init_plugin(self,modname):
+    def init_plugin(self, modname):
         # import
         try:
-            mod = self.import_plugin("plugins."+modname)
+            mod = self.import_plugin("plugins." + modname)
         except Exception as e:
             print("JAA PLUGIN ERROR: {0} error on load: {1}".format(modname, str(e)))
             return False
@@ -100,16 +100,19 @@ class JaaCore:
                 # saved options try to read
                 saved_options = {}
                 try:
-                    with open(self.jaaOptionsPath+'/'+modname+'.json', 'r', encoding="utf-8") as f:
+                    with open(
+                        self.jaaOptionsPath + "/" + modname + ".json",
+                        "r",
+                        encoding="utf-8",
+                    ) as f:
                         s = f.read(10000000)
                         f.close()
                     saved_options = json.loads(s)
-                    #print("Saved options", saved_options)
+                    # print("Saved options", saved_options)
                 except Exception as e:
                     pass
 
                 res["default_options"]["v"] = res["version"]
-
 
                 # only string needs Python 3.5
                 final_options = {**res["default_options"], **saved_options}
@@ -117,22 +120,29 @@ class JaaCore:
                 # if no option found or version is differ from mod version
                 if len(saved_options) == 0 or saved_options["v"] != res["version"]:
                     final_options["v"] = res["version"]
-                    self.save_plugin_options(modname,final_options)
+                    self.save_plugin_options(modname, final_options)
 
                 res["options"] = final_options
 
                 try:
-                    res2 = mod.start_with_options(self,res)
+                    res2 = mod.start_with_options(self, res)
                     if res2 != None:
                         res = res2
                 except Exception as e:
-                    print("JAA PLUGIN ERROR: {0} error on start_with_options processing: {1}".format(modname, str(e)))
+                    print(
+                        "JAA PLUGIN ERROR: {0} error on start_with_options processing: {1}".format(
+                            modname, str(e)
+                        )
+                    )
                     return False
 
             except Exception as e:
-                print("JAA PLUGIN ERROR: {0} error on options processing: {1}".format(modname, str(e)))
+                print(
+                    "JAA PLUGIN ERROR: {0} error on options processing: {1}".format(
+                        modname, str(e)
+                    )
+                )
                 return False
-
 
         # processing plugin manifest
         try:
@@ -140,16 +150,23 @@ class JaaCore:
             plugin_name = res["name"]
             plugin_version = res["version"]
 
-
-            self.process_plugin_manifest(modname,res)
+            self.process_plugin_manifest(modname, res)
 
         except Exception as e:
-            print("JAA PLUGIN ERROR: {0} error on process startup options: {1}".format(modname, str(e)))
+            print(
+                "JAA PLUGIN ERROR: {0} error on process startup options: {1}".format(
+                    modname, str(e)
+                )
+            )
             return False
 
         self.plugin_manifests[modname] = res
 
-        print("JAA PLUGIN: {1} {2} ({0}) started!".format(modname, plugin_name, plugin_version))
+        print(
+            "JAA PLUGIN: {1} {2} ({0}) started!".format(
+                modname, plugin_name, plugin_version
+            )
+        )
         return True
 
     def import_plugin(self, module_name):
@@ -161,31 +178,38 @@ class JaaCore:
             return sys.modules[module_name]
         return None
 
-    def save_plugin_options(self,modname,options):
+    def save_plugin_options(self, modname, options):
         # check folder exists
         if not os.path.exists(self.jaaOptionsPath):
             os.makedirs(self.jaaOptionsPath)
 
         str_options = json.dumps(options, sort_keys=True, indent=4, ensure_ascii=False)
-        with open(self.jaaOptionsPath+'/'+modname+'.json', 'w', encoding="utf-8") as f:
+        with open(
+            self.jaaOptionsPath + "/" + modname + ".json", "w", encoding="utf-8"
+        ) as f:
             f.write(str_options)
             f.close()
 
     # process manifest must be overrided in inherit class
-    def process_plugin_manifest(self,modname,manifest):
-        print("JAA PLUGIN: {0} manifest dummy procession (override 'process_plugin_manifest' function)".format(modname))
+    def process_plugin_manifest(self, modname, manifest):
+        print(
+            "JAA PLUGIN: {0} manifest dummy procession (override 'process_plugin_manifest' function)".format(
+                modname
+            )
+        )
         return
 
-    def plugin_manifest(self,pluginname):
+    def plugin_manifest(self, pluginname):
         if pluginname in self.plugin_manifests:
             return self.plugin_manifests[pluginname]
         return {}
 
-    def plugin_options(self,pluginname):
+    def plugin_options(self, pluginname):
         manifest = self.plugin_manifest(pluginname)
         if "options" in manifest:
             return manifest["options"]
         return None
+
 
 """
 The MIT License (MIT)
