@@ -33,6 +33,9 @@ def init(core:VACore):
     from rhvoice_wrapper import TTS
 
     core.ttsrhvoice = TTS(threads=1)
+    print("RHVoices available voices:",core.ttsrhvoice.voices)
+    for voiceId in core.ttsrhvoice.voices_info.keys():
+        print('  ',voiceId,': ',core.ttsrhvoice.voices_info[voiceId])
 
 
 

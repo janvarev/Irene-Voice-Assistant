@@ -3,3 +3,5 @@
 /timer/
 /silero_*
 /.idea/
+/plugins/plugin_tts_rhvoice.py
+/rhvoice_temp.wav
