@@ -32,6 +32,17 @@ returnFormat Варианты:
 - "saywav" (TTS на сервере, сервер отрендерит WAV и вернет клиенту, клиент его проиграет) (звук на клиенте) **наиболее универсальный для клиента**
 """
 
+# рендерит текст в wav
+@app.get("/ttsWav")
+async def ttsWav(text:str):
+    #runCmd(cmd,returnFormat)
+    tmpformat = core.remoteTTS
+    core.remoteTTS = "saywav"
+    core.play_voice_assistant_speech(text)
+    core.remoteTTS = tmpformat
+    return core.remoteTTSResult
+
+
 # выполняет команду Ирины
 # Например: привет, погода.
 @app.get("/sendTxtCmd")
