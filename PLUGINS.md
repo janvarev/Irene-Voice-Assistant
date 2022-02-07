@@ -44,4 +44,17 @@
 Требует pytorch 1.9+. На мой взгляд, работает немного медленно + не озвучивает числа, требуя их перевода в числительные + шипит. Тем не менее, очень крут!
 Голос задается в конфиге.
 
+**plugin_tts_rhvoice.py** - (оффлайн) TTS через RHVoice.
+Использует rhvoice-wrapper.
+Голос задается в конфиге.
+Рекомендуемые команды для установки:
+```
+pip install rhvoice-wrapper
+pip install rhvoice-wrapper-bin --only-binary rhvoice-wrapper-bin
+```
+Для Linux, и если не работает rhvoice-wrapper-bin - посмотрите источник https://github.com/Aculeasis/rhvoice-wrapper-bin
+
+Доп информация по установке rhvoice-wrapper: https://libraries.io/pypi/rhvoice-wrapper 
+
+
 
