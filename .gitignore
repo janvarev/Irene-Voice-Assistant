@@ -7,3 +7,4 @@
 /rhvoice_temp.wav
 /temp/
 /plugins/plugin_tts_silero.py
+*.pyc
