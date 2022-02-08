@@ -15,9 +15,16 @@ from vacore import VACore
 
 core = VACore()
 core.init_with_plugins()
+core.init_plugin("webapi")
+webapi_options = core.plugin_options("webapi")
 print("WEB api for VoiceAssistantCore (remote control)")
+# здесь двойная инициализация - на импорте, и на запуске сервера
+# не очень хорошо, но это нужно, чтобы получить webapi_options = core.plugin_options("webapi")
 
 def runCmd(cmd:str,returnFormat:str):
+    if core.logPolicy == "cmd" or core.logPolicy == "all":
+        print("Running cmd: ",cmd)
+
     tmpformat = core.remoteTTS
     core.remoteTTS = returnFormat
     core.execute_next(cmd,None)
@@ -74,6 +81,25 @@ async def sendRawTxt(rawtxt:str,returnFormat:str = "none"):
         return "NO_VA_NAME"
 
 
+# simple threading for timer
+from threading import Thread, Event
+
+class MyThread(Thread):
+    def __init__(self, event):
+        Thread.__init__(self)
+        self.stopped = event
+
+    def run(self):
+        while not self.stopped.wait(0.5):
+            core._update_timers()
+
+if __name__ != "__main__": # must run only in web
+    stopFlag = Event()
+    thread = MyThread(stopFlag)
+    thread.start()
+    # this will stop the timer
+    #stopFlag.set()
 
 if __name__ == "__main__":
-    uvicorn.run("runva_webapi:app", host="127.0.0.1", port=5003, log_level="info")
+    uvicorn.run("runva_webapi:app", host=webapi_options["host"], port=webapi_options["port"],
+                log_level=webapi_options["log_level"])
