@@ -21,6 +21,12 @@ print("WEB api for VoiceAssistantCore (remote control)")
 # здесь двойная инициализация - на импорте, и на запуске сервера
 # не очень хорошо, но это нужно, чтобы получить webapi_options = core.plugin_options("webapi")
 
+"""
+returnFormat Варианты:
+- "none" (TTS реакции будут на сервере) (звук на сервере)
+- "saytxt" (сервер вернет текст, TTS будет на клиенте) (звук на клиенте)
+- "saywav" (TTS на сервере, сервер отрендерит WAV и вернет клиенту, клиент его проиграет) (звук на клиенте) **наиболее универсальный для клиента**
+"""
 def runCmd(cmd:str,returnFormat:str):
     if core.logPolicy == "cmd" or core.logPolicy == "all":
         print("Running cmd: ",cmd)
@@ -32,12 +38,6 @@ def runCmd(cmd:str,returnFormat:str):
 
 app = FastAPI()
 
-"""
-returnFormat Варианты:
-- "none" (TTS реакции будут на сервере) (звук на сервере)
-- "saytxt" (сервер вернет текст, TTS будет на клиенте) (звук на клиенте)
-- "saywav" (TTS на сервере, сервер отрендерит WAV и вернет клиенту, клиент его проиграет) (звук на клиенте) **наиболее универсальный для клиента**
-"""
 
 # рендерит текст в wav
 @app.get("/ttsWav")
