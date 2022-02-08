@@ -2,7 +2,7 @@
 
 # python std lib
 import pprint
-from collections import Callable
+from collections.abc import Callable
 
 # 3rd party imports
 import requests
