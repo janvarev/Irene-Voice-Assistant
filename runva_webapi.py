@@ -33,6 +33,8 @@ def runCmd(cmd:str,returnFormat:str):
 
     tmpformat = core.remoteTTS
     core.remoteTTS = returnFormat
+    core.remoteTTSResult = ""
+    core.lastSay = ""
     core.execute_next(cmd,None)
     core.remoteTTS = tmpformat
 
