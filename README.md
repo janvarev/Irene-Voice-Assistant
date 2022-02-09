@@ -132,11 +132,17 @@ https://github.com/janvarev/Remote-Irene
 
 Также можно посмотреть документацию fastapi - там есть веб-интерфейс для тестовых вызовов функций.
 
+### Contributing
+
+Если вы хотите что-то добавить в проект, хорошо ознакомиться с
+Политикой 
+[CONTRIBUTING.md](/CONTRIBUTING.md)
+
 ### Благодарности
 
 @EnjiRouz за проект голосового ассистента: https://github.com/EnjiRouz/Voice-Assistant-App, который стал основой (правда, был очень сильно переработан)
 
-AlphaCephei за прекрасную библиотеку распозавания Vosk ( https://alphacephei.com/vosk/index.ru ) 
+AlphaCephei за прекрасную библиотеку распознавания Vosk ( https://alphacephei.com/vosk/index.ru ) 
 
 
 
