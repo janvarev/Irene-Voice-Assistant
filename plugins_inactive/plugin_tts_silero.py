@@ -5,6 +5,7 @@
 
 import os
 
+import torch
 from vacore import VACore
 
 modname = os.path.basename(__file__)[:-3] # calculating modname
@@ -32,8 +33,6 @@ def start_with_options(core:VACore, manifest:dict):
 def init(core:VACore):
     options = core.plugin_options(modname)
 
-    import os
-    import torch
 
     device = torch.device('cpu')
     torch.set_num_threads(8)

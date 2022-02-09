@@ -2,7 +2,9 @@
 # author: Vladislav Janvarev
 
 import random
+
 from vacore import VACore
+
 
 # функция на старте
 def start(core:VACore):

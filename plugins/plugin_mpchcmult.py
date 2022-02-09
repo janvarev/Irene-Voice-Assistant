@@ -2,10 +2,10 @@
 # author: Vladislav Janvarev
 
 import subprocess
+from os import listdir
+from os.path import isfile, join
 
-#from voiceassmain import play_voice_assistant_speech
 from vacore import VACore
-
 
 multPath = ""
 
@@ -57,8 +57,6 @@ def play_mult(core:VACore, phrase: str):
     core.play_voice_assistant_speech("Не нашла такого мультика")
 
 def mult_list():
-    from os import listdir
-    from os.path import isfile, join
     #pluginpath = m #os.path.dirname(__file__)+"/plugins"
     files = [f for f in listdir(multPath) if isfile(join(multPath, f))]
     # files = [str(f)[:-4].lower() for f in files]

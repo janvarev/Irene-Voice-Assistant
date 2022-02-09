@@ -5,6 +5,7 @@
 
 import os
 
+from rhvoice_wrapper import TTS
 from vacore import VACore
 
 modname = os.path.basename(__file__)[:-3] # calculating modname
@@ -31,7 +32,6 @@ def start_with_options(core:VACore, manifest:dict):
     pass
 
 def init(core:VACore):
-    from rhvoice_wrapper import TTS
 
     core.ttsrhvoice = TTS(threads=1)
     print("RHVoices available voices:",core.ttsrhvoice.voices)

@@ -1,13 +1,10 @@
 # -*- coding: utf-8 -*-
 
-# python std lib
 import pprint
 from collections.abc import Callable
 
-# 3rd party imports
 import requests
 
-# from  import command_mapping
 import mpcapi.commands as commands
 
 

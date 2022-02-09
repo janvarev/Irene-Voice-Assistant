@@ -1,7 +1,10 @@
 # Core plugin
 # author: Vladislav Janvarev
 
+import os
+
 from vacore import VACore
+
 
 # функция на старте
 def start(core:VACore):
@@ -44,7 +47,6 @@ def start_with_options(core:VACore, manifest:dict):
     core.logPolicy = options["logPolicy"]
 
     core.tmpdir = options["tempDir"]
-    import os
     if not os.path.exists(core.tmpdir):
         os.mkdir(core.tmpdir)
 

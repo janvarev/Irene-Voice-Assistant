@@ -1,11 +1,11 @@
 # Timer
 # author: Vladislav Janvarev
 
-import time
 import os
+import time
 
-from vacore import VACore
 import utils.num_to_text_ru as num_to_text
+from vacore import VACore
 
 female_units_min2 = ((u'минуту', u'минуты', u'минут'), 'f')
 female_units_min = ((u'минута', u'минуты', u'минут'), 'f')

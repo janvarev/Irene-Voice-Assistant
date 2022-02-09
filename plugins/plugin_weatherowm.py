@@ -4,7 +4,10 @@
 # работает без пакета pyowm! на прямых запросах
 
 import os
+import traceback
 
+import requests
+from utils.num_to_text_ru import num2text
 from vacore import VACore
 
 modname = os.path.basename(__file__)[:-3] # calculating modname
@@ -46,7 +49,6 @@ def start_with_options(core:VACore, manifest:dict):
         print("OWM: try to locate city...")
         # не установлено место
         try:
-            import requests
             res_str = requests.get("http://api.openweathermap.org/geo/1.0/direct",
                                params={'q': options["city"]+","+options["country"], 'APPID': options["apiKey"]})
             res = res_str.json()
@@ -61,7 +63,6 @@ def start_with_options(core:VACore, manifest:dict):
             core.save_plugin_options(modname,options)
             print("OWM: city {0} located at lat={1}, lon={2}".format(options["city"],lat,lon))
         except:
-            import traceback
             traceback.print_exc()
             print("Проблемы с получением локации погоды. Посмотрите логи")
 
@@ -78,13 +79,11 @@ def run_weather(core:VACore, phrase:str, addparam:str):
     try:
         #one_call = mgr.one_call(options["lat"], options["lon"], lang="ru")
         #try:
-        import requests
         res = requests.get("https://api.openweathermap.org/data/2.5/onecall",
                            params={'lon': options["lon"], 'lat': options["lat"], 'units': 'metric', 'lang': 'ru', 'APPID': options["apiKey"]})
         data_one_call = res.json()
         print(data_one_call)
 
-        from utils.num_to_text_ru import num2text
 
         if addparam == "" and (phrase == "" or phrase == "сейчас"):
             #print(one_call.current.status)
@@ -158,7 +157,6 @@ def run_weather(core:VACore, phrase:str, addparam:str):
             core.play_voice_assistant_speech(text)
 
     except:
-        import traceback
         traceback.print_exc()
         core.play_voice_assistant_speech("Проблемы с погодой. Посмотрите логи")
 

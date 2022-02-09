@@ -42,9 +42,12 @@ main.init_plugins()
 Python 3.5+ (due to dict mix in final_options calc), can be relaxed
 """
 
-import os
-import traceback
 import json
+import os
+import sys
+import traceback
+from os import listdir
+from os.path import isfile, join
 
 version = "1.5"
 
@@ -66,8 +69,6 @@ class JaaCore:
             self.init_plugin(modname)
 
         # 2. run all plugins from plugins folder
-        from os import listdir
-        from os.path import isfile, join
         pluginpath = self.jaaRootFolder+"/plugins"
         files = [f for f in listdir(pluginpath) if isfile(join(pluginpath, f))]
 
@@ -153,7 +154,6 @@ class JaaCore:
         return True
 
     def import_plugin(self, module_name):
-        import sys
 
         __import__(module_name)
 

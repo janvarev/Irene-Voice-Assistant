@@ -1,10 +1,12 @@
 # Yandex Music
 
-import pyautogui
-import time
 import os
+import time
+import webbrowser
 
+import pyautogui
 from vacore import VACore
+
 
 # функция на старте
 def start(core:VACore):
@@ -24,7 +26,6 @@ def run_yamus(core:VACore, phrase:str):
         core.play_voice_assistant_speech("Запускаю музыку")
 
     # open web page
-    import webbrowser
     webbrowser.open("https://music.yandex.ru/home", 1)
     time.sleep(3)
 

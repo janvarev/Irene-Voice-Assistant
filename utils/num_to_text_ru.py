@@ -6,7 +6,7 @@ Changed on 13.03.2016 by Artem Tiumentcev
 @author: Sergey Prokhorov <me@seriyps.ru>
 '''
 import decimal
-
+import sys
 
 units = (
     u'ноль',
@@ -123,7 +123,6 @@ def decimal2text(value, places=2,
         num2text(int(exp), exp_units))
 
 if __name__ == '__main__':
-    import sys
     if len(sys.argv) > 1:
         try:
             num = sys.argv[1]

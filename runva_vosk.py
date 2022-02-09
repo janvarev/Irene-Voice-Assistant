@@ -1,11 +1,12 @@
 import argparse
+import json
 import os
 import queue
-import sounddevice as sd
-import vosk
 import sys
 import traceback
-import json
+
+import sounddevice as sd
+import vosk
 
 from vacore import VACore
 

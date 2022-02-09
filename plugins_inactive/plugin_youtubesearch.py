@@ -1,9 +1,10 @@
-import pyautogui
-import time
 import os
+import time
+import webbrowser
 
-#from voiceassmain import play_voice_assistant_speech
+import pyautogui
 from vacore import VACore
+
 # based on EnjiRouz realization https://github.com/EnjiRouz/Voice-Assistant-App/blob/master/app.py
 
 # функция на старте
@@ -23,7 +24,6 @@ def run_youtube(core:VACore, phrase:str):
     if core != None:
         core.play_voice_assistant_speech("Ищу на ютуб {}".format(phrase))
 
-    import webbrowser
     url = "https://www.youtube.com/results?search_query=" + phrase
     webbrowser.get().open(url)
 

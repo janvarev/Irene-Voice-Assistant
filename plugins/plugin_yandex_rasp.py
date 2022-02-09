@@ -1,8 +1,12 @@
 # Яндекс.Расписания - работает точно для электричек
 # author: Vladislav Janvarev
 
+import datetime
 import os
+import traceback
+from datetime import date
 
+import requests
 from vacore import VACore
 
 modname = os.path.basename(__file__)[:-3] # calculating modname
@@ -40,15 +44,11 @@ def run_poezd(core:VACore, phrase:str):
         return
 
     try:
-        # datetime
-        import datetime
         now = datetime.datetime.now().__str__()
         print(now)
 
-        from datetime import date
         current_date = date.today().__str__()
 
-        import requests
         res = requests.get("https://api.rasp.yandex.net/v3.0/search/",
                            params={'from': options["from"], 'to': options["to1"], 'format':'json',
                                    'date': current_date,
@@ -84,7 +84,6 @@ def run_poezd(core:VACore, phrase:str):
 
 
     except:
-        import traceback
         traceback.print_exc()
         core.play_voice_assistant_speech("Проблемы с расписанием. Посмотрите логи")
 

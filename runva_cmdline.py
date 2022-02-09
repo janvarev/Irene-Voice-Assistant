@@ -1,7 +1,7 @@
+import time
 import traceback
 
 from vacore import VACore
-import time
 
 # ------------------- main loop ------------------
 if __name__ == "__main__":

@@ -1,11 +1,12 @@
+import base64
 import os
-import traceback
-
 import time
+import traceback
 
 import sounddevice as sound_device
 import soundfile as sound_file
 
+import mpcapi.core
 from jaa import JaaCore
 
 version = "3.3"
@@ -45,7 +46,6 @@ class VACore(JaaCore):
         self.remoteTTS = "none"
         self.remoteTTSResult = None
 
-        import mpcapi.core
         self.mpchc = mpcapi.core.MpcAPI()
 
 
@@ -115,7 +115,6 @@ class VACore(JaaCore):
 
             self.tts_to_filewav(text_to_speech,tempfilename)
             #self.play_wav(tempfilename)
-            import base64
 
             with open(tempfilename, "rb") as wav_file:
                 encoded_string = base64.b64encode(wav_file.read())

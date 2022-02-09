@@ -1,15 +1,10 @@
-# ----------
+from threading import Event, Thread
 
-from fastapi import FastAPI, HTTPException
 import uvicorn
-
-
-
-#from pydantic import BaseModel
-
+from fastapi import FastAPI, HTTPException
 
 from vacore import VACore
-#import time
+
 
 # ------------------- main loop ------------------
 
@@ -82,9 +77,6 @@ async def sendRawTxt(rawtxt:str,returnFormat:str = "none"):
     else:
         return "NO_VA_NAME"
 
-
-# simple threading for timer
-from threading import Thread, Event
 
 class MyThread(Thread):
     def __init__(self, event):

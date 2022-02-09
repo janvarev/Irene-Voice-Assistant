@@ -1,9 +1,11 @@
-import pyautogui
-import time
 import os
+import time
+import traceback
 
-#from voiceassmain import play_voice_assistant_speech
+import pyautogui
+import wikipediaapi
 from vacore import VACore
+
 # based on EnjiRouz realization https://github.com/EnjiRouz/Voice-Assistant-App/blob/master/app.py
 
 # функция на старте
@@ -23,7 +25,6 @@ def run_wiki(core:VACore, phrase:str):
     # if core != None:
     #     core.play_voice_assistant_speech("Ищу на вики {}".format(phrase))
 
-    import wikipediaapi
     wiki = wikipediaapi.Wikipedia("ru")
 
     # поиск страницы по запросу, чтение summary, открытие ссылки на страницу для получения подробной информации
@@ -47,7 +48,6 @@ def run_wiki(core:VACore, phrase:str):
 
     # поскольку все ошибки предсказать сложно, то будет произведен отлов с последующим выводом без остановки программы
     except:
-        import traceback
         core.play_voice_assistant_speech("Проблемы с поиском в Википедии")
 
         traceback.print_exc()

@@ -1,11 +1,10 @@
 # Команды управления мультимедия
 # author: Vladislav Janvarev
 
-import pyautogui
-import time
 import os
+import time
 
-#from voiceassmain import play_voice_assistant_speech
+import pyautogui
 from vacore import VACore
 
 # опции

@@ -5,8 +5,10 @@
 # if you have problems with PyAudio install, check this:
 # https://github.com/EnjiRouz/Voice-Assistant-App/blob/master/README.md
 
-import speech_recognition
 import traceback
+
+import speech_recognition
+
 from vacore import VACore
 
 # most from @EnjiRouz code: https://habr.com/ru/post/529590/
