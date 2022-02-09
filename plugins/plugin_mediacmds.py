@@ -16,7 +16,7 @@ mpchc = None
 def start(core:VACore):
     manifest = {
         "name": "Команды управления мультимедия",
-        "version": "1.1",
+        "version": "1.2",
         "require_online": False,
 
         "default_options": {
@@ -36,6 +36,7 @@ def start(core:VACore):
             "сильно тише": (volume_downX, 9),
             "сильно громче": (volume_upX, 9),
             "выключи плеер|закрой плеер": close,
+            "пробел": space,
         }
     }
 
@@ -61,6 +62,11 @@ def play_pause(core:VACore, phrase: str):
             return # если команда отработала, то дальше ничего не нужно
         except Exception as e:
             pass
+
+    pyautogui.press("playpause") # универсально для всех
+
+def space(core:VACore, phrase: str):
+    print("Команда пробел")
 
     pyautogui.press("space") # универсально для всех
 
