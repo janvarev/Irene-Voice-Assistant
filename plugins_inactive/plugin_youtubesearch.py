@@ -6,6 +6,9 @@ import os
 from vacore import VACore
 # based on EnjiRouz realization https://github.com/EnjiRouz/Voice-Assistant-App/blob/master/app.py
 
+# есть более эффективная реализация в plugin_urlopener
+# эта сохранена из исторических соображений и как примеры
+
 # функция на старте
 def start(core:VACore):
     manifest = {
