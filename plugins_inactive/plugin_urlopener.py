@@ -13,9 +13,9 @@ def start(core:VACore):
 
         "default_options": {
             "cmds": {
-                "ютуб|юту": "https://www.youtube.com/results?search_query={}",
+                "ютуб|юту|ютюб": "https://www.youtube.com/results?search_query={}",
                 "яндекс": "https://yandex.ru/search/?text={}",
-                "главная яндекс": "https://yandex.ru/",
+                "главная яндекс|главное яндекс": "https://yandex.ru/",
             }
         }
 
