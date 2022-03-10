@@ -15,6 +15,7 @@ def start(core:VACore):
         "commands": { # набор скиллов. Фразы скилла разделены | . Если найдены - вызывается функция
             "дата": play_date,
             "время": play_time,
+
         }
     }
     return manifest
