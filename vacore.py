@@ -2,13 +2,16 @@ import os
 import traceback
 
 import time
+from threading import Timer
 
 import sounddevice as sound_device
 import soundfile as sound_file
 
 from jaa import JaaCore
 
-version = "3.3"
+version = "4.0"
+
+# main VACore class
 
 class VACore(JaaCore):
     def __init__(self):
@@ -44,6 +47,10 @@ class VACore(JaaCore):
         self.lastSay = ""
         self.remoteTTS = "none"
         self.remoteTTSResult = None
+
+        self.context = None
+        self.contextTimer = None
+        self.contextTimerLastDuration = 0
 
         import mpcapi.core
         self.mpchc = mpcapi.core.MpcAPI()
@@ -150,10 +157,22 @@ class VACore(JaaCore):
         else:
             # it is function to call!
             #context(self,command)
+            self.context_clear()
             self.call_ext_func_phrase(command,context)
             return
 
         try:
+            # первый проход - ищем полное совпадение
+            for keyall in context.keys():
+                keys = keyall.split("|")
+                for key in keys:
+                    if command == key:
+                        rest_phrase = ""
+                        next_context = context[keyall]
+                        self.execute_next(rest_phrase,next_context)
+                        return
+
+            # второй проход - ищем частичное совпадение
             for keyall in context.keys():
                 keys = keyall.split("|")
                 for key in keys:
@@ -161,21 +180,19 @@ class VACore(JaaCore):
                         rest_phrase = command[(len(key)+1):]
                         next_context = context[keyall]
                         self.execute_next(rest_phrase,next_context)
-                        #print(next_context)
-                        #print(rest_phrase)
-
-                        #if isinstance(next_context,dict):
-
-
-                        #commands[key](*args)
-                        #print
                         return
-                    else:
-                        #print("Command not found", command_name)
-                        pass
+
 
             # if not founded
-            self.play_voice_assistant_speech(self.plugin_options("core")["replyNoCommandFound"])
+            if self.context == None:
+                # no context
+                self.say(self.plugin_options("core")["replyNoCommandFound"])
+            else:
+                # in context
+                self.say(self.plugin_options("core")["replyNoCommandFoundInContext"])
+                # restart timer for context
+                if self.contextTimer != None:
+                    self.context_set(self.context,self.contextTimerLastDuration)
         except Exception as err:
             print(traceback.format_exc())
 
@@ -237,4 +254,80 @@ class VACore(JaaCore):
         sound_device.play(data_set, fsample)
         # Wait until file is done playing
         status = sound_device.wait()
+
+    # -------- raw txt running -----------------
+    def run_input_str(self,voice_input_str,func_before_run_cmd = None): # voice_input_str - строка распознавания голоса, разделенная пробелами
+                # пример: "ирина таймер пять"
+        if self.logPolicy == "all":
+            if self.context == None:
+                print("Input: ",voice_input_str)
+            else:
+                print("Input (in context): ",voice_input_str)
+
+        try:
+            voice_input = voice_input_str.split(" ")
+            #callname = voice_input[0]
+            haveRun = False
+            if self.context == None:
+                for ind in range(len(voice_input)):
+                    callname = voice_input[ind]
+
+                    if callname in self.voiceAssNames: # найдено имя ассистента
+                        if self.logPolicy == "cmd":
+                            print("Input (cmd): ",voice_input_str)
+
+
+                        command_options = " ".join([str(input_part) for input_part in voice_input[(ind+1):len(voice_input)]])
+
+                        # running some cmd before run cmd
+                        if func_before_run_cmd != None:
+                            func_before_run_cmd()
+
+
+                        #context = self.context
+                        #self.context_clear()
+                        self.execute_next(command_options, None)
+                        haveRun = True
+                        break
+            else:
+                if self.logPolicy == "cmd":
+                    print("Input (cmd in context): ",voice_input_str)
+
+                # running some cmd before run cmd
+                if func_before_run_cmd != None:
+                    func_before_run_cmd()
+
+                self.execute_next(voice_input_str, self.context)
+                haveRun = True
+
+        except Exception as err:
+            print(traceback.format_exc())
+
+        return haveRun
+
+    # ------------ context handling functions ----------------
+
+    def context_set(self,context,duration = None):
+        if duration == None:
+            duration = 10
+
+        self.context_clear()
+
+        self.context = context
+        self.contextTimerLastDuration = duration
+        self.contextTimer = Timer(duration,self._context_clear_timer)
+        self.contextTimer.start()
+
+    #def _timer_context
+    def _context_clear_timer(self):
+        print("Context cleared after timeout")
+        self.contextTimer = None
+        self.context_clear()
+
+    def context_clear(self):
+        self.context = None
+        if self.contextTimer != None:
+            self.contextTimer.cancel()
+            self.contextTimer = None
+
 

@@ -21,6 +21,7 @@ def start(core:VACore):
             "logPolicy": "cmd", # all | cmd | none
 
             "replyNoCommandFound": "Извини, я не поняла",
+            "replyNoCommandFoundInContext": "Не поняла...",
             "replyOnlineRequired": "Для этой команды необходим онлайн",
 
             "tempDir": "temp",

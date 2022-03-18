@@ -35,7 +35,7 @@ def runCmd(cmd:str,returnFormat:str):
     core.remoteTTS = returnFormat
     core.remoteTTSResult = ""
     core.lastSay = ""
-    core.execute_next(cmd,None)
+    core.execute_next(cmd,core.context)
     core.remoteTTS = tmpformat
 
 app = FastAPI()
@@ -63,45 +63,40 @@ async def sendSimpleTxtCmd(cmd:str,returnFormat:str = "none"):
 # Пример: ирина погода, раз два
 @app.get("/sendRawTxt")
 async def sendRawTxt(rawtxt:str,returnFormat:str = "none"):
-    voice_input = rawtxt.split(" ")
-
-    isFound = False
-    for ind in range(len(voice_input)):
-        callname = voice_input[ind]
-        if callname in core.voiceAssNames: # найдено имя ассистента
-            isFound = True
-            if core.logPolicy == "cmd":
-                print("Input (cmd): ",rawtxt)
-
-            command_options = " ".join([str(input_part) for input_part in voice_input[(ind+1):len(voice_input)]])
-            runCmd(command_options, returnFormat)
-            break
+    tmpformat = core.remoteTTS
+    core.remoteTTS = returnFormat
+    core.remoteTTSResult = ""
+    core.lastSay = ""
+    isFound = core.run_input_str(rawtxt)
+    core.remoteTTS = tmpformat
 
     if isFound:
         return core.remoteTTSResult
     else:
         return "NO_VA_NAME"
 
+# Запускает внутреннюю процедуру проверки таймеров. Должна запускаться периодически
+@app.get("/updTimers")
+async def updTimers():
+    #core.say("аа")
+    #print("upd timers")
+    core._update_timers()
+    return ""
 
-# simple threading for timer
-from threading import Thread, Event
-
-class MyThread(Thread):
-    def __init__(self, event):
-        Thread.__init__(self)
-        self.stopped = event
-
-    def run(self):
-        while not self.stopped.wait(0.5):
-            core._update_timers()
-
-if __name__ != "__main__": # must run only in web
-    stopFlag = Event()
-    thread = MyThread(stopFlag)
-    thread.start()
-    # this will stop the timer
-    #stopFlag.set()
+def core_update_timers_http(runReq=True):
+    from threading import Timer
+    if runReq:
+        try:
+            import requests
+            reqstr = "http://{0}:{1}/updTimers".format(webapi_options["host"],webapi_options["port"])
+            #print(reqstr)
+            r = requests.get(reqstr)
+        except Exception:
+            pass
+    t = Timer(2, core_update_timers_http)
+    t.start()
 
 if __name__ == "__main__":
+    core_update_timers_http(False)
     uvicorn.run("runva_webapi:app", host=webapi_options["host"], port=webapi_options["port"],
                 log_level=webapi_options["log_level"])

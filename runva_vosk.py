@@ -11,6 +11,11 @@ from vacore import VACore
 
 mic_blocked = False
 
+def block_mic():
+    global mic_blocked
+    #print("Blocking microphone...")
+    mic_blocked = True
+
 # ------------------- vosk ------------------
 if __name__ == "__main__":
     q = queue.Queue()
@@ -109,28 +114,11 @@ if __name__ == "__main__":
 
 
                     if voice_input_str != "":
-                        #print("Input: ",voice_input)
-                        if core.logPolicy == "all":
-                            print("Input: ",voice_input_str)
-
-                        try:
-                            voice_input = voice_input_str.split(" ")
-                            #callname = voice_input[0]
-                            for ind in range(len(voice_input)):
-                                callname = voice_input[ind]
-                                if callname in core.voiceAssNames: # найдено имя ассистента
-                                    if core.logPolicy == "cmd":
-                                        print("Input (cmd): ",voice_input_str)
-
-                                    mic_blocked = True
-                                    command_options = " ".join([str(input_part) for input_part in voice_input[(ind+1):len(voice_input)]])
-                                    core.execute_next(command_options, None)
-                                    break
-                        except Exception as err:
-                            print(traceback.format_exc())
+                        core.run_input_str(voice_input_str,block_mic)
 
 
                         mic_blocked = False
+                        #print("UNBlocking microphone...")
                 else:
                     #print("2",rec.PartialResult())
                     pass
@@ -145,3 +133,5 @@ if __name__ == "__main__":
         parser.exit(0)
     except Exception as e:
         parser.exit(type(e).__name__ + ': ' + str(e))
+
+
