@@ -9,7 +9,7 @@ import soundfile as sound_file
 
 from jaa import JaaCore
 
-version = "4.0"
+version = "4.1"
 
 # main VACore class
 
@@ -101,8 +101,11 @@ class VACore(JaaCore):
 
     def play_voice_assistant_speech(self,text_to_speech:str):
         self.lastSay = text_to_speech
-        if self.remoteTTS == "none": # no remote tts, do locally anything
-            self.remoteTTSResult = "" # anywhere, set it ""
+        remoteTTSList = self.remoteTTS.split(",")
+
+        self.remoteTTSResult = {}
+        if "none" in remoteTTSList: # no remote tts, do locally anything
+            #self.remoteTTSResult = "" # anywhere, set it ""
 
             if self.ttss[self.ttsEngineId][1] != None:
                 self.ttss[self.ttsEngineId][1](self,text_to_speech)
@@ -114,10 +117,10 @@ class VACore(JaaCore):
                 if os.path.exists(tempfilename):
                     os.unlink(tempfilename)
 
-        if self.remoteTTS == "saytxt": # return only last say txt
-            self.remoteTTSResult = text_to_speech
+        if "saytxt" in remoteTTSList: # return only last say txt
+            self.remoteTTSResult["restxt"] = text_to_speech
 
-        if self.remoteTTS == "saywav":
+        if "saywav" in remoteTTSList:
             tempfilename = self.get_tempfilename()+".wav"
 
             self.tts_to_filewav(text_to_speech,tempfilename)
