@@ -17,7 +17,7 @@ def start(core:VACore):
             "isOnline": False,
             #"ttsIndex": 0,
             "ttsEngineId": "pyttsx",
-            "voiceAssNames": "ирина|ирины|ирину",
+            "voiceAssNames": "тамара|тамары|тамару",
             "logPolicy": "cmd", # all | cmd | none
 
             "replyNoCommandFound": "Извини, я не поняла",
