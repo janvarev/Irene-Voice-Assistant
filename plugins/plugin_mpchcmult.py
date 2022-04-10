@@ -42,7 +42,7 @@ def run_player(core:VACore, phrase: str):
 def play_mult(core:VACore, phrase: str):
     if phrase == "":
         core.play_voice_assistant_speech("Пожалуйста, уточни какой именно мультик")
-        # здесь надо вернуть контекст, чтобы не добавлять Ирина. но это позже
+        core.context_set(play_mult)
         return
 
     #core.play_voice_assistant_speech("Ищу мультфильм "+find)
@@ -54,7 +54,8 @@ def play_mult(core:VACore, phrase: str):
             subprocess.Popen([core.mpcHcPath, multPath+"\\"+f])
             return
 
-    core.play_voice_assistant_speech("Не нашла такого мультика")
+    core.play_voice_assistant_speech("Не нашла. Пожалуйста, повтори только название.")
+    core.context_set(play_mult)
 
 def mult_list():
     from os import listdir

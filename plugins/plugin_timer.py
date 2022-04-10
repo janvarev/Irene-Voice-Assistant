@@ -50,7 +50,7 @@ def set_timer(core:VACore, phrase:str):
         phrase = phrase[3:]
 
     # ставим секунды?
-    for i in range(1,100):
+    for i in range(100,1,-1):
         txt = num_to_text.num2text(i, female_units_sec) + " "
         if phrase.startswith(txt):
             #print(txt)
@@ -70,7 +70,7 @@ def set_timer(core:VACore, phrase:str):
             return
 
     # ставим минуты?
-    for i in range(1,100):
+    for i in range(100,1,-1):
         txt = num_to_text.num2text(i, female_units_min) + " "
         if phrase.startswith(txt):
             set_timer_real(core,i*60,txt)
@@ -88,7 +88,7 @@ def set_timer(core:VACore, phrase:str):
             return
 
     # без указания единиц измерения - ставим минуты
-    for i in range(1,100):
+    for i in range(100,1,-1): # обратный вариант - иначе "двадцать" находится быстрее чем "двадцать пять", а это неверно
         txt = num_to_text.num2text(i, female_units_min) + " "
         txt2 = num_to_text.num2text(i) + " "
         if phrase.startswith(txt2):
@@ -106,6 +106,10 @@ def set_timer(core:VACore, phrase:str):
         txt = num_to_text.num2text(1, female_units_min)
         set_timer_real(core,1*60,txt)
         return
+
+    # непонятно, но сохраняем контекст и переспрашиваем время
+    core.say("Что после таймер?")
+    core.context_set(set_timer)
 
 def set_timer_real(core:VACore, num:int, txt:str):
     core.set_timer(num,(after_timer, txt))
