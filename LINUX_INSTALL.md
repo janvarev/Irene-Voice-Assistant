@@ -23,7 +23,7 @@ core.ttsEngine.setProperty("voice", "russian") либо найти нужный 
 
 1. Скопируйте plugin_tts_rhvoice из plugins_active в plugins
 2. Установите в options/core.json "ttsEngineId": "rhvoice"
-3. Посмотрите в [PLUGINS.md](/PLUGINS.md), что нужно для плагина rhvoice.
+3. Посмотрите в [PLUGINS.md](/docs/PLUGINS.md), что нужно для плагина rhvoice.
 
 На Linux-системе говорят, что для установки rhvoice-wrapper-bin
 требуется
