@@ -106,7 +106,7 @@ def run_weather(core:VACore, phrase:str, addparam:str):
             veter_str = num2text(veter_int,((u'метр', u'метра', u'метров'), 'm'))
             vl_str = num2text(humid,((u'процента', u'процента', u'процентов'), 'm'))
 
-            text = "Сейчас {0}, ощущается как {1}. Влажность {2}, ветер {3} в секунду".format(
+            text = "Сейчас {0}, ощущается как {1}. Влажность {2}, ветер {3} в секунду.".format(
                     num2text(int(temp)),num2text(int(feels_like)),vl_str,veter_str,data_one_call["daily"][0]["weather"][0]["description"])
             print(text)
             core.play_voice_assistant_speech(text)
@@ -117,7 +117,7 @@ def run_weather(core:VACore, phrase:str, addparam:str):
             #print(temp)
             # humid = one_call.forecast_daily[0].humidity
             #one_call.forecast_daily[0]
-            text = "Завтра {0}, будет ощущаться как {1}. {3}. Ночью {2}".format(
+            text = "Завтра {0}, будет ощущаться как {1}. {3}. Ночью {2}.".format(
                 num2text(int(forecast_data["temp"]["day"])),num2text(int(forecast_data["feels_like"]["day"])),int(forecast_data["temp"]["night"]),forecast_data["weather"][0]["description"])
             print(text)
             core.play_voice_assistant_speech(text)
@@ -127,7 +127,7 @@ def run_weather(core:VACore, phrase:str, addparam:str):
             forecast_data = data_one_call["daily"][1]
             #print(temp)
             # humid = one_call.forecast_daily[0].humidity
-            text = "Послезавтра {0}, будет ощущаться как {1}. {3}. Ночью {2}".format(
+            text = "Послезавтра {0}, будет ощущаться как {1}. {3}. Ночью {2}.".format(
                 int(forecast_data["temp"]["day"]),int(forecast_data["feels_like"]["day"]),int(forecast_data["temp"]["night"]),forecast_data["weather"][0]["description"])
             print(text)
             core.play_voice_assistant_speech(text)
