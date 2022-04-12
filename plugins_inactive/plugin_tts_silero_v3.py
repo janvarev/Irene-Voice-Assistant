@@ -60,6 +60,8 @@ def towavfile(core:VACore, text_to_speech:str, wavfile:str):
     # рендерим wav
     path = core.model.save_wav(text=text_to_speech,
                                 speaker=speaker,
+                                put_accent=True,
+                                put_yo=True,
                                 sample_rate=options["sample_rate"])
 
     # перемещаем wav на новое место
