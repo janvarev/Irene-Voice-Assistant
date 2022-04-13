@@ -9,7 +9,7 @@ import soundfile as sound_file
 
 from jaa import JaaCore
 
-version = "4.1"
+version = "4.2"
 
 # main VACore class
 
