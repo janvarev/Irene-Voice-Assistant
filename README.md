@@ -56,6 +56,11 @@
   
 Посетите: [https://github.com/janvarev/Irene-Voice-Assistant/issues/1](https://github.com/janvarev/Irene-Voice-Assistant/issues/1)
 
+### Интеграция с Home Assistant
+
+Есть хороший сторонний плагин, позволяющий запускать сценарии Home Assistant через Ирину:
+https://github.com/timhok/IreneVA-hassio-script-trigger-plugin
+
 ### Настройки ядра (core.json)
 
 Настройки конкретных плагинов лучше смотреть в плагинах
@@ -86,6 +91,8 @@
 ### Разработка плагинов
 
 [Документация по разработке](/docs/DEV_PLUGINS.md)
+
+
 
 ## Speech-to-Text через SpeechRecognition
 
