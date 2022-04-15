@@ -4,7 +4,7 @@
 
 Поддерживает плагины (скиллы)
 
-[Статья на Хабре](https://habr.com/ru/post/595855/)
+[Статья на Хабре](https://habr.com/ru/post/595855/) | [Вторая статья на Хабре](https://habr.com/ru/post/660715/) | [Группа в Телеграм](https://t.me/+gagUw1bCcYFkMGEy)
 
 ### Установка / быстрый старт
 
@@ -23,6 +23,8 @@
 Решение некоторых проблем при установке под Mac: [docs/INSTALL_MAC.md](/docs/INSTALL_MAC.md)
 
 Принципы отладки при проблемах при установке: [docs/INSTALL_DEBUG.md](/docs/INSTALL_DEBUG.md)
+
+Баги можно писать в ISSUES, обсуждать - [в Телеграм](https://t.me/+gagUw1bCcYFkMGEy)
 
 ### Общая логика
 
