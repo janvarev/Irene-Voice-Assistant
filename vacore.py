@@ -9,7 +9,7 @@ import soundfile as sound_file
 
 from jaa import JaaCore
 
-version = "4.2"
+version = "4.3"
 
 # main VACore class
 
@@ -39,6 +39,7 @@ class VACore(JaaCore):
         self.voiceAssNames = []
 
         self.ttsEngineId = ""
+        self.ttsEngineId2 = ""
 
         self.logPolicy = ""
         self.tmpdir = "temp"
@@ -98,6 +99,11 @@ class VACore(JaaCore):
 
     def setup_assistant_voice(self):
         self.ttss[self.ttsEngineId][0](self)
+        if self.ttsEngineId2 == "":
+            self.ttsEngineId2 = self.ttsEngineId
+
+        if self.ttsEngineId2 != self.ttsEngineId:
+            self.ttss[self.ttsEngineId2][0](self)
 
     def play_voice_assistant_speech(self,text_to_speech:str):
         self.lastSay = text_to_speech
@@ -139,9 +145,27 @@ class VACore(JaaCore):
     def say(self,text_to_speech:str): # alias for play_voice_assistant_speech
         self.play_voice_assistant_speech(text_to_speech)
 
+    def say2(self,text_to_speech:str): # озвучивает через второй движок
+        if self.ttss[self.ttsEngineId2][1] != None:
+            self.ttss[self.ttsEngineId2][1](self,text_to_speech)
+        else:
+            tempfilename = self.get_tempfilename()+".wav"
+            #print('Temp TTS filename: ', tempfilename)
+            self.tts_to_filewav2(text_to_speech,tempfilename)
+            self.play_wav(tempfilename)
+            if os.path.exists(tempfilename):
+                os.unlink(tempfilename)
+
+
     def tts_to_filewav(self,text_to_speech:str,filename:str):
         if len(self.ttss[self.ttsEngineId]) > 2:
             self.ttss[self.ttsEngineId][2](self,text_to_speech,filename)
+        else:
+            print("File save not supported by this TTS")
+
+    def tts_to_filewav2(self,text_to_speech:str,filename:str): # через второй движок
+        if len(self.ttss[self.ttsEngineId2]) > 2:
+            self.ttss[self.ttsEngineId2][2](self,text_to_speech,filename)
         else:
             print("File save not supported by this TTS")
 

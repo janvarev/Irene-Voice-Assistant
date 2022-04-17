@@ -54,6 +54,9 @@ def init(core:VACore):
 
 
 def towavfile(core:VACore, text_to_speech:str, wavfile:str):
+    text_to_speech = text_to_speech.replace("…","...") 
+
+
     options = core.plugin_options(modname)
     speaker = options["speaker"]
 

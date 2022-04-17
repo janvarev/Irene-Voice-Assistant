@@ -7,7 +7,7 @@ from vacore import VACore
 def start(core:VACore):
     manifest = {
         "name": "Core plugin",
-        "version": "2.0",
+        "version": "2.1",
 
         "default_options": {
             "mpcIsUse": True,
@@ -17,6 +17,7 @@ def start(core:VACore):
             "isOnline": False,
             #"ttsIndex": 0,
             "ttsEngineId": "pyttsx",
+            "ttsEngineId2": "", # двиг для прямой озвучки на сервере. Если пуст - используется ttsEngineId
             "voiceAssNames": "ирина|ирины|ирину",
             "logPolicy": "cmd", # all | cmd | none
 
@@ -42,6 +43,7 @@ def start_with_options(core:VACore, manifest:dict):
 
     core.voiceAssNames = options["voiceAssNames"].split("|")
     core.ttsEngineId = options["ttsEngineId"]
+    core.ttsEngineId2 = options["ttsEngineId2"]
     core.logPolicy = options["logPolicy"]
 
     core.tmpdir = options["tempDir"]
