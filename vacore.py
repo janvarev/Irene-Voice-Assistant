@@ -4,12 +4,9 @@ import traceback
 import time
 from threading import Timer
 
-import sounddevice as sound_device
-import soundfile as sound_file
-
 from jaa import JaaCore
 
-version = "4.3"
+version = "5.0"
 
 # main VACore class
 
@@ -28,6 +25,9 @@ class VACore(JaaCore):
         self.ttss = {
         }
 
+        self.playwavs = {
+        }
+
         # more options
         self.mpcHcPath = ""
         self.mpcIsUse = False
@@ -40,6 +40,7 @@ class VACore(JaaCore):
 
         self.ttsEngineId = ""
         self.ttsEngineId2 = ""
+        self.playWavEngineId = ""
 
         self.logPolicy = ""
         self.tmpdir = "temp"
@@ -65,6 +66,7 @@ class VACore(JaaCore):
         else:
             print("VoiceAssistantCore v{0}: run OFFLINE".format(version))
         print("TTS engines: ",self.ttss.keys())
+        print("PlayWav engines: ",self.playwavs.keys())
         print("Commands list: ",self.commands.keys())
         print("Assistant names: ",self.voiceAssNames)
 
@@ -92,16 +94,26 @@ class VACore(JaaCore):
             for cmd in manifest["tts"].keys():
                 self.ttss[cmd] = manifest["tts"][cmd]
 
+        # adding playwav engines from plugin manifest
+        if "playwav" in manifest: # process commands
+            for cmd in manifest["playwav"].keys():
+                self.playwavs[cmd] = manifest["playwav"][cmd]
+
     def stub_online_required(self,core,phrase):
         self.play_voice_assistant_speech(self.plugin_options("core")["replyOnlineRequired"])
 
     # ----------- text-to-speech functions ------
 
     def setup_assistant_voice(self):
+        # init playwav engine
+        self.playwavs[self.playWavEngineId][0](self)
+
+        # init tts engine
         self.ttss[self.ttsEngineId][0](self)
+
+        # init tts2 engine
         if self.ttsEngineId2 == "":
             self.ttsEngineId2 = self.ttsEngineId
-
         if self.ttsEngineId2 != self.ttsEngineId:
             self.ttss[self.ttsEngineId2][0](self)
 
@@ -273,14 +285,8 @@ class VACore(JaaCore):
 
     # ------- play wav from subfolder ----------
     def play_wav(self,wavfile):
-        filename = os.path.dirname(__file__)+"/"+wavfile
+        self.playwavs[self.playWavEngineId][1](self,wavfile)
 
-        #filename = 'timer/Sounds/Loud beep.wav'
-        # now, Extract the data and sampling rate from file
-        data_set, fsample = sound_file.read(filename, dtype = 'float32')
-        sound_device.play(data_set, fsample)
-        # Wait until file is done playing
-        status = sound_device.wait()
 
     # -------- raw txt running -----------------
     def run_input_str(self,voice_input_str,func_before_run_cmd = None): # voice_input_str - строка распознавания голоса, разделенная пробелами
