@@ -2,7 +2,7 @@ Irene - russian offline voice assistant
 
 MIT License
 
-Copyright (c) 2021 Vladislav Janvarev
+Copyright (c) 2021-2022 Vladislav Janvarev
 Copyright (c) 2020 EnjiRouz
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -54,4 +54,7 @@ timer.wav:
 - licensed under Creative Commons 0 License
 - URL: https://freesound.org/people/AlphaDarkWolf/sounds/591109/
 
+MycroftAI/lingua-franca:
+- licensed under Apache License 2.0
+- URL: https://github.com/MycroftAI/lingua-franca
 

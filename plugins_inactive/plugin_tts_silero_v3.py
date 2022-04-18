@@ -1,7 +1,7 @@
 # TTS plugin for silero engine
 # author: Vladislav Janvarev
 
-# require torch 1.8+
+# require torch 1.10+
 
 import os
 
@@ -13,13 +13,15 @@ modname = os.path.basename(__file__)[:-3] # calculating modname
 def start(core:VACore):
     manifest = {
         "name": "TTS silero V3",
-        "version": "1.1",
+        "version": "1.2",
         "require_online": False,
 
         "default_options": {
             "speaker": "xenia",
             "threads": 4,
             "sample_rate": 24000,
+            "put_accent": True,
+            "put_yo": True,
         },
 
         "tts": {
@@ -54,7 +56,9 @@ def init(core:VACore):
 
 
 def towavfile(core:VACore, text_to_speech:str, wavfile:str):
-    text_to_speech = text_to_speech.replace("…","...") 
+    text_to_speech = text_to_speech.replace("…","...")
+    text_to_speech = core.all_num_to_text(text_to_speech)
+    #print(text_to_speech)
 
 
     options = core.plugin_options(modname)
@@ -62,10 +66,10 @@ def towavfile(core:VACore, text_to_speech:str, wavfile:str):
 
     # рендерим wav
     path = core.model.save_wav(text=text_to_speech,
-                                speaker=speaker,
-                                put_accent=True,
-                                put_yo=True,
-                                sample_rate=options["sample_rate"])
+                               speaker=speaker,
+                               put_accent=options["put_accent"],
+                               put_yo=options["put_yo"],
+                               sample_rate=options["sample_rate"])
 
     # перемещаем wav на новое место
     if os.path.exists(wavfile):

@@ -6,7 +6,7 @@ from threading import Timer
 
 from jaa import JaaCore
 
-version = "5.0"
+version = "5.1"
 
 # main VACore class
 
@@ -184,6 +184,10 @@ class VACore(JaaCore):
     def get_tempfilename(self):
         self.tmpcnt += 1
         return self.tmpdir+"/vacore_"+str(self.tmpcnt)
+
+    def all_num_to_text(self,text:str):
+        from utils.all_num_to_text import all_num_to_text
+        return all_num_to_text(text)
 
     # -------- main function ----------
 

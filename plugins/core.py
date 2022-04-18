@@ -7,7 +7,7 @@ from vacore import VACore
 def start(core:VACore):
     manifest = {
         "name": "Core plugin",
-        "version": "2.2",
+        "version": "2.3",
 
         "default_options": {
             "mpcIsUse": True,
@@ -19,6 +19,7 @@ def start(core:VACore):
             "ttsEngineId": "pyttsx",
             "ttsEngineId2": "", # двиг для прямой озвучки на сервере. Если пуст - используется ttsEngineId
             "playWavEngineId": "audioplayer",
+            "linguaFrancaLang": "ru", # язык для библиотеки lingua-franca конвертирования чисел
             "voiceAssNames": "ирина|ирины|ирину",
             "logPolicy": "cmd", # all | cmd | none
 
@@ -53,7 +54,8 @@ def start_with_options(core:VACore, manifest:dict):
     if not os.path.exists(core.tmpdir):
         os.mkdir(core.tmpdir)
 
-
+    import lingua_franca
+    lingua_franca.load_language(options["linguaFrancaLang"])
 
 
     return manifest
