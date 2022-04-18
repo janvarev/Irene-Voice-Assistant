@@ -8,3 +8,4 @@ pyautogui
 requests
 numpy
 audioplayer
+python-dateutil~=2.6.0
