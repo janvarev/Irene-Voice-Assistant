@@ -27,6 +27,9 @@
 
 Принципы отладки при проблемах при установке: [docs/INSTALL_DEBUG.md](/docs/INSTALL_DEBUG.md)
 
+Если хотите ключевые компоненты запустить через Докер и
+не хотите разбираться с зависимостями: [docs/INSTALL_DOCKER.md](/docs/INSTALL_DOCKER.md)
+
 Баги можно писать в ISSUES, обсуждать - [в Телеграм](https://t.me/+gagUw1bCcYFkMGEy)
 
 ### Общая логика
