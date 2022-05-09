@@ -118,7 +118,12 @@ pip install rhvoice-wrapper-bin --only-binary rhvoice-wrapper-bin
 ```
 Для Linux, и если не работает rhvoice-wrapper-bin - посмотрите источник https://github.com/Aculeasis/rhvoice-wrapper-bin
 
-Доп информация по установке rhvoice-wrapper: https://libraries.io/pypi/rhvoice-wrapper 
+Доп информация по установке rhvoice-wrapper: https://libraries.io/pypi/rhvoice-wrapper
+
+**Важно:** если соберетесь использовать, переключите настройку в core.json:
+`"playWavEngineId": "sounddevice",`
+потому что через audioplayer не проигрывает WAV по неизвестным причинам.
+ 
 
 **plugin_tts_rhvoice_rest.py** - (оффлайн) TTS через RHVoice.
 Использует докер-сервер https://github.com/Aculeasis/rhvoice-rest для
