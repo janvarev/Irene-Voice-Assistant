@@ -120,5 +120,14 @@ pip install rhvoice-wrapper-bin --only-binary rhvoice-wrapper-bin
 
 Доп информация по установке rhvoice-wrapper: https://libraries.io/pypi/rhvoice-wrapper 
 
+**plugin_tts_rhvoice_rest.py** - (оффлайн) TTS через RHVoice.
+Использует докер-сервер https://github.com/Aculeasis/rhvoice-rest для
+генерации голоса. Зайдите туда и запустите нужный вам докер.
+
+Голос и адрес докера задается в конфиге.
+
+_(По неизвестным причинам плохо генерирует WAV. 
+Поэтому используется генерация MP3. Учтите, если будете использовать)_
+
 
 
