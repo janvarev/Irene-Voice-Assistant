@@ -106,6 +106,27 @@ https://github.com/timhok/IreneVA-hassio-script-trigger-plugin
 
 [Подробнее про настройку клиент-серверного режима](/docs/INSTALL_MULTI.md)
 
+## Speech-to-Text через VOSK remote
+
+Если у вас проблемы с установкой VOSK (например, на Mac), то вы можете воспользоваться 
+работой через VOSK Auto Speech Recognition Server, который запускается через Докер.
+
+- Запустите `docker run -d -p 2700:2700 alphacep/kaldi-ru:latest` 
+(детали: https://alphacephei.com/vosk/server )
+  - или как вариант, вы можете запустить `vosk_asr_server.py`, переопределив внутри параметры
+
+```python
+    args.interface = os.environ.get('VOSK_SERVER_INTERFACE', "0.0.0.0")
+    args.port = int(os.environ.get('VOSK_SERVER_PORT', 2700)
+```  
+
+- Запустите `runva_voskrem.py`. Он будет читать данные с микрофона и отправлять на сервер 
+для распознавания.
+
+В случае, если надо запустить распознавание на другой машине -
+используйте параметр -u (--uri): `runva_voskrem.py -u=ws://100.100.100.100:2700` 
+для уточения адреса сервера.
+
 ## Speech-to-Text через SpeechRecognition
 
 SpeechRecognition - классический движок для запуска распознавания через Google и ряд других сервисов.
