@@ -33,6 +33,5 @@ _(По неизвестным причинам плохо генерирует W
 Поэтому используется генерация MP3. Учтите, если будете использовать)_
 
 Установка:
-- скопируйте plugin_tts_rhvoice_rest из plugins_inactive в plugins
 - запустите Ирину хотя бы раз
 - установите в options/core.json `"ttsEngineId": "rhvoice_rest"`
