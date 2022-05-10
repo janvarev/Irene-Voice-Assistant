@@ -19,7 +19,16 @@ core.ttsEngine.setProperty("voice", "russian") либо найти нужный 
 
 Тогда звук будет идти через espeak-ng, и говорят, он не очень на русском.
 
-**2 вариант. Поставить TTS rhvoice**
+**2 вариант. Поставить TTS rhvoice_rest и запустить Докер для rhvoice_rest**
+
+Прстой вариант, чтобы не париться с зависимостями.
+1. Установите в options/core.json "ttsEngineId": "rhvoice_rest"
+2. Использует докер-сервер https://github.com/Aculeasis/rhvoice-rest для
+   генерации голоса. Зайдите туда и запустите нужный вам докер.
+
+
+
+**3 вариант. Поставить TTS rhvoice**
 
 1. Скопируйте plugin_tts_rhvoice из plugins_active в plugins
 2. Установите в options/core.json "ttsEngineId": "rhvoice"
@@ -33,4 +42,10 @@ pip3 install scons lxml
 ```
  
 Проблемы обсуждались в этой ветке комментариев: https://habr.com/ru/post/595855/#comment_24043171
+
+**Важно:** если соберетесь использовать rhvoice, переключите настройку в core.json:
+`"playWavEngineId": "sounddevice",`
+потому что через audioplayer не проигрывает WAV по неизвестным причинам.
+
+
 
