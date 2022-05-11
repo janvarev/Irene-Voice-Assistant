@@ -1,5 +1,6 @@
 import os
 import traceback
+import hashlib
 
 import time
 from threading import Timer
@@ -38,6 +39,8 @@ class VACore(JaaCore):
 
         self.voiceAssNames = []
 
+        self.useTTSCache = False
+        self.tts_cache_dir = "tts_cache"
         self.ttsEngineId = ""
         self.ttsEngineId2 = ""
         self.playWavEngineId = ""
@@ -128,28 +131,38 @@ class VACore(JaaCore):
             if self.ttss[self.ttsEngineId][1] != None:
                 self.ttss[self.ttsEngineId][1](self,text_to_speech)
             else:
-                tempfilename = self.get_tempfilename()+".wav"
-                #print('Temp TTS filename: ', tempfilename)
-                self.tts_to_filewav(text_to_speech,tempfilename)
-                self.play_wav(tempfilename)
-                if os.path.exists(tempfilename):
-                    os.unlink(tempfilename)
+                if self.useTTSCache:
+                    tts_file = self.get_tts_cache_file(text_to_speech)
+                else:
+                    tts_file = self.get_tempfilename()+".wav"
+
+                #print('Temp TTS filename: ', tts_file)
+                if not self.useTTSCache or self.useTTSCache and not os.path.exists(tts_file):
+                    self.tts_to_filewav(text_to_speech, tts_file)
+
+                self.play_wav(tts_file)
+                if not self.useTTSCache and os.path.exists(tts_file):
+                    os.unlink(tts_file)
 
         if "saytxt" in remoteTTSList: # return only last say txt
             self.remoteTTSResult["restxt"] = text_to_speech
 
         if "saywav" in remoteTTSList:
-            tempfilename = self.get_tempfilename()+".wav"
+            if self.useTTSCache:
+                tts_file = self.get_tts_cache_file(text_to_speech)
+            else:
+                tts_file = self.get_tempfilename()+".wav"
 
-            self.tts_to_filewav(text_to_speech,tempfilename)
-            #self.play_wav(tempfilename)
+            if not self.useTTSCache or self.useTTSCache and not os.path.exists(tts_file):
+                self.tts_to_filewav(text_to_speech, tts_file)
+            #self.play_wav(tts_file)
             import base64
 
-            with open(tempfilename, "rb") as wav_file:
+            with open(tts_file, "rb") as wav_file:
                 encoded_string = base64.b64encode(wav_file.read())
 
-            if os.path.exists(tempfilename):
-                os.unlink(tempfilename)
+            if not self.useTTSCache and os.path.exists(tts_file):
+                os.unlink(tts_file)
 
             self.remoteTTSResult = {"wav_base64":encoded_string}
 
@@ -184,6 +197,12 @@ class VACore(JaaCore):
     def get_tempfilename(self):
         self.tmpcnt += 1
         return self.tmpdir+"/vacore_"+str(self.tmpcnt)
+
+    def get_tts_cache_file(self, text_to_speech:str):
+        hash = hashlib.md5(text_to_speech.encode('utf-8')).hexdigest()
+        text_slice = text_to_speech[:80]
+        filename = ".".join([text_slice, hash, "wav"])
+        return self.tts_cache_dir+"/"+filename
 
     def all_num_to_text(self,text:str):
         from utils.all_num_to_text import all_num_to_text
