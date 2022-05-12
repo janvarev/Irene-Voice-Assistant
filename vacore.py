@@ -22,6 +22,9 @@ class VACore(JaaCore):
         self.commands = {
         }
 
+        self.plugin_commands = {
+        }
+
         self.ttss = {
         }
 
@@ -61,14 +64,7 @@ class VACore(JaaCore):
 
     def init_with_plugins(self):
         self.init_plugins(["core"])
-        if self.isOnline:
-            print("VoiceAssistantCore v{0}: run online".format(version))
-        else:
-            print("VoiceAssistantCore v{0}: run OFFLINE".format(version))
-        print("TTS engines: ",self.ttss.keys())
-        print("PlayWav engines: ",self.playwavs.keys())
-        print("Commands list: ",self.commands.keys())
-        print("Assistant names: ",self.voiceAssNames)
+        self.display_init_info()
 
         self.setup_assistant_voice()
 
@@ -88,6 +84,11 @@ class VACore(JaaCore):
                 else:
                     # normal add command
                     self.commands[cmd] = manifest["commands"][cmd]
+
+                if modname in self.plugin_commands:
+                    self.plugin_commands[modname].append(cmd)
+                else:
+                    self.plugin_commands[modname] = [cmd]
 
         # adding tts engines from plugin manifest
         if "tts" in manifest: # process commands
@@ -371,4 +372,21 @@ class VACore(JaaCore):
             self.contextTimer.cancel()
             self.contextTimer = None
 
+    # ----------- display info functions ------
 
+    def display_init_info(self):
+        if self.isOnline:
+            print("VoiceAssistantCore v{0}: run online".format(version))
+        else:
+            print("VoiceAssistantCore v{0}: run OFFLINE".format(version))
+
+        self.format_print_key_list("TTS engines", self.ttss.keys())
+        self.format_print_key_list("Assistant names", self.voiceAssNames)
+
+        print("\033[34m{}\033[00m".format("Commands list: "+"#"*65))
+        for plugin in self.plugin_commands:
+            self.format_print_key_list(plugin, self.plugin_commands[plugin])
+        print("\033[34m{}\033[00m".format("#"*80))
+
+    def format_print_key_list(self, key:str, value:list):
+        print("\033[34m{}: \033[00m".format(key)+", ".join(value))
