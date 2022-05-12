@@ -74,6 +74,13 @@ async def sendRawTxt(rawtxt:str,returnFormat:str = "none"):
     else:
         return "NO_VA_NAME"
 
+# Обновляет контекст на то же самое время
+@app.get("/reinitContext")
+async def reinitContext():
+    if core.contextTimer != None:
+        core.context_set(core.context,core.contextTimerLastDuration)
+    return ""
+
 # Запускает внутреннюю процедуру проверки таймеров. Должна запускаться периодически
 @app.get("/updTimers")
 async def updTimers():
