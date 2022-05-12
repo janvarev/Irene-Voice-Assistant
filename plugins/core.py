@@ -59,6 +59,10 @@ def start_with_options(core:VACore, manifest:dict):
     core.tts_cache_dir = "tts_cache"
     if not os.path.exists(core.tts_cache_dir):
         os.mkdir(core.tts_cache_dir)
+    if not os.path.exists(core.tts_cache_dir+"/"+core.ttsEngineId):
+        os.mkdir(core.tts_cache_dir+"/"+core.ttsEngineId)
+
+
 
     import lingua_franca
     lingua_franca.load_language(options["linguaFrancaLang"])

@@ -7,7 +7,7 @@ from threading import Timer
 
 from jaa import JaaCore
 
-version = "5.3"
+version = "5.4"
 
 # main VACore class
 
@@ -202,8 +202,8 @@ class VACore(JaaCore):
     def get_tts_cache_file(self, text_to_speech:str):
         hash = hashlib.md5(text_to_speech.encode('utf-8')).hexdigest()
         text_slice = text_to_speech[:40]
-        filename = ".".join([self.ttsEngineId,text_slice, hash, "wav"])
-        return self.tts_cache_dir+"/"+filename
+        filename = ".".join([text_slice, hash, "wav"])
+        return self.tts_cache_dir+"/"+self.ttsEngineId+"/"+filename
 
     def all_num_to_text(self,text:str):
         from utils.all_num_to_text import all_num_to_text
