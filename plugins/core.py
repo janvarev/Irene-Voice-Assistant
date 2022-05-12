@@ -16,6 +16,7 @@ def start(core:VACore):
 
             "isOnline": False,
             #"ttsIndex": 0,
+            "useTTSCache": False,
             "ttsEngineId": "pyttsx",
             "ttsEngineId2": "", # двиг для прямой озвучки на сервере. Если пуст - используется ttsEngineId
             "playWavEngineId": "audioplayer",
@@ -53,6 +54,11 @@ def start_with_options(core:VACore, manifest:dict):
     import os
     if not os.path.exists(core.tmpdir):
         os.mkdir(core.tmpdir)
+
+    core.useTTSCache = options["useTTSCache"]
+    core.tts_cache_dir = "tts_cache"
+    if not os.path.exists(core.tts_cache_dir):
+        os.mkdir(core.tts_cache_dir)
 
     import lingua_franca
     lingua_franca.load_language(options["linguaFrancaLang"])
