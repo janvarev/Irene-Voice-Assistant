@@ -7,7 +7,7 @@ from vacore import VACore
 def start(core:VACore):
     manifest = {
         "name": "Core plugin",
-        "version": "2.3",
+        "version": "2.4",
 
         "default_options": {
             "mpcIsUse": True,

@@ -201,8 +201,8 @@ class VACore(JaaCore):
 
     def get_tts_cache_file(self, text_to_speech:str):
         hash = hashlib.md5(text_to_speech.encode('utf-8')).hexdigest()
-        text_slice = text_to_speech[:80]
-        filename = ".".join([text_slice, hash, "wav"])
+        text_slice = text_to_speech[:40]
+        filename = ".".join([self.ttsEngineId,text_slice, hash, "wav"])
         return self.tts_cache_dir+"/"+filename
 
     def all_num_to_text(self,text:str):

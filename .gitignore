@@ -10,3 +10,4 @@
 /venv/
 /.venv/
 *.pyc
+/tts_cache/
