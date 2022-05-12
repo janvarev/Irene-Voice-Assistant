@@ -74,6 +74,13 @@ async def sendRawTxt(rawtxt:str,returnFormat:str = "none"):
     else:
         return "NO_VA_NAME"
 
+
+# Сообщает серверу, что клиент воспроизвёл ответ и можно начать отсчёт таймера контекста
+@app.get("/replyWasGiven")
+async def replyWasGiven():
+    core.context_start_timer()
+
+
 # Запускает внутреннюю процедуру проверки таймеров. Должна запускаться периодически
 @app.get("/updTimers")
 async def updTimers():

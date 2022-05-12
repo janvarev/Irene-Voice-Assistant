@@ -377,7 +377,14 @@ class VACore(JaaCore):
         self.context = context
         self.contextTimerLastDuration = duration
         self.contextTimer = Timer(duration,self._context_clear_timer)
-        self.contextTimer.start()
+
+        remoteTTSList = self.remoteTTS.split(",")
+        if "saytext" not in remoteTTSList and "saywav" not in remoteTTSList:
+            self.context_start_timer()
+
+    def context_start_timer(self):
+        if self.contextTimer is not None:
+            self.contextTimer.start()
 
     #def _timer_context
     def _context_clear_timer(self):
