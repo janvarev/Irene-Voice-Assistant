@@ -4,6 +4,7 @@ from fastapi import FastAPI, HTTPException
 import uvicorn
 from multiprocessing import Process
 from termcolor import cprint
+import json
 
 #from pydantic import BaseModel
 
@@ -13,13 +14,24 @@ import time
 
 # ------------------- main loop ------------------
 
-core = VACore()
-core.init_with_plugins()
-core.init_plugin("webapi")
-webapi_options = core.plugin_options("webapi")
-print("WEB api for VoiceAssistantCore (remote control)")
-# здесь двойная инициализация - на импорте, и на запуске сервера
-# не очень хорошо, но это нужно, чтобы получить webapi_options = core.plugin_options("webapi")
+webapi_options = None
+
+core = None
+
+try:
+    with open('options/webapi.json', 'r', encoding="utf-8") as f:
+        s = f.read(1000000)
+        f.close()
+    webapi_options = json.loads(s)
+except Exception as e:
+    core = VACore()
+    core.init_with_plugins()
+    core.init_plugin("webapi")
+    cprint("Настройки созданы; пожалуйста, перезапустите этот файл", "red")
+    exit(-1)
+
+
+
 
 """
 returnFormat Варианты:
@@ -40,6 +52,15 @@ def runCmd(cmd:str,returnFormat:str):
 
 app = FastAPI()
 is_running = True
+
+@app.on_event("startup")
+async def startup_event():
+    global core
+    core = VACore()
+    core.init_with_plugins()
+    core.init_plugin("webapi")
+    print("WEB api for VoiceAssistantCore (remote control)")
+
 
 # рендерит текст в wav
 @app.get("/ttsWav")
@@ -122,7 +143,12 @@ def app_shutdown():
     cprint("Ctrl-C pressed, exiting Irene.", "yellow")
     is_running = False
 
+
+
 if __name__ == "__main__":
+
+
+
     p = Process(target=core_update_timers_http, args=(False,))
     p.start()
     uvicorn.run("runva_webapi:app", host=webapi_options["host"], port=webapi_options["port"],
