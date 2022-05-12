@@ -395,10 +395,8 @@ class VACore(JaaCore):
     # ----------- display info functions ------
 
     def display_init_info(self):
-        if self.isOnline:
-            print("VoiceAssistantCore v{0}: run online".format(version))
-        else:
-            print("VoiceAssistantCore v{0}: run OFFLINE".format(version))
+        cprint("VoiceAssistantCore v{0}:".format(version), "blue", end=' ')
+        print("run ONLINE" if self.isOnline else "run OFFLINE")
 
         self.format_print_key_list("TTS engines", self.ttss.keys())
         self.format_print_key_list("Assistant names", self.voiceAssNames)
