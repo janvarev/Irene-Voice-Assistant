@@ -2,6 +2,7 @@ import os
 import traceback
 import hashlib
 
+from termcolor import colored, cprint
 import time
 from threading import Timer
 
@@ -394,18 +395,16 @@ class VACore(JaaCore):
     # ----------- display info functions ------
 
     def display_init_info(self):
-        if self.isOnline:
-            print("VoiceAssistantCore v{0}: run online".format(version))
-        else:
-            print("VoiceAssistantCore v{0}: run OFFLINE".format(version))
+        cprint("VoiceAssistantCore v{0}:".format(version), "blue", end=' ')
+        print("run ONLINE" if self.isOnline else "run OFFLINE")
 
         self.format_print_key_list("TTS engines", self.ttss.keys())
         self.format_print_key_list("Assistant names", self.voiceAssNames)
 
-        print("\033[34m{}\033[00m".format("Commands list: "+"#"*65))
+        cprint("Commands list: "+"#"*65, "blue")
         for plugin in self.plugin_commands:
             self.format_print_key_list(plugin, self.plugin_commands[plugin])
-        print("\033[34m{}\033[00m".format("#"*80))
+        cprint("#"*80, "blue")
 
     def format_print_key_list(self, key:str, value:list):
-        print("\033[34m{}: \033[00m".format(key)+", ".join(value))
+        print(colored(key+": ", "blue")+", ".join(value))

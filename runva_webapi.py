@@ -3,6 +3,7 @@
 from fastapi import FastAPI, HTTPException
 import uvicorn
 from multiprocessing import Process
+from termcolor import cprint
 
 #from pydantic import BaseModel
 
@@ -110,7 +111,7 @@ def core_update_timers_http(runReq=True):
 @app.on_event("shutdown")
 def app_shutdown():
     global is_running
-    print("\033[93m{}\033[00m" .format("Ctrl-C pressed, exiting Irene."))
+    cprint("Ctrl-C pressed, exiting Irene.", "yellow")
     is_running = False
 
 if __name__ == "__main__":
