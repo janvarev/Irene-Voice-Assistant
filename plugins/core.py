@@ -7,7 +7,7 @@ from vacore import VACore
 def start(core:VACore):
     manifest = {
         "name": "Core plugin",
-        "version": "2.4",
+        "version": "2.6",
 
         "default_options": {
             "mpcIsUse": True,
@@ -27,6 +27,9 @@ def start(core:VACore):
             "replyNoCommandFound": "Извини, я не поняла",
             "replyNoCommandFoundInContext": "Не поняла...",
             "replyOnlineRequired": "Для этой команды необходим онлайн",
+
+            "contextDefaultDuration": 10,
+            "contextRemoteWaitForCall": False,
 
             "tempDir": "temp",
         },
@@ -49,6 +52,9 @@ def start_with_options(core:VACore, manifest:dict):
     core.ttsEngineId2 = options["ttsEngineId2"]
     core.playWavEngineId = options["playWavEngineId"]
     core.logPolicy = options["logPolicy"]
+
+    core.contextDefaultDuration = options["contextDefaultDuration"]
+    core.contextRemoteWaitForCall = options["contextRemoteWaitForCall"]
 
     core.tmpdir = options["tempDir"]
     import os

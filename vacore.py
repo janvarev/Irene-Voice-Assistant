@@ -7,7 +7,7 @@ from threading import Timer
 
 from jaa import JaaCore
 
-version = "5.4"
+version = "5.5"
 
 # main VACore class
 
@@ -59,6 +59,9 @@ class VACore(JaaCore):
         self.context = None
         self.contextTimer = None
         self.contextTimerLastDuration = 0
+
+        self.contextDefaultDuration = 10
+        self.contextRemoteWaitForCall = False
 
         import mpcapi.core
         self.mpchc = mpcapi.core.MpcAPI()
@@ -370,14 +373,21 @@ class VACore(JaaCore):
 
     def context_set(self,context,duration = None):
         if duration == None:
-            duration = 10
+            duration = self.contextDefaultDuration
 
         self.context_clear()
 
         self.context = context
         self.contextTimerLastDuration = duration
         self.contextTimer = Timer(duration,self._context_clear_timer)
-        self.contextTimer.start()
+
+        remoteTTSList = self.remoteTTS.split(",")
+        if self.contextRemoteWaitForCall and ("saytxt" in remoteTTSList or "saywav" in remoteTTSList):
+            pass # wait for run context timer
+        else:
+            self.contextTimer.start()
+
+
 
     #def _timer_context
     def _context_clear_timer(self):

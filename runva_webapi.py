@@ -89,6 +89,14 @@ async def updTimers():
     core._update_timers()
     return ""
 
+# Сообщает серверу, что клиент воспроизвёл ответ и можно начать отсчёт таймера контекста
+@app.get("/replyWasGiven")
+async def replyWasGiven():
+    if core.contextRemoteWaitForCall:
+        if core.contextTimer != None:
+            core.contextTimer.start()
+            print("run context after webapi call")
+
 def core_update_timers_http(runReq=True):
     if not is_running:
         return
