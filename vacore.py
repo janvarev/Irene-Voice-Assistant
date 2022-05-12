@@ -1,5 +1,6 @@
 import os
 import traceback
+import hashlib
 
 import time
 from threading import Timer
@@ -22,6 +23,9 @@ class VACore(JaaCore):
         self.commands = {
         }
 
+        self.plugin_commands = {
+        }
+
         self.ttss = {
         }
 
@@ -38,6 +42,8 @@ class VACore(JaaCore):
 
         self.voiceAssNames = []
 
+        self.useTTSCache = False
+        self.tts_cache_dir = "tts_cache"
         self.ttsEngineId = ""
         self.ttsEngineId2 = ""
         self.playWavEngineId = ""
@@ -61,14 +67,7 @@ class VACore(JaaCore):
 
     def init_with_plugins(self):
         self.init_plugins(["core"])
-        if self.isOnline:
-            print("VoiceAssistantCore v{0}: run online".format(version))
-        else:
-            print("VoiceAssistantCore v{0}: run OFFLINE".format(version))
-        print("TTS engines: ",self.ttss.keys())
-        print("PlayWav engines: ",self.playwavs.keys())
-        print("Commands list: ",self.commands.keys())
-        print("Assistant names: ",self.voiceAssNames)
+        self.display_init_info()
 
         self.setup_assistant_voice()
 
@@ -88,6 +87,11 @@ class VACore(JaaCore):
                 else:
                     # normal add command
                     self.commands[cmd] = manifest["commands"][cmd]
+
+                if modname in self.plugin_commands:
+                    self.plugin_commands[modname].append(cmd)
+                else:
+                    self.plugin_commands[modname] = [cmd]
 
         # adding tts engines from plugin manifest
         if "tts" in manifest: # process commands
@@ -128,28 +132,38 @@ class VACore(JaaCore):
             if self.ttss[self.ttsEngineId][1] != None:
                 self.ttss[self.ttsEngineId][1](self,text_to_speech)
             else:
-                tempfilename = self.get_tempfilename()+".wav"
-                #print('Temp TTS filename: ', tempfilename)
-                self.tts_to_filewav(text_to_speech,tempfilename)
-                self.play_wav(tempfilename)
-                if os.path.exists(tempfilename):
-                    os.unlink(tempfilename)
+                if self.useTTSCache:
+                    tts_file = self.get_tts_cache_file(text_to_speech)
+                else:
+                    tts_file = self.get_tempfilename()+".wav"
+
+                #print('Temp TTS filename: ', tts_file)
+                if not self.useTTSCache or self.useTTSCache and not os.path.exists(tts_file):
+                    self.tts_to_filewav(text_to_speech, tts_file)
+
+                self.play_wav(tts_file)
+                if not self.useTTSCache and os.path.exists(tts_file):
+                    os.unlink(tts_file)
 
         if "saytxt" in remoteTTSList: # return only last say txt
             self.remoteTTSResult["restxt"] = text_to_speech
 
         if "saywav" in remoteTTSList:
-            tempfilename = self.get_tempfilename()+".wav"
+            if self.useTTSCache:
+                tts_file = self.get_tts_cache_file(text_to_speech)
+            else:
+                tts_file = self.get_tempfilename()+".wav"
 
-            self.tts_to_filewav(text_to_speech,tempfilename)
-            #self.play_wav(tempfilename)
+            if not self.useTTSCache or self.useTTSCache and not os.path.exists(tts_file):
+                self.tts_to_filewav(text_to_speech, tts_file)
+            #self.play_wav(tts_file)
             import base64
 
-            with open(tempfilename, "rb") as wav_file:
+            with open(tts_file, "rb") as wav_file:
                 encoded_string = base64.b64encode(wav_file.read())
 
-            if os.path.exists(tempfilename):
-                os.unlink(tempfilename)
+            if not self.useTTSCache and os.path.exists(tts_file):
+                os.unlink(tts_file)
 
             self.remoteTTSResult = {"wav_base64":encoded_string}
 
@@ -184,6 +198,12 @@ class VACore(JaaCore):
     def get_tempfilename(self):
         self.tmpcnt += 1
         return self.tmpdir+"/vacore_"+str(self.tmpcnt)
+
+    def get_tts_cache_file(self, text_to_speech:str):
+        hash = hashlib.md5(text_to_speech.encode('utf-8')).hexdigest()
+        text_slice = text_to_speech[:80]
+        filename = ".".join([text_slice, hash, "wav"])
+        return self.tts_cache_dir+"/"+filename
 
     def all_num_to_text(self,text:str):
         from utils.all_num_to_text import all_num_to_text
@@ -371,4 +391,21 @@ class VACore(JaaCore):
             self.contextTimer.cancel()
             self.contextTimer = None
 
+    # ----------- display info functions ------
 
+    def display_init_info(self):
+        if self.isOnline:
+            print("VoiceAssistantCore v{0}: run online".format(version))
+        else:
+            print("VoiceAssistantCore v{0}: run OFFLINE".format(version))
+
+        self.format_print_key_list("TTS engines", self.ttss.keys())
+        self.format_print_key_list("Assistant names", self.voiceAssNames)
+
+        print("\033[34m{}\033[00m".format("Commands list: "+"#"*65))
+        for plugin in self.plugin_commands:
+            self.format_print_key_list(plugin, self.plugin_commands[plugin])
+        print("\033[34m{}\033[00m".format("#"*80))
+
+    def format_print_key_list(self, key:str, value:list):
+        print("\033[34m{}: \033[00m".format(key)+", ".join(value))

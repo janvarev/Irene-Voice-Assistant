@@ -80,6 +80,7 @@ https://github.com/timhok/IreneVA-hassio-script-trigger-plugin
     "mpcHcPath": "C:\\Program Files (x86)\\K-Lite Codec Pack\\MPC-HC64\\mpc-hc64_nvo.exe", # путь до MPC HC, если используете
     "mpcIsUse": true, # используется ли MPC HC?
     "mpcIsUseHttpRemote": true, # MPC HC - включено ли управление через веб-интерфейс?
+    "useTTSCache": false, # при установке true в папке tts_cache будет кэшировать .wav файлы со сгенерированными TTS-движком ответами
     "ttsEngineId": "pyttsx", # используемый TTS-движок
     "v": "1.7", # версия плагина core. Обновляется автоматически, не трогайте
     "voiceAssNames": "ирина|ирины|ирину" # Если это появится в звуковом потоке, то дальше будет команда. (Различные имена помощника, рекомендуется несколько)
