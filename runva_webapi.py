@@ -2,14 +2,13 @@
 
 from fastapi import FastAPI, HTTPException
 import uvicorn
-
-
+from multiprocessing import Process
 
 #from pydantic import BaseModel
 
 
 from vacore import VACore
-#import time
+import time
 
 # ------------------- main loop ------------------
 
@@ -39,7 +38,7 @@ def runCmd(cmd:str,returnFormat:str):
     core.remoteTTS = tmpformat
 
 app = FastAPI()
-
+is_running = True
 
 # рендерит текст в wav
 @app.get("/ttsWav")
@@ -84,7 +83,9 @@ async def updTimers():
     return ""
 
 def core_update_timers_http(runReq=True):
-    from threading import Timer
+    if not is_running:
+        return
+
     if runReq:
         try:
             import requests
@@ -93,10 +94,20 @@ def core_update_timers_http(runReq=True):
             r = requests.get(reqstr)
         except Exception:
             pass
-    t = Timer(2, core_update_timers_http)
-    t.start()
+    try:
+        time.sleep(2)
+    except:
+        return
+    core_update_timers_http()
+
+@app.on_event("shutdown")
+def app_shutdown():
+    global is_running
+    print("\033[93m{}\033[00m" .format("Ctrl-C pressed, exiting Irene."))
+    is_running = False
 
 if __name__ == "__main__":
-    core_update_timers_http(False)
+    p = Process(target=core_update_timers_http, args=(False,))
+    p.start()
     uvicorn.run("runva_webapi:app", host=webapi_options["host"], port=webapi_options["port"],
                 log_level=webapi_options["log_level"])
