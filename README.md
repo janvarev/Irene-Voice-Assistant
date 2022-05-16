@@ -21,6 +21,8 @@
 
 **Папка с настройками options появится после первого запуска Ирины, в ней можно поправить настройки.**
 
+Более пошаговая инфа про установку на Win (в особенности Win 7): [docs/INSTALL_WIN.md](/docs/INSTALL_WIN.md)
+
 Решение некоторых проблем при установке под Linux: [docs/INSTALL_LINUX.md](/docs/INSTALL_LINUX.md)
 
 Решение некоторых проблем при установке под Mac: [docs/INSTALL_MAC.md](/docs/INSTALL_MAC.md)

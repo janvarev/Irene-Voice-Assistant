@@ -28,7 +28,7 @@ def start(core:VACore):
         },
 
         "commands": {
-            "таймер|тайгер": set_timer,
+            "поставь таймер|поставь тайгер|таймер|тайгер": set_timer,
         }
     }
     return manifest
