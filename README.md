@@ -6,7 +6,7 @@
 
 [Статья на Хабре](https://habr.com/ru/post/595855/) | [Вторая статья на Хабре](https://habr.com/ru/post/660715/) | [Группа в Телеграм](https://t.me/irene_va)
 
-# Подготовка окружения Windows
+### Подготовка окружения Windows
 
 Для установки на Windows 8 и выше нужно скачать и установить pyton с сайта  https://www.python.org/downloads/windows/
 
