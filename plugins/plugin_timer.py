@@ -28,7 +28,7 @@ def start(core:VACore):
         },
 
         "commands": {
-            "таймер|тайгер": set_timer,
+            "поставь таймер|поставь тайгер|таймер|тайгер": set_timer,
         }
     }
     return manifest
@@ -38,9 +38,9 @@ def start_with_options(core:VACore, manifest:dict):
 
 def set_timer(core:VACore, phrase:str):
     if phrase == "":
-        # таймер по умолчанию - на 5 минут
-        txt = num_to_text.num2text(5, female_units_min)
-        set_timer_real(core,5*60,txt)
+        # просит уточнить на сколько
+        core.say("Что после таймер?")
+        core.context_set(set_timer)
         return
 
     phrase += " "
@@ -81,7 +81,7 @@ def set_timer(core:VACore, phrase:str):
             set_timer_real(core,i*60,txt)
             return
 
-        txt3 = str(i) + " минут "
+        txt3 = str(i) + " минут|минуты "
         if phrase.startswith(txt3):
             #print(txt,txt2)
             set_timer_real(core,i*60,txt)
@@ -108,7 +108,7 @@ def set_timer(core:VACore, phrase:str):
         return
 
     # непонятно, но сохраняем контекст и переспрашиваем время
-    core.say("Что после таймер?")
+    core.say("На сколько поставить тАймер?")
     core.context_set(set_timer)
 
 def set_timer_real(core:VACore, num:int, txt:str):
