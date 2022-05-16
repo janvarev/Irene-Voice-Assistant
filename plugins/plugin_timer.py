@@ -39,7 +39,7 @@ def start_with_options(core:VACore, manifest:dict):
 def set_timer(core:VACore, phrase:str):
     if phrase == "":
         # просит уточнить на сколько
-        core.say("Что после таймер?")
+        core.say("На сколько?")
         core.context_set(set_timer)
         return
 
