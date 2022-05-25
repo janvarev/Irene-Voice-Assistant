@@ -132,9 +132,12 @@ def core_update_timers_http(runReq=True):
     if runReq:
         try:
             import requests
-            reqstr = "http://{0}:{1}/updTimers".format(webapi_options["host"],webapi_options["port"])
+            if webapi_options["use_ssl"]:
+                reqstr = "https://{0}:{1}/updTimers".format(webapi_options["host"],webapi_options["port"])
+            else:
+                reqstr = "http://{0}:{1}/updTimers".format(webapi_options["host"],webapi_options["port"])
             #print(reqstr)
-            r = requests.get(reqstr)
+            r = requests.get(reqstr,verify=False)
         except Exception:
             pass
     try:
