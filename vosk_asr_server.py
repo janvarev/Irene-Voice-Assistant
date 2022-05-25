@@ -24,11 +24,18 @@ with open('options/webapi.json', 'r', encoding="utf-8") as f:
 webapi_options = json.loads(s)
 
 def process_chunk(rec, message):
+    # with open('temp/asr_server_test.wav', 'wb') as the_file:
+    #     the_file.write(message)
+
     if message == '{"eof" : 1}':
         return rec.FinalResult(), True
     elif rec.AcceptWaveform(message):
-        return rec.Result(), False
+        res = rec.Result()
+        #print("Result:",res)
+        return res, False
     else:
+        res = rec.PartialResult()
+        #print("Part Result:",res)
         return rec.PartialResult(), False
 
 async def recognize(websocket, path):
@@ -102,7 +109,7 @@ async def start():
     args.port = int(os.environ.get('VOSK_SERVER_PORT', int(webapi_options["port"])+1))
     args.model_path = os.environ.get('VOSK_MODEL_PATH', 'model')
     args.spk_model_path = os.environ.get('VOSK_SPK_MODEL_PATH')
-    args.sample_rate = float(os.environ.get('VOSK_SAMPLE_RATE', 8000))
+    args.sample_rate = float(os.environ.get('VOSK_SAMPLE_RATE', 16000))
     args.max_alternatives = int(os.environ.get('VOSK_ALTERNATIVES', 0))
     args.show_words = bool(os.environ.get('VOSK_SHOW_WORDS', True))
 

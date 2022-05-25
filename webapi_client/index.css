@@ -1,0 +1,13 @@
+#wrapper {
+    max-width: 900px;
+    margin: auto;
+    padding: 1rem;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}
+
+#trigger {
+    align-self: flex-start;
+    margin: auto;
+}

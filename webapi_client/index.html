@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+        <meta charset="utf-8" />
+        <title>Irene WEB API Interface</title>
+        <script type="application/javascript" src="vosk.js"></script>
+        <script type="application/javascript" src="index.js"></script>
+        <link rel="stylesheet" href="index.css">
+    </head>
+    <body>
+		<h1>Irene WEB API Interface</h1>
+		Режим:&nbsp;<select id="irenemode">
+			  <option value="none">none</option>
+			  <option value="saytxt">saytxt</option>
+			  <option selected value="saywav">saywav</option>
+			  <option value="saytxt,saywav">saytxt,saywav</option>
+			  <option value="none,saytxt">none,saytxt</option>
+			  <option value="none,saywav">none,saywav</option>
+			  <option value="none,saytxt,saywav">none,saytxt,saywav</option>
+			</select>
+        <div>
+			<br />
+            <button id="trigger" type="button">Начать слушать</button>
+            <div><span id="recognition-result" style="color: #00aa00;"></span> <span id="partial" style="color: #666666;"></span></div>
+        </div>
+		<h2>Текстовый ответ</h2>
+		<div id="irene_answer" style="color: #aa0000;">...</div>
+        
+    </body>
+</html>

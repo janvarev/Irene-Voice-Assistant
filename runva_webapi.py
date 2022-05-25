@@ -53,6 +53,11 @@ def runCmd(cmd:str,returnFormat:str):
 app = FastAPI()
 is_running = True
 
+from starlette.routing import Mount
+from starlette.staticfiles import StaticFiles
+
+app.mount("/webapi_client", StaticFiles(directory="webapi_client", html = True), name="webapi_client")
+
 @app.on_event("startup")
 async def startup_event():
     global core

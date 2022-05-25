@@ -8,7 +8,7 @@ from threading import Timer
 
 from jaa import JaaCore
 
-version = "5.5"
+version = "6.0"
 
 # main VACore class
 
@@ -169,7 +169,7 @@ class VACore(JaaCore):
             if not self.useTTSCache and os.path.exists(tts_file):
                 os.unlink(tts_file)
 
-            self.remoteTTSResult = {"wav_base64":encoded_string}
+            self.remoteTTSResult["wav_base64"] = encoded_string
 
 
     def say(self,text_to_speech:str): # alias for play_voice_assistant_speech
