@@ -13,13 +13,14 @@ modname = os.path.basename(__file__)[:-3] # calculating modname
 def start(core:VACore):
     manifest = {
         "name": "Webapi options",
-        "version": "1.0",
+        "version": "1.1",
         "require_online": False,
 
         "default_options": {
             "host": "127.0.0.1",
             "port": 5003,
-            "log_level": "info"
+            "log_level": "info",
+            "use_ssl": False
         },
 
     }

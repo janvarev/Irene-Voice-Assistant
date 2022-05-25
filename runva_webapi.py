@@ -23,6 +23,7 @@ try:
         s = f.read(1000000)
         f.close()
     webapi_options = json.loads(s)
+    use_ssl = webapi_options["use_ssl"]
 except Exception as e:
     core = VACore()
     core.init_with_plugins()
@@ -156,5 +157,13 @@ if __name__ == "__main__":
 
     p = Process(target=core_update_timers_http, args=(False,))
     p.start()
-    uvicorn.run("runva_webapi:app", host=webapi_options["host"], port=webapi_options["port"],
-                log_level=webapi_options["log_level"])
+    if webapi_options["use_ssl"]:
+        uvicorn.run("runva_webapi:app",
+                    host=webapi_options["host"], port=webapi_options["port"],
+                    ssl_keyfile="localhost.key",
+                    ssl_certfile="localhost.crt",
+                    log_level=webapi_options["log_level"])
+    else:
+        uvicorn.run("runva_webapi:app",
+                    host=webapi_options["host"], port=webapi_options["port"],
+                    log_level=webapi_options["log_level"])
