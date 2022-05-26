@@ -5,6 +5,7 @@ import uvicorn
 from multiprocessing import Process
 from termcolor import cprint
 import json
+from starlette.websockets import WebSocket
 
 #from pydantic import BaseModel
 
@@ -17,6 +18,8 @@ import time
 webapi_options = None
 
 core = None
+model = None # vosk model
+#rec = None # vosk recognizer
 
 try:
     with open('options/webapi.json', 'r', encoding="utf-8") as f:
@@ -59,6 +62,55 @@ from starlette.staticfiles import StaticFiles
 
 app.mount("/webapi_client", StaticFiles(directory="webapi_client", html = True), name="webapi_client")
 
+app.mount("/mic_client", StaticFiles(directory="mic_client", html = True), name="mic_client")
+
+@app.websocket("/wsmic")
+async def websocket_endpoint(websocket: WebSocket):
+    await websocket.accept()
+    from vosk import KaldiRecognizer
+    rec = KaldiRecognizer(model, 48000)
+    print("New WebSocket microphone recognition")
+    while True:
+        data = await websocket.receive_bytes()
+        r = process_chunk(rec,data)
+        await websocket.send_text(r)
+
+def process_chunk(rec,message):
+    # with open('temp/asr_server_test.wav', 'wb') as the_file:
+    #     the_file.write(message)
+
+    if message == '{"eof" : 1}':
+        return rec.FinalResult()
+    elif rec.AcceptWaveform(message):
+        res2 = "{}"
+        res = rec.Result()
+        #print("Result:",res)
+        resj = json.loads(res)
+        if "text" in resj:
+            voice_input_str = resj["text"]
+            #print(restext)
+            import requests
+
+            if voice_input_str != "" and voice_input_str != None:
+                print(voice_input_str)
+                #ttsFormatList = ["saytxt"]
+                res2 = sendRawTxtOrig(voice_input_str,"none,saytxt")
+                # saywav not supported due to bytes serialization???
+                if res2 != "NO_VA_NAME":
+                    res2 = json.dumps(res2)
+                else:
+                    res2 = "{}"
+
+        else:
+            #print("2",rec.PartialResult())
+            pass
+
+        return res2
+    else:
+        res = rec.PartialResult()
+        #print("Part Result:",res)
+        return rec.PartialResult()
+
 @app.on_event("startup")
 async def startup_event():
     global core
@@ -66,6 +118,20 @@ async def startup_event():
     core.init_with_plugins()
     core.init_plugin("webapi")
     print("WEB api for VoiceAssistantCore (remote control)")
+
+    url = ""
+    if webapi_options["use_ssl"]:
+        url = "https://{0}:{1}/".format("localhost",webapi_options["port"])
+    else:
+        url = "http://{0}:{1}/".format("localhost",webapi_options["port"])
+
+    print("Web client URL (VOSK in browser): ", url+"webapi_client/")
+    print("Mic client URL (experimental, sends WAV bytes to server): ", url+"mic_client/")
+
+    from vosk import Model, SpkModel, KaldiRecognizer
+    global model
+    model = Model("model")
+
 
 
 # рендерит текст в wav
@@ -90,6 +156,9 @@ async def sendSimpleTxtCmd(cmd:str,returnFormat:str = "none"):
 # Пример: ирина погода, раз два
 @app.get("/sendRawTxt")
 async def sendRawTxt(rawtxt:str,returnFormat:str = "none"):
+    return sendRawTxtOrig(rawtxt,returnFormat)
+
+def sendRawTxtOrig(rawtxt:str,returnFormat:str = "none"):
     tmpformat = core.remoteTTS
     core.remoteTTS = returnFormat
     core.remoteTTSResult = ""
