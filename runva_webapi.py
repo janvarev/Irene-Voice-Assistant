@@ -195,10 +195,8 @@ async def replyWasGiven():
             #print("debug - run context after webapi call")
 
 def core_update_timers_http(runReq=True):
-    if not is_running:
-        return
-
-    if runReq:
+    time.sleep(5) # small sleep before start
+    while is_running:
         try:
             import requests
             if webapi_options["use_ssl"]:
@@ -209,11 +207,14 @@ def core_update_timers_http(runReq=True):
             r = requests.get(reqstr,verify=False)
         except Exception:
             pass
-    try:
-        time.sleep(2)
-    except:
-        return
-    core_update_timers_http()
+
+        try:
+            time.sleep(2)
+        except:
+            return
+
+    return
+
 
 @app.on_event("shutdown")
 def app_shutdown():
