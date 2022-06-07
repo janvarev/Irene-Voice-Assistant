@@ -3,6 +3,13 @@
 
 # require torch 1.10+
 
+# поддерживает несколько языков
+# поменяйте modelurl на нужный вам
+# список здесь: https://habr.com/ru/post/669910/
+# или здесь: https://models.silero.ai/models/tts/
+
+modelurl = 'https://models.silero.ai/models/tts/ru/v3_1_ru.pt'
+
 import os
 
 from vacore import VACore
@@ -13,7 +20,7 @@ modname = os.path.basename(__file__)[:-3] # calculating modname
 def start(core:VACore):
     manifest = {
         "name": "TTS silero V3",
-        "version": "1.2",
+        "version": "1.3",
         "require_online": False,
 
         "default_options": {
@@ -41,10 +48,11 @@ def init(core:VACore):
 
     device = torch.device('cpu')
     torch.set_num_threads(options["threads"])
-    local_file = 'ru_v3.pt'
+    local_file = 'silero_model.pt'
 
     if not os.path.isfile(local_file):
-        torch.hub.download_url_to_file('https://models.silero.ai/models/tts/ru/ru_v3.pt',
+        print("Downloading Silero model...")
+        torch.hub.download_url_to_file(modelurl,
                                        local_file)
 
 
