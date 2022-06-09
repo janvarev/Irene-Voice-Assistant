@@ -165,7 +165,7 @@ def serial_list():
     res = {}
     for dir in dirs:
         k1 = str(dir).lower().replace(".","").replace(",","")
-        #res[k1] = dir
+        res[k1] = dir
 
         file_irene = join(serialPath, dir, "_irenename.txt")
         if os.path.exists(file_irene):
