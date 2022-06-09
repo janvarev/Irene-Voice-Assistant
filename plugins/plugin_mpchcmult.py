@@ -88,7 +88,7 @@ def play_serial(core:VACore, phrase: str):
             return
 
     core.say("Не нашла сериал. Пожалуйста, повтори только название.")
-    core.context_set(play_mult)
+    core.context_set(play_serial)
 
 def play_serial_number(core:VACore, phrase: str, serial_dir:str):
     from os import listdir
