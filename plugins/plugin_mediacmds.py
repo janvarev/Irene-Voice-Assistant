@@ -29,6 +29,7 @@ def start(core:VACore):
             "пауза|паузу": play_pause,
             "дальше|вперед": play_next,
             "назад": play_prev,
+            "стоп": play_stop,
             "без звука|выключи звук|со звуком|без мука": toggle_mute,
             "тише": (volume_downX, 3),
             "громче": (volume_upX, 3),
@@ -70,6 +71,19 @@ def space(core:VACore, phrase: str):
     print("Команда пробел")
 
     pyautogui.press("space") # универсально для всех
+
+def play_stop(core:VACore, phrase: str):
+    print("Команда стоп")
+
+    if useMPCHCRemote:
+        try:
+            mpchc.stop()
+            return # если команда отработала, то дальше ничего не нужно
+        except Exception as e:
+            pass
+
+    pyautogui.press("stop")
+
 
 
 def play_next(core:VACore, phrase: str):

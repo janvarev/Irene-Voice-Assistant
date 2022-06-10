@@ -8,7 +8,7 @@ from vacore import VACore
 
 
 multPath = ""
-serialPath = "\\\\192.168.1.4\\i\\_Новое аниме непросмотренное"
+serialPath = ""
 
 # функция на старте
 def start(core:VACore):
@@ -87,7 +87,7 @@ def play_serial(core:VACore, phrase: str):
 
             return
 
-    core.say("Не нашла сериал. Пожалуйста, повтори только название.")
+    core.say("Не нашла, повтори название.")
     core.context_set(play_serial)
 
 def play_serial_number(core:VACore, phrase: str, serial_dir:str):
