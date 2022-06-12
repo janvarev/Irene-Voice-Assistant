@@ -12,12 +12,13 @@ modname = os.path.basename(__file__)[:-3] # calculating modname
 def start(core:VACore):
     manifest = { # возвращаем настройки плагина - словарь
         "name": "Дата и время", # имя
-        "version": "1.1", # версия
+        "version": "1.2", # версия
         "require_online": False, # требует ли онлайн?
 
         "default_options": {
             "sayNoon": False, # говорить "полдень" и "полночь" вместо 12 и 0 часов
             "skipUnits": False,  # не произносить единицы времени ("час", "минуты")
+            "unitsSeparator": ", ",  # сепаратор при озвучивании 10 часов <sep> 10 минут. Варианты: " и "
             "skipMinutesWhenZero": True, # не озвучивать минуты, если равны 0
         },
 
@@ -86,7 +87,7 @@ def play_time(core:VACore, phrase: str): # в phrase находится оста
     if minutes > 0 or options["skipMinutesWhenZero"] is not True:
         txt = "Сейчас " + txt
         if not options["skipUnits"]:
-            txt += " и "
+            txt += options["unitsSeparator"]
         txt += num2text(minutes, units_minutes)
     else:
         txt = "Сейчас ровно " + txt
