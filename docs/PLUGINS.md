@@ -73,6 +73,15 @@ OpenTTS не очень хорош в русской озвучке, но под
 
 Для работы укажите в core.json `"ttsEngineId": "opentts",`
 
+---
+
+**plugin_playwav_sounddevice.py** - проигрывание WAV через sounddevice. Ест окончания фраз, но работает почти везде.
+
+**plugin_playwav_simpleaudio.py** - проигрывание WAV через simpleaudio. _Не заработало у автора, но должно работать._
+
+`pip install simpleaudio`
+
+https://simpleaudio.readthedocs.io/en/latest/installation.html#linux-dependencies
 
 ## Неактивные скиллы (plugins_inactive)
 

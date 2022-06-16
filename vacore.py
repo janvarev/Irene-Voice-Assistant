@@ -8,7 +8,7 @@ from threading import Timer
 
 from jaa import JaaCore
 
-version = "6.3"
+version = "6.4"
 
 # main VACore class
 
@@ -110,20 +110,51 @@ class VACore(JaaCore):
     def stub_online_required(self,core,phrase):
         self.play_voice_assistant_speech(self.plugin_options("core")["replyOnlineRequired"])
 
+    def print_error(self,err_txt,e:Exception = None):
+        cprint(err_txt,"red")
+        # if e != None:
+        #     cprint(e,"red")
+        import traceback
+        traceback.print_exc()
+
+    def print_red(self,txt):
+        cprint(txt,"red")
+
     # ----------- text-to-speech functions ------
 
     def setup_assistant_voice(self):
         # init playwav engine
-        self.playwavs[self.playWavEngineId][0](self)
+        try:
+            self.playwavs[self.playWavEngineId][0](self)
+        except Exception as e:
+            self.print_error("Ошибка инициализации плагина проигрывания WAV (playWavEngineId)", e)
+            self.print_red('Попробуйте установить в options/core.json: "playWavEngineId": "sounddevice"')
 
         # init tts engine
-        self.ttss[self.ttsEngineId][0](self)
+        try:
+            self.ttss[self.ttsEngineId][0](self)
+        except Exception as e:
+            self.print_error("Ошибка инициализации плагина TTS (ttsEngineId)", e)
+            cprint('Попробуйте установить в options/core.json: "ttsEngineId": "console" для тестирования вывода через консоль', "red")
+            cprint('Позднее, если все заработает, вы сможете настроить свой TTS-движок', "red")
+
+            from sys import platform
+            if platform == "linux" or platform == "linux2":
+                cprint("Подробнее об установке на Linux: https://github.com/janvarev/Irene-Voice-Assistant/blob/master/docs/INSTALL_LINUX.md", "red")
+            elif platform == "darwin":
+                cprint("Подробнее об установке на Mac: https://github.com/janvarev/Irene-Voice-Assistant/blob/master/docs/INSTALL_MAC.md", "red")
+            elif platform == "win32":
+                cprint("Подробнее об установке на Linux: https://github.com/janvarev/Irene-Voice-Assistant/blob/master/docs/INSTALL_LINUX.md", "red")
+                pass
 
         # init tts2 engine
         if self.ttsEngineId2 == "":
             self.ttsEngineId2 = self.ttsEngineId
         if self.ttsEngineId2 != self.ttsEngineId:
-            self.ttss[self.ttsEngineId2][0](self)
+            try:
+                self.ttss[self.ttsEngineId2][0](self)
+            except Exception as e:
+                self.print_error("Ошибка инициализации плагина TTS2 (ttsEngineId2)", e)
 
     def play_voice_assistant_speech(self,text_to_speech:str):
         self.lastSay = text_to_speech
