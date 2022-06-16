@@ -26,4 +26,8 @@ def init(core:VACore):
 
 def say(core:VACore, text_to_speech:str):
     # просто выводим текст в консоль
-    print("TTS: {}".format(text_to_speech))
+    try:
+        from termcolor import colored, cprint
+        cprint("TTS: {}".format(text_to_speech),"blue")
+    except Exception as e:
+        print("TTS: {}".format(text_to_speech))

@@ -8,7 +8,7 @@ from threading import Timer
 
 from jaa import JaaCore
 
-version = "6.4"
+version = "6.5"
 
 # main VACore class
 
@@ -129,6 +129,8 @@ class VACore(JaaCore):
         except Exception as e:
             self.print_error("Ошибка инициализации плагина проигрывания WAV (playWavEngineId)", e)
             self.print_red('Попробуйте установить в options/core.json: "playWavEngineId": "sounddevice"')
+            self.print_red('...временно переключаюсь на консольный вывод ответа...')
+            self.ttsEngineId = "console"
 
         # init tts engine
         try:
@@ -146,6 +148,9 @@ class VACore(JaaCore):
             elif platform == "win32":
                 cprint("Подробнее об установке на Linux: https://github.com/janvarev/Irene-Voice-Assistant/blob/master/docs/INSTALL_LINUX.md", "red")
                 pass
+
+            self.print_red('...временно переключаюсь на консольный вывод ответа...')
+            self.ttsEngineId = "console"
 
         # init tts2 engine
         if self.ttsEngineId2 == "":
