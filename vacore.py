@@ -146,7 +146,7 @@ class VACore(JaaCore):
             elif platform == "darwin":
                 cprint("Подробнее об установке на Mac: https://github.com/janvarev/Irene-Voice-Assistant/blob/master/docs/INSTALL_MAC.md", "red")
             elif platform == "win32":
-                cprint("Подробнее об установке на Linux: https://github.com/janvarev/Irene-Voice-Assistant/blob/master/docs/INSTALL_LINUX.md", "red")
+                #cprint("Подробнее об установке на Linux: https://github.com/janvarev/Irene-Voice-Assistant/blob/master/docs/INSTALL_LINUX.md", "red")
                 pass
 
             self.print_red('...временно переключаюсь на консольный вывод ответа...')
