@@ -27,7 +27,8 @@ pip install fastapi
 pip install "uvicorn[standard]"
 ```
 
-- Сконфигурируйте, где находится сервер Ирины. Настройки сервера - host,port,log_level настраиваются в **options/webapi.json**
+- Сконфигурируйте, где находится сервер Ирины. Настройки сервера - host,port,log_level настраиваются в ~~**options/webapi.json**~~ 
+**(с версии 6.7 - в runva_webapi.json)**
 
 - Запустите хотя бы один клиент. Клиенты можно взять здесь:
 https://github.com/janvarev/Remote-Irene 

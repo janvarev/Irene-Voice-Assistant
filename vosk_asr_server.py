@@ -2,7 +2,7 @@
 # origin: https://github.com/alphacep/vosk-server/blob/master/websocket/asr_server.py
 # license: Apache 2.0
 
-# Запускать после первого запуска WEBAPI!! - т.к. использует для настроек файл options/webapi.json
+# Запускать после первого запуска WEBAPI!! - т.к. использует для настроек файл runva_webapi.json
 # для размещения использует порт webapi+1 и тот же хост
 
 import json
@@ -15,10 +15,10 @@ import concurrent.futures
 import logging
 from vosk import Model, SpkModel, KaldiRecognizer
 
-version = "1.0"
+version = "1.1"
 
 # main options
-with open('options/webapi.json', 'r', encoding="utf-8") as f:
+with open('runva_webapi.json', 'r', encoding="utf-8") as f:
     s = f.read(10000000)
     f.close()
 webapi_options = json.loads(s)

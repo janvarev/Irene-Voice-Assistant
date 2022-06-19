@@ -21,18 +21,38 @@ core = None
 model = None # vosk model
 #rec = None # vosk recognizer
 
-try:
-    with open('options/webapi.json', 'r', encoding="utf-8") as f:
-        s = f.read(1000000)
-        f.close()
-    webapi_options = json.loads(s)
-    use_ssl = webapi_options["use_ssl"]
-except Exception as e:
-    core = VACore()
-    core.init_with_plugins()
-    core.init_plugin("webapi")
-    cprint("Настройки созданы; пожалуйста, перезапустите этот файл", "red")
-    exit(-1)
+# --------------- loading options ----------
+
+# move options from old file
+import os
+if not os.path.exists('runva_webapi.json'):
+    if os.path.exists('options/webapi.json'):
+        os.rename('options/webapi.json','runva_webapi.json')
+
+# loading options
+from jaa import load_options
+
+default_options={
+    "host": "127.0.0.1",
+    "port": 5003,
+    "log_level": "info",
+    "use_ssl": False
+}
+webapi_options = load_options(py_file=__file__,default_options=default_options)
+use_ssl = webapi_options["use_ssl"]
+
+# try:
+#     with open('options/webapi.json', 'r', encoding="utf-8") as f:
+#         s = f.read(1000000)
+#         f.close()
+#     webapi_options = json.loads(s)
+#     use_ssl = webapi_options["use_ssl"]
+# except Exception as e:
+#     core = VACore()
+#     core.init_with_plugins()
+#     core.init_plugin("webapi")
+#     cprint("Настройки созданы; пожалуйста, перезапустите этот файл", "red")
+#     exit(-1)
 
 
 
@@ -116,7 +136,6 @@ async def startup_event():
     global core
     core = VACore()
     core.init_with_plugins()
-    core.init_plugin("webapi")
     print("WEB api for VoiceAssistantCore (remote control)")
 
     url = ""
