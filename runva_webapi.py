@@ -7,6 +7,11 @@ from termcolor import cprint
 import json
 from starlette.websockets import WebSocket
 
+try:
+    from fastapi_utils.tasks import repeat_every
+except Exception as e:
+    cprint("Пожалуйста, установите fastapi-utils: pip install fastapi-utils","red")
+    exit(-1)
 #from pydantic import BaseModel
 
 
@@ -153,6 +158,8 @@ async def startup_event():
 
 
 
+
+
 # рендерит текст в wav
 @app.get("/ttsWav")
 async def ttsWav(text:str):
@@ -214,6 +221,7 @@ async def replyWasGiven():
             #print("debug - run context after webapi call")
 
 def core_update_timers_http(runReq=True):
+    return
     time.sleep(5) # small sleep before start
     while is_running:
         try:
@@ -241,14 +249,19 @@ def app_shutdown():
     cprint("Ctrl-C pressed, exiting Irene.", "yellow")
     is_running = False
 
-
+@app.on_event("startup")
+@repeat_every(seconds=2)
+async def app_timers():
+    if core != None:
+        #print("update timers")
+        core._update_timers()
 
 if __name__ == "__main__":
 
 
 
-    p = Process(target=core_update_timers_http, args=(False,))
-    p.start()
+    # p = Process(target=core_update_timers_http, args=(False,))
+    # p.start()
     if webapi_options["use_ssl"]:
         uvicorn.run("runva_webapi:app",
                     host=webapi_options["host"], port=webapi_options["port"],
