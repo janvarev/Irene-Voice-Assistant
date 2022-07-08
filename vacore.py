@@ -264,38 +264,43 @@ class VACore(JaaCore):
             self.call_ext_func_phrase(command,context)
             return
 
+        executed = False
+        # { позиция_начала_в_command : ключевое слово/контент/остаток command }
+        exe_keys = {}
+        exe_content = {}
+        exe_rest = {}
         try:
-            # первый проход - ищем полное совпадение
+
             for keyall in context.keys():
                 keys = keyall.split("|")
                 for key in keys:
-                    if command == key:
-                        rest_phrase = ""
+                    # ищем ключевые слова в command
+                    start_key = command.find(key)
+                    if start_key > -1:
+                        rest_phrase = command[start_key + len(key) + 1:]
                         next_context = context[keyall]
-                        self.execute_next(rest_phrase,next_context)
-                        return
-
-            # второй проход - ищем частичное совпадение
-            for keyall in context.keys():
-                keys = keyall.split("|")
-                for key in keys:
-                    if command.startswith(key):
-                        rest_phrase = command[(len(key)+1):]
-                        next_context = context[keyall]
-                        self.execute_next(rest_phrase,next_context)
-                        return
-
+                        exe_content.update({start_key: next_context})
+                        exe_keys.update({start_key: key})
+                        exe_rest.update({start_key: rest_phrase})
+            # выполняем комманды в "указанном" порядке
+            for key in sorted(exe_keys):
+                if exe_content[key] == None:
+                    self.execute_next(exe_keys[key], exe_content[key])
+                else:
+                    self.execute_next(exe_rest[key], exe_content[key])
+                executed = True
 
             # if not founded
-            if self.context == None:
-                # no context
-                self.say(self.plugin_options("core")["replyNoCommandFound"])
-            else:
-                # in context
-                self.say(self.plugin_options("core")["replyNoCommandFoundInContext"])
-                # restart timer for context
-                if self.contextTimer != None:
-                    self.context_set(self.context,self.contextTimerLastDuration)
+            if not executed:
+                if self.context == None:
+                    # no context
+                    self.say(self.plugin_options("core")["replyNoCommandFound"])
+                else:
+                    # in context
+                    self.say(self.plugin_options("core")["replyNoCommandFoundInContext"])
+                    # restart timer for context
+                    if self.contextTimer != None:
+                        self.context_set(self.context,self.contextTimerLastDuration)
         except Exception as err:
             print(traceback.format_exc())
 
