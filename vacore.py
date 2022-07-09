@@ -371,8 +371,6 @@ class VACore(JaaCore):
                 print("Input (in context): ",voice_input_str)
 
         try:
-            voice_input = voice_input_str.split(" ")
-            #callname = voice_input[0]
             haveRun = False
             if self.context == None:
                 for callname in self.voiceAssNames:
