@@ -14,7 +14,7 @@ def start(core:VACore):
         "require_online": False, # требует ли онлайн?
 
         "commands": { # набор скиллов. Фразы скилла разделены | . Если найдены - вызывается функция
-            "больше меньше": play_game_start,
+            "игра больше меньше|играть больше меньше": play_game_start,
         }
     }
     return manifest
