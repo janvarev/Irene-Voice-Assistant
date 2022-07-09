@@ -23,8 +23,8 @@ def start(core:VACore):
         },
 
         "commands": { # набор скиллов. Фразы скилла разделены | . Если найдены - вызывается функция
-            "дата | дату": play_date,
-            "время | времени": play_time,
+            "дата|дату": play_date,
+            "время|времени": play_time,
         }
     }
     return manifest
