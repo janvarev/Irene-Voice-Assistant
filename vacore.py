@@ -375,26 +375,26 @@ class VACore(JaaCore):
             #callname = voice_input[0]
             haveRun = False
             if self.context == None:
-                for ind in range(len(voice_input)):
-                    callname = voice_input[ind]
-
-                    if callname in self.voiceAssNames: # найдено имя ассистента
+                for callname in self.voiceAssNames:
+                    if callname in voice_input_str:
                         if self.logPolicy == "cmd":
                             print("Input (cmd): ",voice_input_str)
 
-
-                        command_options = " ".join([str(input_part) for input_part in voice_input[(ind+1):len(voice_input)]])
-
-                        # running some cmd before run cmd
-                        if func_before_run_cmd != None:
-                            func_before_run_cmd()
-
-
-                        #context = self.context
-                        #self.context_clear()
-                        self.execute_next(command_options, None)
-                        haveRun = True
-                        break
+                        # начало callname
+                        call_pos = voice_input_str.find(callname)
+                        # у callname нет приставки (аспИРИНА нет?)
+                        if call_pos == 0 or voice_input_str[call_pos - 1] == " ":
+                            call_end = voice_input_str.find(' ', call_pos)
+                            if call_end == -1:
+                                call_end = len(voice_input_str)
+                            # вырезаем callname(+окончание) из входной строки
+                            command_options = voice_input_str[:call_pos] + voice_input_str[call_end + 1:]
+                            # running some cmd before run cmd
+                            if func_before_run_cmd != None:
+                                func_before_run_cmd()
+                            self.execute_next(command_options, None)
+                            haveRun = True
+                            break
             else:
                 if self.logPolicy == "cmd":
                     print("Input (cmd in context): ",voice_input_str)
