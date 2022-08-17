@@ -92,13 +92,16 @@ app.mount("/mic_client", StaticFiles(directory="mic_client", html = True), name=
 @app.websocket("/wsmic")
 async def websocket_endpoint(websocket: WebSocket):
     await websocket.accept()
-    from vosk import KaldiRecognizer
-    rec = KaldiRecognizer(model, 48000)
-    print("New WebSocket microphone recognition")
-    while True:
-        data = await websocket.receive_bytes()
-        r = process_chunk(rec,data)
-        await websocket.send_text(r)
+    if model != None:
+        from vosk import KaldiRecognizer
+        rec = KaldiRecognizer(model, 48000)
+        print("New WebSocket microphone recognition")
+        while True:
+            data = await websocket.receive_bytes()
+            r = process_chunk(rec,data)
+            await websocket.send_text(r)
+    else:
+        print("Can't accept WebSocket microphone recognition - no Model (seems to be no VOSK at startup)")
 
 def process_chunk(rec,message):
     # with open('temp/asr_server_test.wav', 'wb') as the_file:
@@ -152,9 +155,15 @@ async def startup_event():
     print("Web client URL (VOSK in browser): ", url+"webapi_client/")
     print("Mic client URL (experimental, sends WAV bytes to server): ", url+"mic_client/")
 
-    from vosk import Model, SpkModel, KaldiRecognizer
-    global model
-    model = Model("model")
+    try:
+        import vosk
+        from vosk import Model, SpkModel, KaldiRecognizer
+        global model
+        model = Model("model")
+    except Exception as e:
+        print("Can't init VOSK - no websocket speech recognition in WEBAPI. Can be skipped")
+        import traceback
+        traceback.print_exc()
 
 
 
