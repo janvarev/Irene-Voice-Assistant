@@ -10,7 +10,7 @@ def start(core:VACore):
     manifest = {
         "name": "MQTT плагин",
         "version": "1.0",
-        "require_online": False,
+        "require_online": True,
 
         "default_options":{ # Данные для подключения к брокеру mqtt
             "MQTT_CLIENTID": "Irine_voice",
