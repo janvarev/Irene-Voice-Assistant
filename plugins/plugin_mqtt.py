@@ -1,3 +1,5 @@
+# плагин управления по mqtt
+
 import paho.mqtt.client as ph_mqtt
 from vacore import VACore
 import os
