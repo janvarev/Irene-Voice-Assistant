@@ -17,7 +17,7 @@ def start(core:VACore):
             "MQTT_IP": "example.com",
             "MQTT_USER": "username",
             "MQTT_PASS": "password",
-            "MQTT_PORT": "1883",
+            "MQTT_PORT": 1883,
             "MQTT_TOPIC": "/Assistant",
             
             "devices":{ # Список устройств, значение - топик устройства (для чайника будет формироваться так: "/Assistant/u_01")
@@ -34,22 +34,26 @@ def start(core:VACore):
     }
     return manifest
 
+
 def start_with_options(core:VACore, manifest:dict): # создаст core.mqtt_clien для отправки данных
     options = manifest["options"]
     core.mqtt_client = ph_mqtt.Client(options["MQTT_CLIENTID"])
     core.mqtt_client.username_pw_set(options["MQTT_USER"], options["MQTT_PASS"])
-    core.mqtt_client.connect(options["MQTT_IP"], int(options["MQTT_PORT"]))
 
 
+def check_connection(func): # при обрыве подключения - переподключиться
+    def wrapper(core, *args, **kwargs):
+        if not core.mqtt_client.is_connected():
+            core.mqtt_client.connect(core.plugin_options(modname)["MQTT_IP"],
+                                     core.plugin_options(modname)["MQTT_PORT"])
 
-def check_connect(core:VACore): # при обрыве подключения - переподключиться
-    if not core.mqtt_client.is_connected():
-        core.mqtt_client.connect(core.plugin_options(modname)["MQTT_IP"], core.plugin_options(modname)["MQTT_PORT"])
+        return func(core, *args, **kwargs)
+
+    return wrapper
 
 
-
+@check_connection
 def mqtt_switch_on(core: VACore, phrase:str): # отправляет "1" в топик названного устройства
-    check_connect(core)
     if phrase in core.plugin_options(modname)["devices"]:
         topic = f'{core.plugin_options(modname)["MQTT_TOPIC"]}/{core.plugin_options(modname)["devices"][phrase]}'
         result = core.mqtt_client.publish(topic, "1")
@@ -58,11 +62,11 @@ def mqtt_switch_on(core: VACore, phrase:str): # отправляет "1" в то
         else:
             core.say(f'Ошибка {phrase} не включен')
     else:
-        core.say(f'Нет устройства {phrase}')
+        core.say(f'Не нашла устройство {phrase}')
 
 
+@check_connection
 def mqtt_switch_off(core: VACore, phrase:str): # отправляет "0" в топик названного устройства
-    check_connect(core)
     if phrase in core.plugin_options(modname)["devices"]:
         topic = f'{core.plugin_options(modname)["MQTT_TOPIC"]}/{core.plugin_options(modname)["devices"][phrase]}'
         result = core.mqtt_client.publish(topic, "0")
@@ -71,7 +75,7 @@ def mqtt_switch_off(core: VACore, phrase:str): # отправляет "0" в т�
         else:
             core.say(f'Ошибка {phrase} не выключен')
     else:
-        core.say(f'Нет устройства {phrase}')
+        core.say(f'Не нашла устройство {phrase}')
 
 
 
