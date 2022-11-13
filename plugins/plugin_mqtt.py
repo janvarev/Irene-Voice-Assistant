@@ -10,7 +10,7 @@ def start(core:VACore):
     manifest = {
         "name": "MQTT плагин",
         "version": "1.0",
-        "require_online": True,
+        "require_online": True, # При работе в локальной сети онлайн не нужен
 
         "default_options":{ # Данные для подключения к брокеру mqtt
             "MQTT_CLIENTID": "Irine_voice",
@@ -27,7 +27,7 @@ def start(core:VACore):
             },
         },
 
-        "commands": { # набор скиллов. Фразы скилла разделены | . Если найдены - вызывается функция
+        "commands": { # набор скиллов.
             "включи": mqtt_switch_on,
             "выключи": mqtt_switch_off,
         }
@@ -54,15 +54,15 @@ def check_connection(func): # при обрыве подключения - пе�
 
 @check_connection
 def mqtt_switch_on(core: VACore, phrase:str): # отправляет "1" в топик названного устройства
-    if phrase in core.plugin_options(modname)["devices"]:
-        topic = f'{core.plugin_options(modname)["MQTT_TOPIC"]}/{core.plugin_options(modname)["devices"][phrase]}'
-        result = core.mqtt_client.publish(topic, "1")
+    if phrase in core.plugin_options(modname)["devices"]: # если устройство в списке devices
+        topic = f'{core.plugin_options(modname)["MQTT_TOPIC"]}/{core.plugin_options(modname)["devices"][phrase]}' # формируем путь для публикации
+        result = core.mqtt_client.publish(topic, "1") # публикуем 1 в топик устройства
         if result[0] == 0:
-            core.say(f'{phrase} включен')
+            core.say(f'{phrase} включен') # сообщение отправлено
         else:
-            core.say(f'Ошибка {phrase} не включен')
+            core.say(f'Ошибка {phrase} не включен') # сообщение не отправлено
     else:
-        core.say(f'Не нашла устройство {phrase}')
+        core.say(f'Не нашла устройство {phrase}') # устройства нет в списке devices
 
 
 @check_connection

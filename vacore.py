@@ -67,6 +67,8 @@ class VACore(JaaCore):
         import mpcapi.core
         self.mpchc = mpcapi.core.MpcAPI()
 
+        self.mqtt_client = None
+
 
 
     def init_with_plugins(self):
