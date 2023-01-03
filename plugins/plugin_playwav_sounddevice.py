@@ -35,7 +35,19 @@ def playwav(core:VACore, wavfile:str):
     #filename = 'timer/Sounds/Loud beep.wav'
     # now, Extract the data and sampling rate from file
     data_set, fsample = sound_file.read(filename, dtype = 'float32')
-    sound_device.play(data_set, fsample)
+
+    # Этот фикс позволяет убрать проглатывания из концов фраз
+    # Просто добавляет 0 в конце проигрываемому файлу
+    # https://github.com/spatialaudio/python-sounddevice/issues/283
+    zeros = []
+    for i in range(5000):
+        zeros.append(0.0)
+
+    import numpy
+    data_set_new = numpy.concatenate((data_set,zeros))
+    # end fix
+
+    sound_device.play(data_set_new, fsample)
     # Wait until file is done playing
     status = sound_device.wait()
     return

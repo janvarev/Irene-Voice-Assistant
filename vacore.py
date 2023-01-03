@@ -8,7 +8,7 @@ from threading import Timer
 
 from jaa import JaaCore
 
-version = "6.8"
+version = "6.9"
 
 # main VACore class
 
