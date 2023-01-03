@@ -1,0 +1,31 @@
+# Для работы Silero
+torch~=1.12.1
+numpy~=1.23.1
+
+# Для чтения конфигов
+#pyyaml~=6.0
+
+# Утилиты для работы с текстом
+#lingua-franca~=0.4.3
+
+# Веб-сервер
+uvicorn~=0.18.3
+uvicorn[standard]~=0.18.3
+fastapi~=0.81.0
+fastapi-utils
+starlette~=0.19.1
+
+# Telegram
+#pyTelegramBotAPI~=4.7.1
+
+# Распознание голоса
+vosk~=0.3.7
+
+# Локальные запись и воспроизведение звука
+sounddevice~=0.4.3
+soundfile~=0.10.3.post1
+
+wikipedia-api~=0.5.4
+termcolor~=1.1.0
+requests
+python-dateutil~=2.6.0

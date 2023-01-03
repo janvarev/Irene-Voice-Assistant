@@ -8,7 +8,7 @@ from threading import Timer
 
 from jaa import JaaCore
 
-version = "6.9"
+version = "7.0"
 
 # main VACore class
 
@@ -445,6 +445,7 @@ class VACore(JaaCore):
         print("run ONLINE" if self.isOnline else "run OFFLINE")
 
         self.format_print_key_list("TTS engines", self.ttss.keys())
+        self.format_print_key_list("PlayWavs engines", self.playwavs.keys())
         self.format_print_key_list("Assistant names", self.voiceAssNames)
 
         cprint("Commands list: "+"#"*65, "blue")

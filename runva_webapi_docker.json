@@ -1,0 +1,8 @@
+{
+    "hash": "6abb2dcb0d9b2531b052e4c02c181184",
+    "host": "0.0.0.0",
+    "log_level": "info",
+    "port": 5003,
+    "use_ssl": true,
+    "v": "1.1"
+}
