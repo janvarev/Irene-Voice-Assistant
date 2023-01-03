@@ -67,7 +67,8 @@ socket.onmessage = function(event) {
   }
   if ("wav_base64" in res) {
 	 //console.log("ИРИНА: ",res.saytxt)
-	 //irene_answer.innerHTML = res.restxt;
+	 //irene_answer.innerHTML = res.wav_base64;
+	 //console.
 	 var snd = Sound("data:audio/wav;base64," + res.wav_base64);
   }
 

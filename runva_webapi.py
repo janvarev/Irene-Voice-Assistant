@@ -122,10 +122,16 @@ def process_chunk(rec,message):
             if voice_input_str != "" and voice_input_str != None:
                 print(voice_input_str)
                 #ttsFormatList = ["saytxt"]
-                res2 = sendRawTxtOrig(voice_input_str,"none,saytxt")
+                #res2 = sendRawTxtOrig(voice_input_str,"none,saytxt")
+                res2 = sendRawTxtOrig(voice_input_str, "saytxt,saywav")
                 # saywav not supported due to bytes serialization???
+
+
                 if res2 != "NO_VA_NAME":
-                    res2 = json.dumps(res2)
+                    res3:dict = res2
+                    if res3.get("wav_base64") is not None: # converting bytes to str
+                        res3["wav_base64"] = res2["wav_base64"].decode("utf-8")
+                    res2 = json.dumps(res3)
                 else:
                     res2 = "{}"
 
