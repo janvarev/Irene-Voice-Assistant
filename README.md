@@ -77,8 +77,9 @@ docker run -it --publish 5003:5003 \
  -v "$HOME/irene_plugins:/home/python/irene/plugins" \
  janvarev/ireneva:latest
 ```
-НО! Положите в эту папку все дефолтовые плагины из plugins Git Ирины. Иначе не запустится - просто плагинов не будет.
-+ положите плагин silero_v3 из plugins_inactive.
+НО! 
+1. Положите в эту папку все дефолтовые плагины из plugins Git Ирины. Иначе не запустится - просто плагинов не будет. 
+2. Положите туда же плагин silero_v3 из plugins_inactive.
 
 ### Общая логика
 
