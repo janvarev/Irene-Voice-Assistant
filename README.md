@@ -47,8 +47,6 @@ docker run -it --publish 5003:5003 \
 Далее можно открыть [https://localhost:5003/webapi_client/](https://localhost:5003/webapi_client/) (или аналогичный адрес на том хосте, где был
 запущен контейнер) и, разрешив использование самоподписанного сертификата, использовать Ирину через веб-интерфейс.
 
-К опциям плагинов доступ через папку options (нужно подмонтировать), к самому списку плагинов - через plugins (нужно подмонтировать).
-
 (Если что, автор не специалист в Докер, поэтому могут быть глюки при работе.)
 
 В Докер-образе в качестве TTS работает silero_v3.
@@ -56,6 +54,31 @@ docker run -it --publish 5003:5003 \
 Кроме того:
 - по адресу [https://localhost:5003/webapi_client/](https://localhost:5003/webapi_client/) располагается клиент, который производит распознавание STT в браузере (браузерная версия VOSK, тяжелая)
 - по адресу [https://localhost:5003/mic_client/](https://localhost:5003/mic_client/) располагается клиент, который посылает информацию с микрофона на сервер, для серверного распознавания речи в потоковом режиме. Он более легкий для браузера, но в нем чуть меньше настроек, и плохо отрабатывает дисконнект.
+
+#### Доступ к опциям в Докере
+
+Чтобы получить доступ к опциям, подмонтируйте папку options (при первом запуске будут созданы все файлы options, которые можно будет редактировать)
+```shell
+ docker run -it --publish 5003:5003 \
+ -v "C:/temp/temp_irene_docker/options:/home/python/irene/options" \
+ janvarev/ireneva:latest
+```
+или для Linux
+```shell
+ docker run -it --publish 5003:5003 \
+ -v "$HOME/irene_options:/home/python/irene/options" \
+ janvarev/ireneva:latest
+```
+
+Чтобы получить доступ к плагинам, подмонтируйте также папку plugins
+```shell
+ docker run -it --publish 5003:5003 \
+ -v "$HOME/irene_options:/home/python/irene/options" \
+ -v "$HOME/irene_plugins:/home/python/irene/plugins" \
+ janvarev/ireneva:latest
+```
+НО! Положите в эту папку все дефолтовые плагины из plugins Git Ирины. Иначе не запустится - просто плагинов не будет.
++ положите плагин silero_v3 из plugins_inactive.
 
 ### Общая логика
 

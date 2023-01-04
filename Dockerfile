@@ -41,33 +41,35 @@ COPY ./requirements-docker.txt ./requirements.txt
 RUN --mount=type=cache,target=/home/python/.cache,uid=1001,gid=1001 pip install -r ./requirements.txt
 
 #COPY * .
-COPY lingua_franca ./lingua_franca
-COPY media ./media
-COPY mic_client ./mic_client
-COPY model ./model
-COPY mpcapi ./mpcapi
-COPY plugins ./plugins
-COPY utils ./utils
-COPY webapi_client ./webapi_client
+COPY --chown=python:python empty_folder ./irene
+COPY lingua_franca ./irene/lingua_franca
+COPY media ./irene/media
+COPY mic_client ./irene/mic_client
+COPY model ./irene/model
+COPY mpcapi ./irene/mpcapi
+COPY plugins ./irene/plugins
+COPY utils ./irene/utils
+COPY webapi_client ./irene/webapi_client
 
-COPY localhost.crt ./localhost.crt
-COPY localhost.key ./localhost.key
-COPY jaa.py ./jaa.py
-COPY vacore.py ./vacore.py
-COPY runva_webapi.py ./runva_webapi.py
-COPY --chown=python:python options_docker ./options
-COPY --chown=python:python runva_webapi_docker.json ./runva_webapi.json
+COPY localhost.crt ./irene/localhost.crt
+COPY localhost.key ./irene/localhost.key
+COPY jaa.py ./irene/jaa.py
+COPY vacore.py ./irene/vacore.py
+COPY runva_webapi.py ./irene/runva_webapi.py
+#COPY --chown=python:python options_docker ./irene/options
+COPY --chown=python:python runva_webapi_docker.json ./irene/runva_webapi.json
+COPY docker_plugins ./irene/plugins
 
 #COPY --link --from=frontend-builder /home/frontend/dist/ ./irene_plugin_web_face_frontend/frontend-dist/
-COPY --link --from=silero-downloader /home/downloader/models/silero_model.pt ./silero_model.pt
+COPY --link --from=silero-downloader /home/downloader/models/silero_model.pt ./irene/silero_model.pt
 # COPY --link --chown=1001:1001 --from=vosk-downloader /home/downloader/models/ ./vosk-models/
 # COPY --link --chown=1001:1001 --from=ssl-generator /home/generator/ssl/ ./ssl/
 
 EXPOSE 5003
 
-# VOLUME /irene
+#VOLUME /home/python/irene
 # ENV IRENE_HOME=/irene
-
+WORKDIR /home/python/irene
 #ENTRYPOINT ["python", "-m", "irene", "--default-config", "/home/python/config"]
 ENTRYPOINT ["python", "runva_webapi.py"]
 #ENTRYPOINT uvicorn runva_webapi:app --proxy-headers --host 0.0.0.0 --port 8089
