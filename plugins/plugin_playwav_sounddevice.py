@@ -39,11 +39,11 @@ def playwav(core:VACore, wavfile:str):
     # Этот фикс позволяет убрать проглатывания из концов фраз
     # Просто добавляет 0 в конце проигрываемому файлу
     # https://github.com/spatialaudio/python-sounddevice/issues/283
-    zeros = []
-    for i in range(5000):
-        zeros.append(0.0)
-
+    # zeros = []
+    # for i in range(5000):
+    #     zeros.append(0.0)
     import numpy
+    zeros = numpy.zeros((5000,)) # fix by modos189
     data_set_new = numpy.concatenate((data_set,zeros))
     # end fix
 

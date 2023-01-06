@@ -11,4 +11,4 @@ https://github.com/ademaro/Irene-Voice-Assistant/blob/28ff0e84a450843bb371e87c3b
 https://github.com/janvarev/Irene-Voice-Assistant/issues/3
 
 3. Если есть желание - все можно попробовать установить через Докер:
-[docs/INSTALL_DOCKER.md](/docs/INSTALL_DOCKER.md)
+[docs/INSTALL_DOCKER_COMP.md](/docs/INSTALL_DOCKER_COMP.md)

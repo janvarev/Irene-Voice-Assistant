@@ -1,9 +1,30 @@
 # Настройка под Linux
 
-### Некоторые проблемы при установке под Linux
+## Некоторые проблемы при установке под Linux
 
-Говорят, что требуется:
+Основные проблемы две:
+- сделать, чтобы проигрывался wav-файл
+- сделать, чтобы работал TTS
+
+### Проигрывание WAV
+
+По дефолту в `options/core.json` установлено
+`"playWavEngineId": "audioplayer",`
+
+Эта библиотека не всегда удобно ставится под Linux.
+Вроде можно
 ```apt install portaudio19-dev```
+но не всегда работает.
+
+Рекомендуется переключиться на один из других движков проигрывания WAV. 
+Список - в [docs/PLUGINS.md](/docs/PLUGINS.md#PlayWav), в разделе с PlayWav плагинами.
+
+Для Linux рекомендуется либо:
+`"playWavEngineId": "aplay",` (играть через запуск aplay)
+либо
+`"playWavEngineId": "sounddevice",`
+
+### Работа TTS (Text-to-Speech) движка
 
 Также есть проблемы с запуском TTS движка. Варианта 2:
 
@@ -22,7 +43,7 @@ core.ttsEngine.setProperty("voice", "russian") либо найти нужный 
 **2 вариант. Поставить TTS rhvoice_rest и запустить Докер для rhvoice_rest**
 
 Прстой вариант, чтобы не париться с зависимостями.
-1. Установите в options/core.json "ttsEngineId": "rhvoice_rest"
+1. Установите в options/core.json `"ttsEngineId": "rhvoice_rest"`
 2. Использует докер-сервер https://github.com/Aculeasis/rhvoice-rest для
    генерации голоса. Зайдите туда и запустите нужный вам докер.
 

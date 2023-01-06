@@ -75,6 +75,8 @@ OpenTTS не очень хорош в русской озвучке, но под
 
 ---
 
+### PlayWav
+
 **plugin_playwav_sounddevice.py** - проигрывание WAV через sounddevice. Ест окончания фраз, но работает почти везде.
 
 **plugin_playwav_simpleaudio.py** - проигрывание WAV через simpleaudio. _Не заработало у автора, но должно работать._
@@ -82,6 +84,13 @@ OpenTTS не очень хорош в русской озвучке, но под
 `pip install simpleaudio`
 
 https://simpleaudio.readthedocs.io/en/latest/installation.html#linux-dependencies
+
+**plugin_playwav_aplay.py** - проигрывание WAV через aplay (рекомендуется под Linux)
+
+**plugin_playwav_audioplayer.py** - проигрывание WAV через библиотеку audioplayer. Дефолтовый вариант, но иногда плохо ставится под Linux.
+
+**plugin_playwav_consolewav.py** - заглушка. Ничего не проигрывает; используется в Докере и когда не нужно проигрывание на сервере.
+
 
 ## Неактивные скиллы (plugins_inactive)
 
