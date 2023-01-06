@@ -47,7 +47,10 @@ core.ttsEngine.setProperty("voice", "russian") либо найти нужный 
 2. Использует докер-сервер https://github.com/Aculeasis/rhvoice-rest для
    генерации голоса. Зайдите туда и запустите нужный вам докер.
 
-
+Если вам нужна качественная генерация через silero (требует больше ресурсов)
+1. Установите в options/core.json `"ttsEngineId": "silero_rest"`
+2. Использует докер-сервер https://github.com/janvarev/silero_rest_service для
+   генерации голоса. Зайдите туда и запустите нужный вам докер.
 
 **3 вариант. Поставить TTS rhvoice**
 

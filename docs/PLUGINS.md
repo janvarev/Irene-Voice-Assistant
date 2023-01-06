@@ -73,6 +73,15 @@ OpenTTS не очень хорош в русской озвучке, но под
 
 Для работы укажите в core.json `"ttsEngineId": "opentts",`
 
+**plugin_tts_silero_rest.py** - (оффлайн) TTS через Silero.
+Использует докер-сервер https://github.com/janvarev/silero_rest_service для
+генерации голоса. Зайдите туда и запустите нужный вам докер.
+
+Голос и адрес докера задается в конфиге.
+
+Для работы укажите в core.json `"ttsEngineId": "silero_rest",`
+
+
 ---
 
 ### PlayWav
