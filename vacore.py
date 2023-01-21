@@ -6,6 +6,9 @@ from termcolor import colored, cprint
 import time
 from threading import Timer
 
+from sklearn.feature_extraction.text import CountVectorizer     #pip install scikit-learn
+from sklearn.linear_model import LogisticRegression
+
 from jaa import JaaCore
 
 version = "7.4"
@@ -67,10 +70,27 @@ class VACore(JaaCore):
         import mpcapi.core
         self.mpchc = mpcapi.core.MpcAPI()
 
+        self.vectorizer = None
+        self.clf = None
+        self.data_set = {}
 
+    def init_data_set(self):
+        self.data_set = {}
+        for val in self.plugin_commands.values():
+            for item in val:
+                for command in item.split("|"):
+                    self.data_set[command] = command
+
+        # Обучение матрицы на data_set модели
+        self.vectorizer = CountVectorizer()
+        vectors = self.vectorizer.fit_transform(list(self.data_set.keys()))
+
+        self.clf = LogisticRegression()
+        self.clf.fit(vectors, list(self.data_set.values()))
 
     def init_with_plugins(self):
         self.init_plugins(["core"])
+        self.init_data_set()
         self.display_init_info()
 
         self.setup_assistant_voice()
@@ -387,6 +407,24 @@ class VACore(JaaCore):
 
                         #context = self.context
                         #self.context_clear()
+
+                        if command_options not in self.data_set.values():
+                            print("Команда не найдена, пытаемся найти похожую")
+                            # Получаем вектор полученного текста
+                            # сравниваем с вариантами, получая наиболее подходящий ответ
+                            text_vector = self.vectorizer.transform([command_options]).toarray()[0]
+                            predict = self.clf.predict([text_vector])[0]
+
+                            probs = self.clf.predict_proba([text_vector])
+                            prob_of_correct_answer = probs[0][self.clf.classes_.tolist().index(predict)]
+
+                            print(f"Предсказанная команда: {predict} с вероятностью {prob_of_correct_answer}")
+                            if prob_of_correct_answer > 0.05:
+                                print("Заменяем на предсказанную команду")
+                                command_options = predict
+                            else:
+                                print("Вероятность предсказания низкая, оставляем как есть")
+
                         self.execute_next(command_options, None)
                         haveRun = True
                         break

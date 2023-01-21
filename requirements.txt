@@ -9,3 +9,4 @@ requests
 numpy
 audioplayer
 python-dateutil~=2.6.0
+scikit-learn~=1.2.0
