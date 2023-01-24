@@ -7,7 +7,7 @@ from vacore import VACore
 def start(core:VACore):
     manifest = {
         "name": "Core plugin",
-        "version": "2.6",
+        "version": "3.0",
 
         "default_options": {
             "mpcIsUse": True,
@@ -32,6 +32,7 @@ def start(core:VACore):
             "contextRemoteWaitForCall": False,
 
             "tempDir": "temp",
+            "fuzzyThreshold": 0.95,
         },
 
     }

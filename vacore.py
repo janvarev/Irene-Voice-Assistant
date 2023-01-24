@@ -6,9 +6,13 @@ from termcolor import colored, cprint
 import time
 from threading import Timer
 
+from typing import Dict
+
 from jaa import JaaCore
 
-version = "7.4.1"
+from collections.abc import Callable
+
+version = "7.5"
 
 # main VACore class
 
@@ -31,6 +35,9 @@ class VACore(JaaCore):
         }
 
         self.playwavs = {
+        }
+
+        self.fuzzy_processors: Dict[str, tuple[Callable,Callable]] = {
         }
 
         # more options
@@ -107,6 +114,11 @@ class VACore(JaaCore):
             for cmd in manifest["playwav"].keys():
                 self.playwavs[cmd] = manifest["playwav"][cmd]
 
+        # adding fuzzy processors engines from plugin manifest
+        if "fuzzy_processor" in manifest: # process commands
+            for cmd in manifest["fuzzy_processor"].keys():
+                self.fuzzy_processors[cmd] = manifest["fuzzy_processor"][cmd]
+
     def stub_online_required(self,core,phrase):
         self.play_voice_assistant_speech(self.plugin_options("core")["replyOnlineRequired"])
 
@@ -160,6 +172,13 @@ class VACore(JaaCore):
                 self.ttss[self.ttsEngineId2][0](self)
             except Exception as e:
                 self.print_error("Ошибка инициализации плагина TTS2 (ttsEngineId2)", e)
+
+        # init all fuzzy_processors
+        for k in self.fuzzy_processors.keys():
+            try:
+                self.fuzzy_processors[k][0](self)
+            except Exception as e:
+                self.print_error("Ошибка инициализации fuzzy_processor {0}".format(k), e)
 
     def play_voice_assistant_speech(self,text_to_speech:str):
         self.lastSay = text_to_speech
@@ -284,6 +303,22 @@ class VACore(JaaCore):
                         next_context = context[keyall]
                         self.execute_next(rest_phrase,next_context)
                         return
+
+            # третий проход - ищем с помощью fuzzy_processors
+            # TODO: по хорошему надо пробежаться по всем процессорам, и выдать лучший результат,
+            # но пока берется просто первый прошедший пороговое значение
+            for fuzzy_processor_k in self.fuzzy_processors.keys():
+                res = self.fuzzy_processors[fuzzy_processor_k][1](self,command,context)
+
+                # fuzzy processor должен вернуть либо None либо
+                # (context_key:str,уверенность:float[0:1],rest_phrase:str) для лучшей фразы
+                print("Fuzzy processor {0}, result for '{1}': {2}".format(fuzzy_processor_k, command, res))
+
+                if res is not None:
+                    keyall, probability, rest_phrase = res
+                    if self.plugin_options("core")["fuzzyThreshold"] < probability:
+                        next_context = context[keyall]
+                        self.execute_next(rest_phrase, next_context)
 
 
             # if not founded
@@ -446,6 +481,7 @@ class VACore(JaaCore):
 
         self.format_print_key_list("TTS engines", self.ttss.keys())
         self.format_print_key_list("PlayWavs engines", self.playwavs.keys())
+        self.format_print_key_list("FuzzyProcessor engines", self.fuzzy_processors.keys())
         self.format_print_key_list("Assistant names", self.voiceAssNames)
 
 
