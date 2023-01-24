@@ -1,4 +1,4 @@
-import pyautogui
+# import pyautogui
 import time
 import os
 
@@ -36,7 +36,7 @@ def run_wiki(core:VACore, phrase:str):
 
             # чтение ассистентом первых двух предложений summary со страницы Wikipedia
             # (могут быть проблемы с мультиязычностью)
-            core.play_voice_assistant_speech(wiki_page.summary.split(".")[:2])
+            core.play_voice_assistant_speech(" ".join(wiki_page.summary.split(".")[:2]))
         else:
             # открытие ссылки на поисковик в браузере в случае, если на Wikipedia не удалось найти ничего по запросу
             # play_voice_assistant_speech(translator.get(
