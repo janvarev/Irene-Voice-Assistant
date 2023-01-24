@@ -12,7 +12,7 @@ from jaa import JaaCore
 
 from collections.abc import Callable
 
-version = "7.5"
+version = "7.5.1"
 
 # main VACore class
 
@@ -319,7 +319,7 @@ class VACore(JaaCore):
                     if self.plugin_options("core")["fuzzyThreshold"] < probability:
                         next_context = context[keyall]
                         self.execute_next(rest_phrase, next_context)
-
+                        return
 
             # if not founded
             if self.context == None:

@@ -32,7 +32,7 @@ def start(core:VACore):
             "contextRemoteWaitForCall": False,
 
             "tempDir": "temp",
-            "fuzzyThreshold": 0.95,
+            "fuzzyThreshold": 0.5,
         },
 
     }
