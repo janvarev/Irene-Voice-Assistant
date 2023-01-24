@@ -8,7 +8,7 @@ from threading import Timer
 
 from jaa import JaaCore
 
-version = "7.4"
+version = "7.4.1"
 
 # main VACore class
 
@@ -448,10 +448,26 @@ class VACore(JaaCore):
         self.format_print_key_list("PlayWavs engines", self.playwavs.keys())
         self.format_print_key_list("Assistant names", self.voiceAssNames)
 
+
+
         cprint("Commands list: "+"#"*65, "blue")
         for plugin in self.plugin_commands:
             self.format_print_key_list(plugin, self.plugin_commands[plugin])
         cprint("#"*80, "blue")
+
+        # dump assistant names, cmds, numbers to file
+
+        # with open("options/commandslist.txt", 'w', encoding="utf-8") as f:
+        #     for k1 in self.voiceAssNames:
+        #         f.write(k1 + "\n")
+        #     for plugin in self.plugin_commands:
+        #         for k in self.plugin_commands[plugin]:
+        #             ar_k = str(k).split("|")
+        #             for k1 in ar_k:
+        #                 f.write(k1 + "\n")
+        #     import utils.num_to_text_ru
+        #     for i in range(101):
+        #         f.write(utils.num_to_text_ru.num2text(i)+"\n")
 
     def format_print_key_list(self, key:str, value:list):
         print(colored(key+": ", "blue")+", ".join(value))
