@@ -20,7 +20,7 @@ modname = os.path.basename(__file__)[:-3] # calculating modname
 def start(core:VACore):
     manifest = {
         "name": "TTS silero V3",
-        "version": "1.3",
+        "version": "2.0",
         "require_online": False,
 
         "default_options": {
@@ -29,6 +29,9 @@ def start(core:VACore):
             "sample_rate": 24000,
             "put_accent": True,
             "put_yo": True,
+            "speaker_by_assname": {
+                "николай|николаю": "aidar"
+            }
         },
 
         "tts": {
@@ -71,6 +74,13 @@ def towavfile(core:VACore, text_to_speech:str, wavfile:str):
 
     options = core.plugin_options(modname)
     speaker = options["speaker"]
+
+    # дополнительный резолвинг по имени обращения, если нужно
+    if core.cur_callname != "":
+        for k in options["speaker_by_assname"].keys():
+            ar_k = str(k).split("|")
+            if core.cur_callname in ar_k:
+                speaker = options["speaker_by_assname"][k]
 
     # рендерим wav
     path = core.model.save_wav(text=text_to_speech,

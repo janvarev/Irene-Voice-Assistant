@@ -12,7 +12,7 @@ from jaa import JaaCore
 
 from collections.abc import Callable
 
-version = "7.5.1"
+version = "7.6"
 
 # main VACore class
 
@@ -73,6 +73,8 @@ class VACore(JaaCore):
 
         import mpcapi.core
         self.mpchc = mpcapi.core.MpcAPI()
+
+        self.cur_callname:str = ""
 
 
 
@@ -409,6 +411,7 @@ class VACore(JaaCore):
                     callname = voice_input[ind]
 
                     if callname in self.voiceAssNames: # найдено имя ассистента
+                        self.cur_callname = callname
                         if self.logPolicy == "cmd":
                             print("Input (cmd): ",voice_input_str)
 
