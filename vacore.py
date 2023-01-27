@@ -12,7 +12,7 @@ from jaa import JaaCore
 
 from collections.abc import Callable
 
-version = "7.6"
+version = "7.6.1"
 
 # main VACore class
 
@@ -335,6 +335,16 @@ class VACore(JaaCore):
                     self.context_set(self.context,self.contextTimerLastDuration)
         except Exception as err:
             print(traceback.format_exc())
+
+    # fuzzy util
+    def fuzzy_get_command_key_from_context(self, predicted_command:str, context:dict):
+        # возвращает ключ в context по одной из распознанных команд внутри
+        # нужно для fuzzy, так как одним из возвратов должен быть КЛЮЧ в контексте, а не команда
+        for keyall in context.keys():
+            for key in keyall.split("|"):
+                if key == predicted_command:
+                    return keyall
+        return None
 
     # ----------- timers -----------
     def set_timer(self, duration, timerFuncEnd, timerFuncUpd = None):
