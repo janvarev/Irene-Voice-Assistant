@@ -176,6 +176,9 @@ C версии 7.5 поддерживает нечеткую обработку 
 Для задания порога распознавания есть глобальный параметр fuzzyThreshold в core.json, 
 он принимает значения от 0 до 1 (1 - полная уверенность в фразе)
 
+Два известных плагина, работающих с этим:
+* https://github.com/janvarev/irene_plugin_fuzzy_thefuzz - через thefuzz, нечеткое сравнение строк
+* https://github.com/modos189/irene_plugin_fuzzy_sklearn - через scikit-learn
 
 ## Contributing
 
