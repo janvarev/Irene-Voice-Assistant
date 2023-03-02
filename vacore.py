@@ -12,7 +12,7 @@ from jaa import JaaCore
 
 from collections.abc import Callable
 
-version = "7.6.1"
+version = "7.6.2"
 
 # main VACore class
 
@@ -187,6 +187,7 @@ class VACore(JaaCore):
         remoteTTSList = self.remoteTTS.split(",")
 
         self.remoteTTSResult = {}
+        is_processed = False
         if "none" in remoteTTSList: # no remote tts, do locally anything
             #self.remoteTTSResult = "" # anywhere, set it ""
 
@@ -206,8 +207,12 @@ class VACore(JaaCore):
                 if not self.useTTSCache and os.path.exists(tts_file):
                     os.unlink(tts_file)
 
+            is_processed = True
+
         if "saytxt" in remoteTTSList: # return only last say txt
             self.remoteTTSResult["restxt"] = text_to_speech
+
+            is_processed = True
 
         if "saywav" in remoteTTSList:
             if self.useTTSCache:
@@ -227,6 +232,15 @@ class VACore(JaaCore):
                 os.unlink(tts_file)
 
             self.remoteTTSResult["wav_base64"] = encoded_string
+
+            is_processed = True
+
+        if not is_processed:
+            print("Ошибка при выводе TTS - remoteTTS не был обработан.")
+            print("Текущий remoteTTS: {}".format(self.remoteTTS))
+            print("Текущий remoteTTSList: {}".format(remoteTTSList))
+            print("Ожидаемый remoteTTS (например): 'none'")
+
 
 
     def say(self,text_to_speech:str): # alias for play_voice_assistant_speech
