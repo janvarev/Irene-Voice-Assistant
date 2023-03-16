@@ -12,7 +12,7 @@ from jaa import JaaCore
 
 from collections.abc import Callable
 
-version = "7.7"
+version = "8.0"
 
 # main VACore class
 
@@ -285,6 +285,50 @@ class VACore(JaaCore):
         return all_num_to_text(text)
 
     # -------- main function ----------
+    def find_best_cmd_with_fuzzy(self,command,context,allow_rest_phrase = True,threshold:float = None):
+        # первый проход - ищем полное совпадение
+        for keyall in context.keys():
+            keys = keyall.split("|")
+            for key in keys:
+                if command == key:
+                    return (keyall, 1.0, "")
+
+        if allow_rest_phrase: # если фраза может быть неполной
+            # второй проход - ищем частичное совпадение
+            for keyall in context.keys():
+                keys = keyall.split("|")
+                for key in keys:
+                    if command.startswith(key):
+                        rest_phrase = command[(len(key) + 1):]
+                        return (keyall, 1.0, rest_phrase)
+
+        if threshold is None:
+            threshold = self.plugin_options("core")["fuzzyThreshold"]
+
+        # третий проход - ищем с помощью fuzzy_processors
+        # TODO: по хорошему надо пробежаться по всем процессорам, и выдать лучший результат,
+        # но пока берется просто первый прошедший пороговое значение
+        for fuzzy_processor_k in self.fuzzy_processors.keys():
+            res = None
+            try:
+                res = self.fuzzy_processors[fuzzy_processor_k][1](self, command, context, allow_rest_phrase)
+            except TypeError as e:
+                # старый вариант, где только 3 параметра
+                # print(e)
+                # import traceback
+                # traceback.print_exc()
+                res = self.fuzzy_processors[fuzzy_processor_k][1](self, command, context)
+
+            # fuzzy processor должен вернуть либо None либо
+            # (context_key:str,уверенность:float[0:1],rest_phrase:str) для лучшей фразы
+            print("Fuzzy processor {0}, result for '{1}': {2}".format(fuzzy_processor_k, command, res))
+
+            if res is not None:
+                keyall, probability, rest_phrase = res
+                if threshold < probability:
+                    return res
+
+        return None
 
     def execute_next(self,command,context):
         if context == None:
@@ -300,42 +344,49 @@ class VACore(JaaCore):
             return
 
         try:
+            res = self.find_best_cmd_with_fuzzy(command,context,True)
+            if res is not None:
+                keyall, probability, rest_phrase = res
+                next_context = context[keyall]
+                self.execute_next(rest_phrase, next_context)
+                return
+
             # первый проход - ищем полное совпадение
-            for keyall in context.keys():
-                keys = keyall.split("|")
-                for key in keys:
-                    if command == key:
-                        rest_phrase = ""
-                        next_context = context[keyall]
-                        self.execute_next(rest_phrase,next_context)
-                        return
-
-            # второй проход - ищем частичное совпадение
-            for keyall in context.keys():
-                keys = keyall.split("|")
-                for key in keys:
-                    if command.startswith(key):
-                        rest_phrase = command[(len(key)+1):]
-                        next_context = context[keyall]
-                        self.execute_next(rest_phrase,next_context)
-                        return
-
-            # третий проход - ищем с помощью fuzzy_processors
-            # TODO: по хорошему надо пробежаться по всем процессорам, и выдать лучший результат,
-            # но пока берется просто первый прошедший пороговое значение
-            for fuzzy_processor_k in self.fuzzy_processors.keys():
-                res = self.fuzzy_processors[fuzzy_processor_k][1](self,command,context)
-
-                # fuzzy processor должен вернуть либо None либо
-                # (context_key:str,уверенность:float[0:1],rest_phrase:str) для лучшей фразы
-                print("Fuzzy processor {0}, result for '{1}': {2}".format(fuzzy_processor_k, command, res))
-
-                if res is not None:
-                    keyall, probability, rest_phrase = res
-                    if self.plugin_options("core")["fuzzyThreshold"] < probability:
-                        next_context = context[keyall]
-                        self.execute_next(rest_phrase, next_context)
-                        return
+            # for keyall in context.keys():
+            #     keys = keyall.split("|")
+            #     for key in keys:
+            #         if command == key:
+            #             rest_phrase = ""
+            #             next_context = context[keyall]
+            #             self.execute_next(rest_phrase,next_context)
+            #             return
+            #
+            # # второй проход - ищем частичное совпадение
+            # for keyall in context.keys():
+            #     keys = keyall.split("|")
+            #     for key in keys:
+            #         if command.startswith(key):
+            #             rest_phrase = command[(len(key)+1):]
+            #             next_context = context[keyall]
+            #             self.execute_next(rest_phrase,next_context)
+            #             return
+            #
+            # # третий проход - ищем с помощью fuzzy_processors
+            # # TODO: по хорошему надо пробежаться по всем процессорам, и выдать лучший результат,
+            # # но пока берется просто первый прошедший пороговое значение
+            # for fuzzy_processor_k in self.fuzzy_processors.keys():
+            #     res = self.fuzzy_processors[fuzzy_processor_k][1](self,command,context)
+            #
+            #     # fuzzy processor должен вернуть либо None либо
+            #     # (context_key:str,уверенность:float[0:1],rest_phrase:str) для лучшей фразы
+            #     print("Fuzzy processor {0}, result for '{1}': {2}".format(fuzzy_processor_k, command, res))
+            #
+            #     if res is not None:
+            #         keyall, probability, rest_phrase = res
+            #         if self.plugin_options("core")["fuzzyThreshold"] < probability:
+            #             next_context = context[keyall]
+            #             self.execute_next(rest_phrase, next_context)
+            #             return
 
             # if not founded
             if self.context == None:
