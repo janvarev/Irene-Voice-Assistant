@@ -39,6 +39,7 @@ WORKDIR /home/python
 
 COPY ./requirements-docker.txt ./requirements.txt
 RUN --mount=type=cache,target=/home/python/.cache,uid=1001,gid=1001 pip install -r ./requirements.txt
+RUN --mount=type=cache,target=/home/python/.cache,uid=1001,gid=1001 pip install thefuzz
 
 #COPY * .
 COPY --chown=python:python empty_folder ./irene
