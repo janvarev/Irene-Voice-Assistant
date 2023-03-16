@@ -1,3 +1,7 @@
+Adapted for Irene voice commands
+
+https://github.com/janvarev/Irene-Voice-Assistant
+
 Small Russian model for Vosk (Android, RPi, other small devices)
 
 %WER 22.71 [ 9092 / 40042, 1124 ins, 1536 del, 6432 sub ] exp/chain_a/tdnn/decode_test_audiobooks_look_fast/wer_10_0.0
