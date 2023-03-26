@@ -12,7 +12,7 @@ from jaa import JaaCore
 
 from collections.abc import Callable
 
-version = "8.0"
+version = "8.1"
 
 # main VACore class
 
@@ -76,6 +76,7 @@ class VACore(JaaCore):
 
         self.cur_callname:str = ""
 
+        self.input_cmd_full:str = ""
 
 
     def init_with_plugins(self):
@@ -331,8 +332,9 @@ class VACore(JaaCore):
         return None
 
     def execute_next(self,command,context):
-        if context == None:
+        if context == None: # первый вход
             context = self.commands
+            self.input_cmd_full = command # нужно для василия
 
         if isinstance(context,dict):
             pass

@@ -180,6 +180,22 @@ C версии 7.5 поддерживает нечеткую обработку 
 * https://github.com/janvarev/irene_plugin_fuzzy_thefuzz - через thefuzz, нечеткое сравнение строк
 * https://github.com/modos189/irene_plugin_fuzzy_sklearn - через scikit-learn
 
+## Плагины от голосового помощника Васисуалия
+
+С версии 8.1 в тестовом режиме сделана поддержка core-плагинов от голосового помощника Васи:
+https://github.com/Oknolaz/vasisualy
+
+Для добавления:
+1. Плагины надо кидать в plugins_vasi/skills (брать в https://github.com/Oknolaz/vasisualy/tree/master/vasisualy/skills )
+2. от каждого плагина ожидается, что в модуле будет прописан triggers, на основании которого
+формируется список команд. Если нет - плагин надо доработать.
+
+Работает в простейших случаях - протестировано на плагинах coin и crystall_ball.
+
+Если не работает - читайте код. Поддержка сделана через плагин plugin_vasi.py.
+
+
+
 ## Contributing
 
 Если вы хотите что-то добавить в проект, хорошо ознакомиться с
