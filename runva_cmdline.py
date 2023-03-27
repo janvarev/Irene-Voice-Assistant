@@ -13,7 +13,7 @@ if __name__ == "__main__":
     time.sleep(0.5) # небольшой таймаут
     cmd = "привет"
     try:
-        cmd_core.execute_next(cmd,None)
+        cmd_core.execute_next(cmd,cmd_core.context)
     except:
         if cmd == "привет":
             print("Ошибка при запуске команды 'привет'. Скорее всего, проблема с TTS.")
@@ -29,4 +29,4 @@ if __name__ == "__main__":
         if cmd == "exit":
             break
 
-        cmd_core.execute_next(cmd,None)
+        cmd_core.execute_next(cmd,cmd_core.context)
