@@ -1,0 +1,10 @@
+wikipedia-api~=0.5.4
+pyttsx3=2.71
+vosk~=0.3.7
+termcolor~=1.1.0
+sounddevice
+soundfile
+requests
+numpy
+audioplayer
+python-dateutil
