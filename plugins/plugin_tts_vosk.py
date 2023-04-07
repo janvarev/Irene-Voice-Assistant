@@ -4,7 +4,8 @@
 import os
 
 from vacore import VACore
-import vosk_tts
+from vosk_tts.model import Model
+from vosk_tts.synth import Synth
 
 modname = os.path.basename(__file__)[:-3] # calculating modname
 
@@ -16,11 +17,11 @@ def start(core:VACore):
         "require_online": False,
 
         "default_options": {
-            "voiceId": "vosk-model-tts-0.1-natasha", # id голоса
+            "voiceId": "vosk-model-tts-ru-0.1-natasha", # id голоса
         },
 
         "tts": {
-            "vosk": (init,say,towavfile) # первая функция инициализации, вторая - говорить, третья - в wav file
+            "vosk": (init,None,towavfile) # первая функция инициализации, вторая - говорить, третья - в wav file
                                          # если вторая - None, то используется 3-я с проигрыванием файла
         }
     }
@@ -32,8 +33,8 @@ def start_with_options(core:VACore, manifest:dict):
 def init(core:VACore):
     options = core.plugin_options(modname)
 
-    core.ttsModel = vosk_tts.Model(model_name = options['voiceId'])
-    core.ttsSynth = vosk_tts.Synth(model)
+    core.ttsModel = Model(model_name = options['voiceId'])
+    core.ttsSynth = Synth(core.ttsModel)
 
 def towavfile(core:VACore, text_to_speech:str,wavfile:str):
     """
