@@ -17,7 +17,8 @@ def start(core:VACore):
         "require_online": False,
 
         "default_options": {
-            "voiceId": "vosk-model-tts-ru-0.1-natasha", # id голоса
+            "voiceId": "vosk-model-tts-ru-0.1-irina", # id голоса
+            # vosk-model-tts-ru-0.1-natasha
         },
 
         "tts": {
