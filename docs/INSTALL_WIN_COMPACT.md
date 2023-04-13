@@ -3,6 +3,7 @@
 Касается вариантов:
 
 а) https://github.com/janvarev/Irene-VA-win-installer (базовая папка Irene-Voice-Assistant)
+
 б) https://github.com/janvarev/Irene-Voice-Assistant/releases (базовая папка webui)
 
 ## Как сделать, чтобы работали онлайн-плагины?
