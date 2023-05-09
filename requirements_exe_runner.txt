@@ -13,3 +13,6 @@ python-dateutil
 fastapi
 uvicorn[standard]
 fastapi-utils
+gradio~=3.28.3
+fsspec==2023.1.0
+

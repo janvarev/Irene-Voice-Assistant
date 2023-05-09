@@ -55,7 +55,7 @@ except Exception as e:
         else:
             print(str(color).upper(),p)
 
-version = "1.7.1"
+version = "2.0.0"
 
 class JaaCore:
     def __init__(self,root_file = __file__):
@@ -202,6 +202,53 @@ class JaaCore:
         if "options" in manifest:
             return manifest["options"]
         return None
+
+    # ------------ gradio stuff --------------
+    def gradio_save(self,pluginname):
+        print("Saving options for {0}!".format(pluginname))
+        self.save_plugin_options(pluginname,self.plugin_options(pluginname))
+
+    def gradio_upd(self, pluginname, option, val):
+        options = self.plugin_options(pluginname)
+        options[option] = val
+        print(option,val,options)
+
+    def gradio_render_settings_interface(self, title="Settings manager"):
+        import gradio as gr
+
+        with gr.Blocks() as gr_interface:
+            gr.Markdown("# {0}".format(title))
+            for pluginname in self.plugin_manifests:
+                manifest = self.plugin_manifests[pluginname]
+                if "options" in manifest:
+                    options = manifest["options"]
+                    if len(options) > 1: # not only v
+                        with gr.Tab(pluginname):
+                            gr.Markdown("## '{0}' plugin options".format(pluginname))
+                            text_button = gr.Button("Save".format(pluginname))
+                            #options_int_list = []
+                            for option in options:
+
+                                #gr.Label(label=option)
+                                if option != "v":
+                                    val = options[option]
+                                    if isinstance(val, (bool, )):
+                                        gr_elem = gr.Checkbox(value=val,label=option)
+                                    else:
+                                        gr_elem = gr.Textbox(value=val, label=option)
+
+                                    def handler(x,pluginname=pluginname,option=option):
+                                        self.gradio_upd(pluginname, option, x)
+
+                                    gr_elem.change(handler, gr_elem, None)
+
+                            def handler_save(pluginname=pluginname):
+                                self.gradio_save(pluginname)
+
+                            text_button.click(handler_save,inputs=None,outputs=None)
+
+        return gr_interface
+
 
 def load_options(options_file=None,py_file=None,default_options={}):
     # 1. calculating options filename

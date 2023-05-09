@@ -10,3 +10,5 @@ requests
 numpy
 audioplayer
 python-dateutil~=2.6.0
+gradio~=3.28.3
+fsspec==2023.1.0
