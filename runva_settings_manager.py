@@ -13,4 +13,4 @@ if __name__ == "__main__":
     print("Settings manager for VoiceAssistantCore.")
 
     gr_int = cmd_core.gradio_render_settings_interface(title="Менеджер настроек для голосового помощника Ирины")
-    gr_int.launch()
+    gr_int.launch(inbrowser=True)
