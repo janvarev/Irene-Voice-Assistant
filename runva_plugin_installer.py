@@ -210,7 +210,7 @@ if __name__ == "__main__":
     print("0) Самостоятельно задать адрес Github-проекта с плагином")
     for i in range(len(approved_plugins_list)):
         cur_pl = approved_plugins_list[i]
-        print("{0}) {1},   URL: {2}".format(i+1,cur_pl["name"],cur_pl["url"]))
+        print("{0}) {1} | {2}".format(i+1,cur_pl["name"],cur_pl["url"]))
         print("  ",cur_pl["description"])
 
     print()
