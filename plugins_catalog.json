@@ -1,0 +1,14 @@
+{"plugins":
+      [
+        {"name": "plugin_boltalka_openai",
+         "plugin_file_check": "plugin_boltalka_openai.py",
+         "url": "https://github.com/janvarev/irene_plugin_boltalka_openai",
+         "description": "Болталка с OpenAI",
+         "added": "2023-05-10"},
+        {"name": "plugin_boltalka2_openai",
+         "plugin_file_check": "plugin_boltalka2_openai.py",
+         "url": "https://github.com/janvarev/irene_plugin_boltalka2_openai",
+         "description": "Болталка с OpenAI v2 (поддержка чата и gpt-3.5-turbo)",
+         "added": "2023-05-10"}
+        ]
+}
