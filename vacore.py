@@ -12,7 +12,7 @@ from jaa import JaaCore
 
 from collections.abc import Callable
 
-version = "10.3.0"
+version = "10.4.0"
 
 # main VACore class
 

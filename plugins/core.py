@@ -41,7 +41,7 @@ def start(core:VACore):
             "mpcHcPath": "C:\Program Files (x86)\K-Lite Codec Pack\MPC-HC64\mpc-hc64_nvo.exe",
             "mpcIsUseHttpRemote": False,
 
-            "isOnline": False,
+            "isOnline": True,
             #"ttsIndex": 0,
             "useTTSCache": False,
             "ttsEngineId": "pyttsx",
