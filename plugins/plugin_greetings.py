@@ -28,4 +28,9 @@ def play_greetings(core:VACore, phrase: str): # в phrase находится о�
         "И тебе привет!",
         "Рада тебя видеть!",
     ]
-    core.play_voice_assistant_speech(greetings[random.randint(0, len(greetings) - 1)])
+    greet_str = greetings[random.randint(0, len(greetings) - 1)]
+    print(f"- Сейчас я скажу фразу {greet_str}...\nЕсли вы её не услышите, значит, у вас проблемы с TTS или выводом звука и их надо настроить через менеджер настроек.")
+    core.play_voice_assistant_speech(greet_str)
+    print(f"- Я сказала фразу {greet_str}")
+
+
