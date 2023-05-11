@@ -22,6 +22,15 @@ def start(core:VACore):
         "version": "1.2",
         "require_online": False,
 
+        "description": "Плагин таймера\n"
+                       "Голосовая команда: таймер, таймер десять минут, таймер двадцать секунд\n"
+                        "Просто 'таймер' ставит таймер на 5 минут",
+
+        "options_label": {
+            "wavRepeatTimes": "число повторений WAV-файла таймера",
+            "wavPath": "путь к звуковому файлу",
+        },
+
         "default_options": {
             "wavRepeatTimes": 1, # число повторений WAV-файла таймера
             "wavPath": 'media/timer.wav', # путь к звуковому файлу

@@ -18,6 +18,10 @@ def start(core:VACore):
     manifest = {
         "name": "vasisualy plugins loader",
         "version": "1.0",
+        "description": "Технический плагин для загрузки плагинов голосового помощника vasisualy (https://github.com/Oknolaz/vasisualy)\n"
+                        "1. Плагины надо кидать в plugins_vasi/skills"
+                        "2. От каждого плагина ожидается, что в модуле будет прописан triggers, на основании которого"
+                        "формируется список команд. Если нет - плагин надо доработать.",
         "require_online": True,
 
         "default_options": {
