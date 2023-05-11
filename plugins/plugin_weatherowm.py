@@ -16,6 +16,13 @@ def start(core:VACore):
         "version": "1.0",
         "require_online": True,
 
+        "description": """
+Погода (онлайн). 
+Голосовые команды: "погода, погода завтра, погода послезавтра, прогноз погоды". 
+Требует установки в конфиге бесплатного API-ключа с https://openweathermap.org/ , а также местоположения
+(Рекомендуется вручную заполнить геокординаты lon и lat)
+""",
+
         "default_options": {
             "apiKey": "", # get at https://openweathermap.org/
 

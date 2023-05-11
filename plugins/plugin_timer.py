@@ -27,7 +27,7 @@ def start(core:VACore):
                         "Просто 'таймер' ставит таймер на 5 минут",
 
         "options_label": {
-            "wavRepeatTimes": "число повторений WAV-файла таймера",
+            "wavRepeatTimes": "число повторений WAV-файла сигнала таймера",
             "wavPath": "путь к звуковому файлу",
         },
 

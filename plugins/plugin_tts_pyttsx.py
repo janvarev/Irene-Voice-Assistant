@@ -15,6 +15,11 @@ def start(core:VACore):
         "version": "1.1",
         "require_online": False,
 
+        "description": """
+TTS через pyttsx.
+Обычно работает без проблем, если у вас Windows с русским языком; иначе лучше переставить engineId на vosk или silero_v3.
+""",
+
         "default_options": {
             "sysId": 0, # id голоса в системе, может варьироваться
         },

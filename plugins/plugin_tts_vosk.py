@@ -18,7 +18,7 @@ def start(core:VACore):
 
         "description": "TTS через VOSK\n"
                        "ID для указания: vosk\n"
-                       "Список голосов доступен здесь: (https://giters.com/alphacep/vosk-tts)[https://giters.com/alphacep/vosk-tts]",
+                       "Список голосов доступен здесь: https://giters.com/alphacep/vosk-tts",
 
         "default_options": {
             "voiceId": "vosk-model-tts-ru-0.1-irina", # id голоса
