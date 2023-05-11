@@ -55,7 +55,7 @@ except Exception as e:
         else:
             print(str(color).upper(),p)
 
-version = "2.1.0"
+version = "2.2.0"
 
 class JaaCore:
     def __init__(self,root_file = __file__):
@@ -210,7 +210,17 @@ class JaaCore:
 
     def gradio_upd(self, pluginname, option, val):
         options = self.plugin_options(pluginname)
-        options[option] = val
+
+        # special case
+        if isinstance(options[option], (list, dict)) and isinstance(val, str):
+            import json
+            try:
+                options[option] = json.loads(val)
+            except Exception as e:
+                print(e)
+                pass
+        else:
+            options[option] = val
         print(option,val,options)
 
     def gradio_render_settings_interface(self, title:str="Settings manager", required_fields_to_show_plugin:list=["default_options"]):
@@ -259,6 +269,9 @@ class JaaCore:
 
                                         if isinstance(val, (bool, )):
                                             gr_elem = gr.Checkbox(value=val,label=label)
+                                        elif isinstance(val, (dict,list)):
+                                            import json
+                                            gr_elem = gr.Textbox(value=json.dumps(val,ensure_ascii=False), label=label)
                                         else:
                                             gr_elem = gr.Textbox(value=val, label=label)
 
