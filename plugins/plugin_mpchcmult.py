@@ -2,19 +2,20 @@
 # author: Vladislav Janvarev
 
 import subprocess
-
+import requests
 #from voiceassmain import play_voice_assistant_speech
 from vacore import VACore
 
 
 multPath = ""
 serialPath = ""
+options = {}
 
 # функция на старте
 def start(core:VACore):
     manifest = {
         "name": "MPC-HC проигрывание мультиков/сериалов",
-        "version": "2.0",
+        "version": "3.0",
         "require_online": False,
 
         "description": """
@@ -50,22 +51,34 @@ _Доп инфа:_
 2. Серии с субтитрами поддерживаются; файлы субтитров не будут учтены при поисках серии, не беспокойтесь о них.
 """,
 
+        "options_label": {
+            "multPath": "Путь до мультфильмов",
+            "serialPath": 'Путь до сериалов',
+            "player": "mpc-hc|dune MPC-HC локальный, Dune - по сети (поддерживается Dune HD Player)",
+            "dune_ip": "Для DUNE - внутренний IP адрес",
+            "dune_multPath": "Сетевой путь до мультфильмов (нужен Dune HD). Например: smb://192.168.1.4/mults/",
+        },
+
         "default_options": {
             "multPath": '',
             "serialPath": '',
+            "player": "mpc-hc",
+            "dune_ip": "",
+            "dune_multPath": "",
         },
 
         "commands": {
             "запусти плеер": run_player,
             "мультик": play_mult,
             "сериал": play_serial,
+            "стоп мультик|останови мультик": stop_mult,
         }
     }
     return manifest
 
 def start_with_options(core:VACore, manifest:dict):
     #print(manifest["options"])
-    global multPath, serialPath
+    global multPath, serialPath, options
     options = manifest["options"]
 
     multPath = options["multPath"]
@@ -92,11 +105,29 @@ def play_mult(core:VACore, phrase: str):
         name = str(f)[:-4].lower().replace(".","").replace(",","")
         if name == phrase:
             print("Мульт ",f)
-            subprocess.Popen([core.mpcHcPath, multPath+"\\"+f])
+            #subprocess.Popen([core.mpcHcPath, multPath+"\\"+f])
+            play_mult_direct(core, f)
+            core.say("Запускаю!")
             return
 
     core.say("Не нашла. Пожалуйста, повтори только название.")
     core.context_set(play_mult)
+
+def play_mult_direct(core:VACore, f:str):
+    if options["player"] == "mpc-hc":
+        subprocess.Popen([core.mpcHcPath, multPath + "\\" + f])
+    elif options["player"] == "dune":
+        res_str = requests.get(
+            f"http://{options.get('dune_ip')}/cgi-bin/do?cmd=start_playlist_playback&media_url={options.get('dune_multPath')}{f}&loop_mode=0")
+
+def stop_mult(core:VACore, phrase: str):
+    if options["player"] == "mpc-hc":
+        #subprocess.Popen([core.mpcHcPath, multPath + "\\" + f])
+        pass
+    elif options["player"] == "dune":
+        res_str = requests.get(
+            f"http://{options.get('dune_ip')}/cgi-bin/do?cmd=main_screen")
+
 
 def play_serial(core:VACore, phrase: str):
     if serialPath == "":
