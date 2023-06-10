@@ -1,5 +1,15 @@
 {"plugins":
       [
+        {"name": "plugin_fuzzy_thefuzz",
+         "plugin_file_check": "plugin_fuzzy_thefuzz.py",
+         "url": "https://github.com/janvarev/irene_plugin_fuzzy_thefuzz",
+         "description": "Нечеткое распознавание команд через thefuzz (нечеткое сравнение строк)",
+         "added": "2023-06-10"},
+        {"name": "plugin_fuzzy_ai_sentence",
+         "plugin_file_check": "plugin_fuzzy_ai_sentence.py",
+         "url": "https://github.com/janvarev/irene_plugin_fuzzy_ai_sentence",
+         "description": "Нечеткое распознавание команд через ai sentence (семантическое сходство)",
+         "added": "2023-06-10"},
         {"name": "plugin_boltalka_openai",
          "plugin_file_check": "plugin_boltalka_openai.py",
          "url": "https://github.com/janvarev/irene_plugin_boltalka_openai",
