@@ -12,7 +12,7 @@ from jaa import JaaCore
 
 from collections.abc import Callable
 
-version = "10.4.0"
+version = "10.5.0"
 
 # main VACore class
 
@@ -287,6 +287,21 @@ class VACore(JaaCore):
 
     # -------- main function ----------
     def find_best_cmd_with_fuzzy(self,command,context,allow_rest_phrase = True,threshold:float = None):
+        """
+        Поиск оптимальной команды с учетом обработчиков нечеткого сравнения
+
+        - command - команда
+        - context - в формате Ирининого контекста (словарь {"cmd":"val",...}) - с элементами контекста будет сравниваться в поиске команды
+        - allow_rest_phrase - дана ли в команде вся команда, или она может быть продолжена в контексте? не все нечеткие сравнители обрабатывают корректно
+        Пример:
+        allow_rest_phrase=True: привет как дела -> привет (отлично подходит, будет вернута rest_phrase как дела)
+        allow_rest_phrase=False: привет как дела -> привет (подходит не очень, будет вернута rest_phrase "")
+        - threshold - в случае нечеткого сравнения - порог схожести (от 0.0 до 1.0). Если лучший результат сравнения ниже порога, результат не будет возвращен.
+        Если None / не указано - будет браться из параметров core ядра Ирины.
+
+        Возвращает tuple(key_in_context, схожесть (от 0.0 до 1.0), res_phrase)
+        """
+
         # первый проход - ищем полное совпадение
         for keyall in context.keys():
             keys = keyall.split("|")

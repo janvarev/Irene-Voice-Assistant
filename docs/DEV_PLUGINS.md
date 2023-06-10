@@ -70,3 +70,41 @@
 ### 6. Плагин, устанавливающий голосовые команды в зависимости от пользовательских настроек
 
 Пример: plugins_inactive/plugin_urlopener.py
+
+### 7. Нечеткое распознавание команд пользователя
+
+Пример - нечеткое распознавание название мультика в plugins/plugin_mpchcmult.py
+
+```python
+# создаем список файлов в виде словаря
+name_dict = {}
+for f in mult_files:
+    name = str(f)[:-4].lower().replace(".","").replace(",","")
+    name_dict[name] = f
+
+res = core.find_best_cmd_with_fuzzy(phrase,name_dict,False,0.7)
+if res is not None: # найдено
+    filename = name_dict[res[0]]
+    print("Мульт ", filename)
+    play_mult_direct(core, filename)
+    core.say("Запускаю!")
+    return
+```
+
+Параметры:
+```python
+    def find_best_cmd_with_fuzzy(self,command,context,allow_rest_phrase = True,threshold:float = None):
+        """
+        Поиск оптимальной команды с учетом обработчиков нечеткого сравнения
+        
+        - command - команда
+        - context - в формате Ирининого контекста (словарь {"cmd":"val",...}) - с элементами контекста будет сравниваться в поиске команды
+        - allow_rest_phrase - дана ли в команде вся команда, или она может быть продолжена в контексте? не все нечеткие сравнители обрабатывают корректно
+        Пример: 
+        allow_rest_phrase=True: привет как дела -> привет (отлично подходит, будет вернута rest_phrase как дела)
+        allow_rest_phrase=False: привет как дела -> привет (подходит не очень, будет вернута rest_phrase "")
+        - threshold - в случае нечеткого сравнения - порог схожести (от 0.0 до 1.0). Если лучший результат сравнения ниже порога, результат не будет возвращен.
+        Если None / не указано - будет браться из параметров core ядра Ирины.
+        
+        Возвращает tuple(key_in_context, схожесть (от 0.0 до 1.0), res_phrase)
+```
