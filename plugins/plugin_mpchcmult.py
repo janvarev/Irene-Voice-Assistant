@@ -101,14 +101,29 @@ def play_mult(core:VACore, phrase: str):
 
     #core.play_voice_assistant_speech("Ищу мультфильм "+find)
     mult_files= mult_list()
+    name_dict = {}
+    #f_list = []
     for f in mult_files:
         name = str(f)[:-4].lower().replace(".","").replace(",","")
-        if name == phrase:
-            print("Мульт ",f)
-            #subprocess.Popen([core.mpcHcPath, multPath+"\\"+f])
-            play_mult_direct(core, f)
-            core.say("Запускаю!")
-            return
+        name_dict[name] = f
+        # if name == phrase:
+        #     print("Мульт ",f)
+        #     #subprocess.Popen([core.mpcHcPath, multPath+"\\"+f])
+        #     play_mult_direct(core, f)
+        #     core.say("Запускаю!")
+        #     return
+
+    res = core.find_best_cmd_with_fuzzy(phrase,name_dict,False,0.7)
+    if res is not None:
+        print(res)
+        f = name_dict[res[0]]
+        print("Мульт ", f)
+        #     #subprocess.Popen([core.mpcHcPath, multPath+"\\"+f])
+        play_mult_direct(core, f)
+        core.say("Запускаю!")
+        return
+
+
 
     core.say("Не нашла. Пожалуйста, повтори только название.")
     core.context_set(play_mult)
