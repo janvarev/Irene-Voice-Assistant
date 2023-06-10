@@ -2,9 +2,12 @@ import traceback
 
 from vacore import VACore
 import time
+import os
+
+if 'GRADIO_ANALYTICS_ENABLED' not in os.environ:
+    os.environ['GRADIO_ANALYTICS_ENABLED'] = 'False'
+
 import gradio as gr
-
-
 
 # ------------------- main loop ------------------
 if __name__ == "__main__":
