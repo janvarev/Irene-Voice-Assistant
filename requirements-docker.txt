@@ -29,3 +29,5 @@ wikipedia-api~=0.5.4
 termcolor~=1.1.0
 requests
 python-dateutil~=2.6.0
+openai==0.28.0
+
