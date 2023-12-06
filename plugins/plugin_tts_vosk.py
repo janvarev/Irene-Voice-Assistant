@@ -13,7 +13,7 @@ modname = os.path.basename(__file__)[:-3] # calculating modname
 def start(core:VACore):
     manifest = {
         "name": "TTS vosk",
-        "version": "1.1",
+        "version": "1.2",
         "require_online": False,
 
         "description": "TTS через VOSK\n"
@@ -21,8 +21,8 @@ def start(core:VACore):
                        "Список голосов доступен здесь: https://giters.com/alphacep/vosk-tts",
 
         "default_options": {
-            "voiceId": "vosk-model-tts-ru-0.1-irina", # id голоса
-            # vosk-model-tts-ru-0.1-natasha
+            "modelId": "vosk-model-tts-ru-0.4-multi", # модель
+            "speakerId": 0 # id голоса irina (доступно 0,1,2,3,4)
         },
 
         "tts": {
@@ -38,7 +38,7 @@ def start_with_options(core:VACore, manifest:dict):
 def init(core:VACore):
     options = core.plugin_options(modname)
 
-    core.ttsModel = Model(model_name = options['voiceId'])
+    core.ttsModel = Model(model_name = options['modelId'])
     core.ttsSynth = Synth(core.ttsModel)
 
 def towavfile(core:VACore, text_to_speech:str,wavfile:str):
@@ -46,4 +46,5 @@ def towavfile(core:VACore, text_to_speech:str,wavfile:str):
     Проигрывание речи ответов голосового ассистента с сохранением в файл
     :param text_to_speech: текст, который нужно преобразовать в речь
     """
-    core.ttsSynth.synth(text_to_speech,wavfile)
+    options = core.plugin_options(modname)
+    core.ttsSynth.synth(text_to_speech,wavfile,speaker_id=options['speakerId'])
