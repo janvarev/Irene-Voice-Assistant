@@ -170,6 +170,8 @@ https://github.com/timhok/IreneVA-hassio-script-trigger-plugin
 
 [Подробнее про настройку клиент-серверного режима](/docs/INSTALL_MULTI.md)
 
+[Документация WEB API](/docs/DEV_WEBAPI_INTEGRATION.md)
+
 ## Speech-to-Text через VOSK remote
 
 Если у вас проблемы с установкой VOSK (например, на Mac), то вы можете воспользоваться 

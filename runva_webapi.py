@@ -89,6 +89,24 @@ app.mount("/webapi_client", StaticFiles(directory="webapi_client", html = True),
 
 app.mount("/mic_client", StaticFiles(directory="mic_client", html = True), name="mic_client")
 
+@app.websocket("/wsrawtext")
+async def websocket_endpoint(websocket: WebSocket):
+    await websocket.accept()
+    print("New WebSocket text connection")
+    while True:
+        data = await websocket.receive_bytes()
+        data_json = None
+        try:
+            data_json = json.loads(str(data))
+        except:
+            print("Can't parse json from websocket: ", data)
+
+        if data_json is not None:
+            # r = process_chunk(rec,data,"saytxt,saywav")
+            r = sendRawTxtOrig(data_json.get("txt",""), data_json.get("returnFormat", "none"))
+            await websocket.send_text(r)
+
+
 @app.websocket("/wsmic")
 async def websocket_endpoint(websocket: WebSocket):
     await websocket.accept()
@@ -98,12 +116,41 @@ async def websocket_endpoint(websocket: WebSocket):
         print("New WebSocket microphone recognition")
         while True:
             data = await websocket.receive_bytes()
-            r = process_chunk(rec,data)
+            r = process_chunk(rec,data,"saytxt,saywav")
             await websocket.send_text(r)
     else:
         print("Can't accept WebSocket microphone recognition - no Model (seems to be no VOSK at startup)")
 
-def process_chunk(rec,message):
+@app.websocket("/wsmic_48000_none")
+async def websocket_endpoint(websocket: WebSocket):
+    await websocket.accept()
+    if model != None:
+        from vosk import KaldiRecognizer
+        rec = KaldiRecognizer(model, 48000)
+        print("New WebSocket microphone recognition wsmic_48000_none")
+        while True:
+            data = await websocket.receive_bytes()
+            r = process_chunk(rec,data,"none")
+            await websocket.send_text(r)
+    else:
+        print("Can't accept WebSocket microphone recognition - no Model (seems to be no VOSK at startup)")
+
+@app.websocket("/wsmic_22000_none")
+async def websocket_endpoint(websocket: WebSocket):
+    await websocket.accept()
+    if model != None:
+        from vosk import KaldiRecognizer
+        rec = KaldiRecognizer(model, 22000)
+        print("New WebSocket microphone recognition wsmic_22000_none")
+        while True:
+            data = await websocket.receive_bytes()
+            r = process_chunk(rec,data,"none")
+            await websocket.send_text(r)
+    else:
+        print("Can't accept WebSocket microphone recognition - no Model (seems to be no VOSK at startup)")
+
+
+def process_chunk(rec,message,returnFormat):
     # with open('temp/asr_server_test.wav', 'wb') as the_file:
     #     the_file.write(message)
 
@@ -123,7 +170,7 @@ def process_chunk(rec,message):
                 print(voice_input_str)
                 #ttsFormatList = ["saytxt"]
                 #res2 = sendRawTxtOrig(voice_input_str,"none,saytxt")
-                res2 = sendRawTxtOrig(voice_input_str, "saytxt,saywav")
+                res2 = sendRawTxtOrig(voice_input_str, returnFormat)
                 # saywav not supported due to bytes serialization???
 
 
