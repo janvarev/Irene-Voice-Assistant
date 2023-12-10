@@ -135,13 +135,27 @@ async def websocket_endpoint(websocket: WebSocket):
     else:
         print("Can't accept WebSocket microphone recognition - no Model (seems to be no VOSK at startup)")
 
-@app.websocket("/wsmic_22000_none")
+@app.websocket("/wsmic_22050_none")
 async def websocket_endpoint(websocket: WebSocket):
     await websocket.accept()
     if model != None:
         from vosk import KaldiRecognizer
-        rec = KaldiRecognizer(model, 22000)
-        print("New WebSocket microphone recognition wsmic_22000_none")
+        rec = KaldiRecognizer(model, 22050)
+        print("New WebSocket microphone recognition wsmic_22050_none")
+        while True:
+            data = await websocket.receive_bytes()
+            r = process_chunk(rec,data,"none")
+            await websocket.send_text(r)
+    else:
+        print("Can't accept WebSocket microphone recognition - no Model (seems to be no VOSK at startup)")
+
+@app.websocket("/wsmic_44100_none")
+async def websocket_endpoint(websocket: WebSocket):
+    await websocket.accept()
+    if model != None:
+        from vosk import KaldiRecognizer
+        rec = KaldiRecognizer(model, 44100)
+        print("New WebSocket microphone recognition wsmic_44100_none")
         while True:
             data = await websocket.receive_bytes()
             r = process_chunk(rec,data,"none")
