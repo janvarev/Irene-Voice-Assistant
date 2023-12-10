@@ -106,6 +106,23 @@ async def websocket_endpoint(websocket: WebSocket):
             r = sendRawTxtOrig(data_json.get("txt",""), data_json.get("returnFormat", "none"))
             await websocket.send_text(r)
 
+@app.websocket("/wsrawtextcmd")
+async def websocket_endpoint(websocket: WebSocket):
+    await websocket.accept()
+    print("New WebSocket text cmd connection")
+    while True:
+        data = await websocket.receive_bytes()
+        data_json = None
+        try:
+            data_json = json.loads(str(data))
+        except:
+            print("Can't parse json from websocket: ", data)
+
+        if data_json is not None:
+            # r = process_chunk(rec,data,"saytxt,saywav")
+            r = sendSimpleTxtCmd(data_json.get("txt",""), data_json.get("returnFormat", "none"))
+            await websocket.send_text(r)
+
 
 @app.websocket("/wsmic")
 async def websocket_endpoint(websocket: WebSocket):
