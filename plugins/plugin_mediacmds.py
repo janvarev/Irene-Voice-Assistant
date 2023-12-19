@@ -33,7 +33,7 @@ def start(core:VACore):
 
         "commands": {
             "пауза|паузу": play_pause,
-            "дальше|вперед": play_next,
+            "дальше|вперед|вперёд": play_next,
             "назад": play_prev,
             "стоп": play_stop,
             "без звука|выключи звук|со звуком|без мука": toggle_mute,
