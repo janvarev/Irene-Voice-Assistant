@@ -79,7 +79,7 @@ class ChatApp:
                 messages=self.messages,
                 temperature=0.8,
                 n=1,
-                max_tokens=100,
+                max_tokens=200,
             )
         self.messages.append({"role": "assistant", "content": response["choices"][0]["message"].content})
         return response["choices"][0]["message"]
@@ -108,26 +108,28 @@ modname = os.path.basename(__file__)[:-3] # calculating modname
 def start(core:VACore):
     manifest = {
         "name": "Болталка с ChatGPT с сохранением контекста через Vsegpt.ru",
-        "version": "1.0",
+        "version": "2.0",
         "require_online": True,
         "description": "После указания apiKey позволяет вести диалог с ChatGPT.\n"
-                       "Голосовая команда: поболтаем|поговорим",
+                       "Голосовая команда: поболтаем|поговорим (для обычной модели с чатом), справка (для точных фактов)",
 
         "options_label": {
             "apiKey": "API-ключ VseGPT для доступа к ChatGPT", #
             "system": "Вводная строка, задающая характер ответов помощника.",
             "model": "ID нейросетевой модели с сайта Vsegpt",
-
+            "model_spravka": "ID нейросетевой модели с сайта Vsegpt для справок (точных фактов)",
         },
 
         "default_options": {
             "apiKey": "", #
             "system": "Ты - Ирина, голосовой помощник, помогающий человеку. Давай ответы кратко и по существу.",
-            "model": "openai/gpt-3.5-turbo"
+            "model": "openai/gpt-3.5-turbo",
+            "model_spravka": "perplexity/pplx-70b-online",
         },
 
         "commands": {
             "поболтаем|поговорим": run_start,
+            "справка": run_start_spravka,
         }
     }
     return manifest
@@ -158,6 +160,11 @@ def new_chat(core:VACore):
     options = core.plugin_options(modname)
     core.chatapp = ChatApp(model=options["model"], system=options["system"])  # создаем новый чат
 
+def new_chat_spravka(core:VACore):
+    options = core.plugin_options(modname)
+    core.chatapp = ChatApp(model=options["model_spravka"])  # создаем новый чат для perplexity
+
+
 def boltalka(core:VACore, phrase:str):
     if phrase == "отмена" or phrase == "пока":
         core.play_voice_assistant_speech("Пока!")
@@ -177,6 +184,46 @@ def boltalka(core:VACore, phrase:str):
         # print("-", decoded_value)
         core.say(response["content"])
         core.context_set(boltalka, 20)
+
+    except:
+        import traceback
+        traceback.print_exc()
+        core.play_voice_assistant_speech("Проблемы с доступом к апи. Посмотрите логи")
+
+        return
+
+def run_start_spravka(core:VACore, phrase:str):
+
+    options = core.plugin_options(modname)
+
+    if options["apiKey"] == "":
+        core.play_voice_assistant_speech("Нужен ключ апи для доступа к всегепете точка ру")
+        return
+
+    openai.api_key = options["apiKey"]
+    openai.api_base = "https://api.vsegpt.ru:6070/v1"
+
+    new_chat_spravka(core)
+
+    if phrase == "":
+        core.play_voice_assistant_speech("Задайте вопрос")
+        core.context_set(boltalka_spravka, 20)
+    else:
+        boltalka_spravka(core,phrase)
+
+def boltalka_spravka(core:VACore, phrase:str):
+    if phrase == "отмена" or phrase == "пока":
+        core.play_voice_assistant_speech("Пока!")
+        return
+
+    try:
+        # print("-", phrase)
+        response = core.chatapp.chat(phrase) #generate_response(phrase)
+        # print(response)
+        # decoded_value = response["content"].encode().decode('utf-8')
+        # print("-", decoded_value)
+        core.say(response["content"])
+        # core.context_set(boltalka, 20)
 
     except:
         import traceback
