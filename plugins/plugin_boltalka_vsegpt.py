@@ -108,7 +108,7 @@ modname = os.path.basename(__file__)[:-3] # calculating modname
 def start(core:VACore):
     manifest = {
         "name": "Болталка с ChatGPT с сохранением контекста через Vsegpt.ru",
-        "version": "2.0",
+        "version": "2.1",
         "require_online": True,
         "description": "После указания apiKey позволяет вести диалог с ChatGPT.\n"
                        "Голосовая команда: поболтаем|поговорим (для обычной модели с чатом), справка (для точных фактов)",
@@ -125,6 +125,7 @@ def start(core:VACore):
             "system": "Ты - Ирина, голосовой помощник, помогающий человеку. Давай ответы кратко и по существу.",
             "model": "openai/gpt-3.5-turbo",
             "model_spravka": "perplexity/pplx-70b-online",
+            "prompt_tpl_spravka": "Вопрос: {0}. Ответь на русском языке максимально кратко - только запрошенные данные. ",
         },
 
         "commands": {
@@ -212,13 +213,16 @@ def run_start_spravka(core:VACore, phrase:str):
         boltalka_spravka(core,phrase)
 
 def boltalka_spravka(core:VACore, phrase:str):
+    options = core.plugin_options(modname)
     if phrase == "отмена" or phrase == "пока":
         core.play_voice_assistant_speech("Пока!")
         return
 
     try:
         # print("-", phrase)
-        response = core.chatapp.chat(phrase) #generate_response(phrase)
+        prompt = str(options.get("prompt_tpl_spravka")).format(phrase);
+        print('Запрос:',prompt)
+        response = core.chatapp.chat(prompt) #generate_response(phrase)
         # print(response)
         # decoded_value = response["content"].encode().decode('utf-8')
         # print("-", decoded_value)
