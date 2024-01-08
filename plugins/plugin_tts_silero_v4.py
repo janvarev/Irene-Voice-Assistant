@@ -1,7 +1,7 @@
 # TTS plugin for silero engine v4
 # author: Vladislav Janvarev
 
-# require torch 1.10+
+# require torch 2.0+
 
 # поддерживает несколько языков
 # поменяйте modelurl на нужный вам
