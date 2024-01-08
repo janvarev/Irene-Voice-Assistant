@@ -1,12 +1,6 @@
-# Для работы Silero
-torch~=1.12.1
-numpy~=1.23.1
-
-# Для чтения конфигов
-#pyyaml~=6.0
-
-# Утилиты для работы с текстом
-#lingua-franca~=0.4.3
+# Плагины
+#openai~=1.6.1
+#pyautogui~=0.9.54
 
 # Веб-сервер
 uvicorn~=0.18.3
@@ -15,19 +9,17 @@ fastapi~=0.81.0
 fastapi-utils
 starlette~=0.19.1
 
-# Telegram
-#pyTelegramBotAPI~=4.7.1
-
-# Распознание голоса
+# Распознание и воспроизведение голоса
 vosk~=0.3.45
+vosk-tts~=0.3.52
+#torch~=2.1.2 		#для Sirelo
 
 # Локальные запись и воспроизведение звука
 sounddevice~=0.4.3
 soundfile~=0.10.3.post1
 
-wikipedia-api~=0.5.4
+# Общие
 termcolor~=1.1.0
-requests
+requests~+2.27.1
 python-dateutil~=2.6.0
-openai==0.28.0
-
+lingua-franca~=0.4.3
