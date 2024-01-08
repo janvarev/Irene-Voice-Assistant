@@ -96,7 +96,7 @@ async def websocket_endpoint(websocket: WebSocket):
     await websocket.accept()
     print("New WebSocket text connection")
     while True:
-        data = await websocket.receive_bytes()
+        data = await websocket.receive_text()
 
         data_json = None
         try:
