@@ -3,6 +3,8 @@
 from fastapi import FastAPI, HTTPException
 import uvicorn
 from multiprocessing import Process
+
+from starlette.responses import HTMLResponse
 from termcolor import cprint
 import json
 from starlette.websockets import WebSocket
@@ -95,6 +97,7 @@ async def websocket_endpoint(websocket: WebSocket):
     print("New WebSocket text connection")
     while True:
         data = await websocket.receive_bytes()
+
         data_json = None
         try:
             data_json = json.loads(str(data))
@@ -104,14 +107,17 @@ async def websocket_endpoint(websocket: WebSocket):
         if data_json is not None:
             # r = process_chunk(rec,data,"saytxt,saywav")
             r = sendRawTxtOrig(data_json.get("txt",""), data_json.get("returnFormat", "none"))
-            await websocket.send_text(r)
+            await websocket.send_text(str(r))
+
+
+
 
 @app.websocket("/wsrawtextcmd")
 async def websocket_endpoint(websocket: WebSocket):
     await websocket.accept()
     print("New WebSocket text cmd connection")
     while True:
-        data = await websocket.receive_bytes()
+        data = await websocket.receive_text()
         data_json = None
         try:
             data_json = json.loads(str(data))
@@ -121,7 +127,7 @@ async def websocket_endpoint(websocket: WebSocket):
         if data_json is not None:
             # r = process_chunk(rec,data,"saytxt,saywav")
             r = sendSimpleTxtCmd(data_json.get("txt",""), data_json.get("returnFormat", "none"))
-            await websocket.send_text(r)
+            await websocket.send_text(str(r))
 
 
 @app.websocket("/wsmic")
@@ -223,12 +229,45 @@ def process_chunk(rec,message,returnFormat):
         #print("Part Result:",res)
         return rec.PartialResult()
 
+
+@app.get("/", response_class=HTMLResponse)
+async def main_page():
+    from vacore import version
+    html_content = f"""
+    <html>
+        <head>
+            <meta charset="utf-8" />
+            <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+            <title>Irene Voice Assistant</title>
+            <link rel="stylesheet" href="/webapi_client/chota.min.css">
+        </head>
+        <body>
+            <div id="top" class="container" role="document">
+                <h1>Irene Voice Assistant {version}</h1>
+
+                <a href="/webapi_client" class="button">Web interface (simple, STT in browser)</a><br /><br />
+                
+                <a href="/mic_client" class="button">Web interface (simple, only microphone listen)</a><br /><br />
+
+                <a href="/docs" class="button">API and docs</a><br /><br />
+
+                <a href="https://github.com/janvarev/Irene-Voice-Assistant" class="button" target="_blank">Github</a><br /><br />
+            </div>
+        </body>
+    </html>
+    """
+    return HTMLResponse(content=html_content, status_code=200)
+
+
 @app.on_event("startup")
 async def startup_event():
     global core
     core = VACore()
     core.init_with_plugins()
-    print("WEB api for VoiceAssistantCore (remote control)")
+
+    from vacore import version
+
+    print(f"WEB api for VoiceAssistantCore {version} (remote control)")
 
     url = ""
     if webapi_options["use_ssl"]:
@@ -236,6 +275,7 @@ async def startup_event():
     else:
         url = "http://{0}:{1}/".format("localhost",webapi_options["port"])
 
+    print("Web client URL (main page): ", url )
     print("Web client URL (VOSK in browser): ", url+"webapi_client/")
     print("Mic client URL (experimental, sends WAV bytes to server): ", url+"mic_client/")
 
