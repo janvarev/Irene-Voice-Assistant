@@ -113,7 +113,11 @@ def run_weather(core:VACore, phrase:str, addparam:str):
             veter_str = num2text(veter_int,((u'метр', u'метра', u'метров'), 'm'))
             vl_str = num2text(humid,((u'процента', u'процента', u'процентов'), 'm'))
 
-            text = "Сейчас {0}, ощущается как {1}. Влажность {2}, ветер {3} в секунду.".format(
+            text = "Сейчас {0}"
+            if temp != feels_like:
+                text = text + ", ощущается как {1}"
+
+            text = (text + ". Влажность {2}, ветер {3} в секунду. {4}").format(
                     num2text(int(temp)),num2text(int(feels_like)),vl_str,veter_str,data_one_call["daily"][0]["weather"][0]["description"])
             print(text)
             core.play_voice_assistant_speech(text)
