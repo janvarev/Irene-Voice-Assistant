@@ -6,7 +6,7 @@
 
 [Статья на Хабре](https://habr.com/ru/post/595855/) | [Вторая статья на Хабре](https://habr.com/ru/post/660715/) | [Третья статья на Хабре](https://habr.com/ru/articles/725066/) | [Группа в Телеграм](https://t.me/irene_va)
 
-Поддерживает общение с ChatGPT, GPT-4, Claude, Llama2 через  [VseGPT.ru](https://vsegpt.ru/), еще один проект автора Ирины. [(Инструкция по настройке плагина)](https://vsegpt.ru/ExtTools/IreneVA). 
+Поддерживает общение с ChatGPT, GPT-4, Claude, Llama2 через [VseGPT.ru](https://vsegpt.ru/), еще один проект автора Ирины. (Также можно использовать любой OpenAI-совместимый endpoint) [(Инструкция по настройке плагина)](https://vsegpt.ru/ExtTools/IreneVA). 
 Также поддерживает получение справочной информации из Интернета (команда справка) с помощью специальных моделей Perplexity Online.
 
 ### Самая быстрая установка под Windows
