@@ -1,4 +1,3 @@
-wikipedia-api~=0.5.4
 pyttsx3==2.90
 vosk~=0.3.45
 termcolor~=1.1.0
@@ -11,7 +10,6 @@ python-dateutil
 
 fastapi
 uvicorn[standard]
-fastapi-utils
 gradio~=3.28.3
 fsspec==2023.1.0
 openai==0.28.0

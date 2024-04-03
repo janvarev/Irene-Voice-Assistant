@@ -37,7 +37,6 @@
 ```
 pip install fastapi
 pip install "uvicorn[standard]"
-pip install fastapi-utils
 ```
 
 - Сконфигурируйте, где находится сервер Ирины. Настройки сервера - host,port,log_level настраиваются в ~~**options/webapi.json**~~ 

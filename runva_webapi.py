@@ -9,12 +9,14 @@ from termcolor import cprint
 import json
 from starlette.websockets import WebSocket
 
-try:
-    from fastapi_utils.tasks import repeat_every
-except Exception as e:
-    cprint("Пожалуйста, установите fastapi-utils: pip install fastapi-utils","red")
-    exit(-1)
+# try:
+#     from fastapi_utils.tasks import repeat_every
+# except Exception as e:
+#     cprint("Пожалуйста, установите fastapi-utils: pip install fastapi-utils","red")
+#     exit(-1)
 #from pydantic import BaseModel
+
+from fastapi_utils_tasks import repeat_every
 
 
 from vacore import VACore

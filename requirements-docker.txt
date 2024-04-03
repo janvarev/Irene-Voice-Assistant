@@ -6,13 +6,12 @@
 uvicorn~=0.18.3
 uvicorn[standard]~=0.18.3
 fastapi~=0.81.0
-fastapi-utils
 starlette~=0.19.1
 
 # Распознание и воспроизведение голоса
 vosk~=0.3.45
 vosk-tts~=0.3.52
-#torch~=2.1.2 		#для Sirelo
+#torch~=2.1.2 		#для Silero
 
 # Локальные запись и воспроизведение звука
 sounddevice~=0.4.3
