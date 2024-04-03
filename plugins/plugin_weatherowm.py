@@ -13,7 +13,7 @@ modname = os.path.basename(__file__)[:-3] # calculating modname
 def start(core:VACore):
     manifest = {
         "name": "Погода (open weather map)",
-        "version": "1.0",
+        "version": "1.1",
         "require_online": True,
 
         "description": """
@@ -30,6 +30,7 @@ def start(core:VACore):
             "country": "RU",
             "lon": 0, # will be auto-calculated base on city. Or you can fill it manual
             "lat": 0,
+            "is_active": False,
         },
 
         "commands": {
@@ -42,6 +43,12 @@ def start(core:VACore):
 def start_with_options(core:VACore, manifest:dict):
 
     options = manifest["options"]
+
+    if options["is_active"]:
+        pass
+    else:
+        manifest["commands"] = {}
+        return manifest
 
     weather_api_key = options["apiKey"]
     if weather_api_key == "":

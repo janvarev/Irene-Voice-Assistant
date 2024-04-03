@@ -10,6 +10,10 @@
 
 В базовой папке options/core.json установите "isOnline": true,
 
+## Как сделать прогноз погоды?
+
+Установите в options/plugin_weather_wttr.json вашу локацию и is_active = true.
+
 ## Не работает Text-To-Speech (озвучка), не озвучивает, или странный голос!
 
 В базовой папке options/core.json установите "ttsEngineId": "vosk".
