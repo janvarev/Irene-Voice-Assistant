@@ -12,7 +12,7 @@ from jaa import JaaCore
 
 from collections.abc import Callable
 
-version = "10.6.0"
+version = "10.7.0"
 
 # main VACore class
 
@@ -49,6 +49,7 @@ class VACore(JaaCore):
         self.version = version
 
         self.voiceAssNames = []
+        self.voiceAssNameRunCmd = {}
 
         self.useTTSCache = False
         self.tts_cache_dir = "tts_cache"
@@ -509,6 +510,9 @@ class VACore(JaaCore):
 
 
                         command_options = " ".join([str(input_part) for input_part in voice_input[(ind+1):len(voice_input)]])
+                        if callname in self.voiceAssNameRunCmd:
+                            command_options = self.voiceAssNameRunCmd.get(callname)+" "+command_options
+                            print("Modified input, added ", self.voiceAssNameRunCmd.get(callname))
 
                         # running some cmd before run cmd
                         if func_before_run_cmd != None:

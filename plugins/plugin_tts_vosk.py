@@ -4,8 +4,6 @@
 import os
 
 from vacore import VACore
-from vosk_tts.model import Model
-from vosk_tts.synth import Synth
 
 modname = os.path.basename(__file__)[:-3] # calculating modname
 
@@ -13,7 +11,7 @@ modname = os.path.basename(__file__)[:-3] # calculating modname
 def start(core:VACore):
     manifest = {
         "name": "TTS vosk",
-        "version": "1.2",
+        "version": "1.3",
         "require_online": False,
 
         "description": "TTS через VOSK\n"
@@ -36,6 +34,9 @@ def start_with_options(core:VACore, manifest:dict):
     pass
 
 def init(core:VACore):
+    from vosk_tts.model import Model
+    from vosk_tts.synth import Synth
+
     options = core.plugin_options(modname)
 
     core.ttsModel = Model(model_name = options['modelId'])

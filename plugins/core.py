@@ -7,7 +7,7 @@ from vacore import VACore
 def start(core:VACore):
     manifest = {
         "name": "Core plugin",
-        "version": "4.0",
+        "version": "4.2",
         "description": "Плагин с основными настройками Ирины.\nПосмотрите другие плагины, чтобы понять, какие команды можно использовать.",
 
         "options_label": {
@@ -34,6 +34,8 @@ def start(core:VACore):
 
             "tempDir": "адрес директории для временных файлов",
             "fuzzyThreshold": "(ПРО) Порог уверенности при использовании нечеткого распознавания команд",
+
+            "voiceAssNameRunCmd": "Словарь сопоставлений. При нахождении имени помощника, добавляет префикс к распознанной фразе",
         },
 
         "default_options": {
@@ -60,6 +62,10 @@ def start(core:VACore):
 
             "tempDir": "temp",
             "fuzzyThreshold": 0.5,
+
+            "voiceAssNameRunCmd": {
+                "альбина": "чатгпт"
+            }
         },
 
     }
@@ -76,6 +82,8 @@ def start_with_options(core:VACore, manifest:dict):
     core.isOnline = options["isOnline"]
 
     core.voiceAssNames = options["voiceAssNames"].split("|")
+    core.voiceAssNameRunCmd = options["voiceAssNameRunCmd"]
+    print(core.voiceAssNameRunCmd)
     core.ttsEngineId = options["ttsEngineId"]
     core.ttsEngineId2 = options["ttsEngineId2"]
     core.playWavEngineId = options["playWavEngineId"]
