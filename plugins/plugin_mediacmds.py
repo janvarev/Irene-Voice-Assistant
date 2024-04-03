@@ -1,7 +1,10 @@
-# Команды управления мультимедия
+# Команды управления мультимедиа
 # author: Vladislav Janvarev
 
-import pyautogui
+try:
+    import pyautogui
+except:
+    raise ValueError("Не могу загрузить pyautogui в plugin_mediacmds.\nЭто повлияет только на то, что не будут работать команды управления звуком через эмуляцию клавиш.\nЕсли это не критично, пропустите эту ошибку")
 import time
 import os
 
