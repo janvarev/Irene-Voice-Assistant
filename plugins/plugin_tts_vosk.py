@@ -48,4 +48,4 @@ def towavfile(core:VACore, text_to_speech:str,wavfile:str):
     :param text_to_speech: текст, который нужно преобразовать в речь
     """
     options = core.plugin_options(modname)
-    core.ttsSynth.synth(text_to_speech,wavfile,speaker_id=options['speakerId'])
+    core.ttsSynth.synth(core.all_num_to_text(text_to_speech),wavfile,speaker_id=options['speakerId'])
