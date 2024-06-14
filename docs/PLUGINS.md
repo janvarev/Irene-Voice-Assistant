@@ -59,6 +59,8 @@ _Доп инфа:_
 
 ---
 
+**plugin_boltalka_vsegpt.py** -  (онлайн) позволяет делать TTS через сервис VseGPT
+
 **plugin_tts_elevenlabs.py** -  (онлайн) позволяет озвучивать через онлайн-сервис Elevellabs.
 
 **plugin_tts_pyttsx.py** -  (оффлайн) позволяет делать TTS (Text-To-Speech, озвучку текста) через pyttsx движок. Используется по умолчанию.
