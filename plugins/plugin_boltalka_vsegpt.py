@@ -62,7 +62,7 @@ modname = os.path.basename(__file__)[:-3] # calculating modname
 def start(core:VACore):
     manifest = {
         "name": "Болталка с ChatGPT с сохранением контекста через Vsegpt.ru или другой OpenAI сервер",
-        "version": "3.0",
+        "version": "3.2",
         "require_online": True,
         "description": "После указания apiKey позволяет вести диалог с ChatGPT.\n"
                        "Голосовая команда: поболтаем|поговорим (для обычной модели с чатом), справка (для точных фактов)",
@@ -73,6 +73,9 @@ def start(core:VACore):
             "system": "Вводная строка, задающая характер ответов помощника.",
             "model": "ID нейросетевой модели с сайта Vsegpt",
             "model_spravka": "ID нейросетевой модели с сайта Vsegpt для справок (точных фактов)",
+            "tts_model": "TTS модель с VseGPT",
+            "tts_voice": "Голос для модели",
+
         },
 
         "default_options": {
@@ -81,12 +84,20 @@ def start(core:VACore):
             "system": "Ты - Ирина, голосовой помощник, помогающий человеку. Давай ответы кратко и по существу.",
             "model": "openai/gpt-3.5-turbo",
             "model_spravka": "perplexity/pplx-70b-online",
+            "tts_model": "tts-openai/tts-1",
+            "tts_voice": "nova",
+            "tts_response_format": "mp3",
             "prompt_tpl_spravka": "Вопрос: {0}. Ответь на русском языке максимально кратко - только запрошенные данные. ",
         },
 
         "commands": {
             "поболтаем|поговорим": run_start,
             "справка": run_start_spravka,
+        },
+
+        "tts": {
+            "vsegpt": (init, None, towavfile)  # первая функция инициализации, вторая - говорить, третья - в wav file
+            # если вторая - None, то используется 3-я с проигрыванием файла
         }
     }
     return manifest
@@ -191,3 +202,48 @@ def boltalka_spravka(core:VACore, phrase:str):
         core.play_voice_assistant_speech("Проблемы с доступом к апи. Посмотрите логи")
 
         return
+
+# TTS
+def init(core:VACore):
+    pass
+
+def towavfile(core:VACore, text_to_speech:str,wavfile:str):
+    """
+    Проигрывание речи ответов голосового ассистента (без сохранения аудио)
+    :param text_to_speech: текст, который нужно преобразовать в речь
+    """
+    options = core.plugin_options(modname)
+
+    if options["apiKey"] == "":
+        core.play_voice_assistant_speech("Нужен ключ апи для доступа к всегепете точка ру")
+        return
+
+
+    import requests
+    import json
+
+    headers = {
+            "Authorization": f"Bearer {options['apiKey']}",
+            "Content-Type": "application/json",
+        }
+
+    # adding header for VseGPT
+    if str(options["apiBaseUrl"]).startswith("https://api.vsegpt.ru"):
+        headers["X-Title"] = "Irene VA"
+
+    response = requests.post(
+        url=options["apiBaseUrl"]+"/audio/speech",
+        headers=headers,
+        data=json.dumps({
+            "model": options['tts_model'],
+            "voice": options['tts_voice'],
+            "input": text_to_speech,
+            "response_format": options['tts_response_format'],
+        }, ensure_ascii=True)
+    )
+
+    if response.status_code == 200:
+        with open(wavfile, "wb") as wavfile:
+            wavfile.write(response.content)
+    else:
+        print("Не могу связаться с сервером", response.status_code, response.text)
