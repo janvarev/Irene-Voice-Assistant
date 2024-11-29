@@ -12,7 +12,7 @@ from jaa import JaaCore
 
 from collections.abc import Callable
 
-version = "10.9.2"
+version = "10.9.3"
 
 # main VACore class
 
@@ -78,6 +78,8 @@ class VACore(JaaCore):
         self.cur_callname:str = ""
 
         self.input_cmd_full:str = ""
+
+        self.fastApiApp = None
 
 
     def init_with_plugins(self):

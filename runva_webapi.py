@@ -265,6 +265,7 @@ async def main_page():
 async def startup_event():
     global core
     core = VACore()
+    core.fastApiApp = app
     core.init_with_plugins()
 
     from vacore import version
