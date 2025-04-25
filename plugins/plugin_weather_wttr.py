@@ -59,7 +59,7 @@ def compute_suffix(value: str, variants: list):
 
 # текст прогноза погоды на основании переданных данныхъ о температуре, влажности, давлении и скорости ветра
 def forecast_text(temp: str, temp_feel: str, humidity: str, pressure: str, wind_speed: str):
-    text = 'Температура {0} {1}, Влажность {2} {3}, Давление - {4} {5} ртутного столба, Ветер {6} {7} в час.'.format(
+    text = 'Температура {0} {1}, Ощущается как {2} {3}, Влажность {4} {5}, Давление - {6} {7} ртутного столба, Ветер {8} {9} в час.'.format(
         temp, compute_suffix(temp, ['градусов', 'градус', 'градуса']),
 		temp_feel, compute_suffix(temp_feel, ['градусов', 'градус', 'градуса']),
         humidity, compute_suffix(humidity, ['процентов', 'процент', 'процента']),
@@ -97,10 +97,11 @@ def get_weather_text(data: dict):
         temp = data['temp_C']
     else:
         temp = data['tempC']
+    temp_feel = data['FeelsLikeC']
 
     wind_speed = data['windspeedKmph']
 
-    return descr + '. ' + forecast_text(temp, humidity, str(pressure), wind_speed)
+    return descr + '. ' + forecast_text(temp, temp_feel, humidity, str(pressure), wind_speed)
 
 def get_weather_text_short(data: dict):
     descr = 'Сегодня '+data['lang_ru'][0]['value']
