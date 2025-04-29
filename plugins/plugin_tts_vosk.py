@@ -20,7 +20,8 @@ def start(core:VACore):
 
         "default_options": {
             "modelId": "vosk-model-tts-ru-0.4-multi", # модель
-            "speakerId": 0 # id голоса irina (доступно 0,1,2,3,4)
+            "speakerId": 0, # id голоса irina (доступно 0,1,2,3,4)
+            "useGPU": False # не использовать GPU
         },
 
         "tts": {
@@ -40,6 +41,29 @@ def init(core:VACore):
     options = core.plugin_options(modname)
 
     core.ttsModel = Model(model_name = options['modelId'])
+    if options['useGPU']:
+        try:
+            import torch
+            import onnxruntime
+            import pkg_resources
+            installed = {pkg.key for pkg in pkg_resources.working_set if pkg.key.startswith('onnxruntime-gpu')}
+            if not installed:
+                raise ImportError
+        except ImportError:
+            print("Please install torch and onnxruntime-gpu")
+        else:
+            if torch.cuda.is_available():
+                providers = [("CUDAExecutionProvider", {"device_id": torch.cuda.current_device(),
+                                                        "user_compute_stream": str(torch.cuda.current_stream().cuda_stream)})]
+                so = onnxruntime.SessionOptions()
+                # so.log_severity_level = 1  # раскомментируйте, если хотите увидеть логи
+                session = onnxruntime.InferenceSession(core.ttsModel.onnx._model_path, providers=providers, sess_options=so)
+                core.ttsModel.onnx = session
+            else:
+                print("CUDA is not available")
+            # print(onnxruntime.get_available_providers())  # раскомментируйте, если хотите увидеть список доступных провайдеров
+    # print(core.ttsModel.onnx._providers)  # раскомментируйте, если хотите увидеть список используемых провайдеров
+
     core.ttsSynth = Synth(core.ttsModel)
 
 def towavfile(core:VACore, text_to_speech:str,wavfile:str):
