@@ -1,6 +1,7 @@
 import os
 import traceback
 import hashlib
+from logging import WARNING
 
 from termcolor import colored, cprint
 import time
@@ -80,6 +81,12 @@ class VACore(JaaCore):
         self.input_cmd_full:str = ""
 
         self.fastApiApp = None
+
+        self.console_logging = False
+        self.console_logging_level = "WARNING"
+        self.file_logging = False
+        self.file_logging_level = "DEBUG"
+        self.file_name = "log.txt"
 
 
     def init_with_plugins(self):
