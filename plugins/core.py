@@ -7,7 +7,7 @@ from vacore import VACore
 def start(core:VACore):
     manifest = {
         "name": "Core plugin",
-        "version": "4.2",
+        "version": "4.3",
         "description": "Плагин с основными настройками Ирины.\nПосмотрите другие плагины, чтобы понять, какие команды можно использовать.",
 
         "options_label": {
@@ -36,6 +36,12 @@ def start(core:VACore):
             "fuzzyThreshold": "(ПРО) Порог уверенности при использовании нечеткого распознавания команд",
 
             "voiceAssNameRunCmd": "Словарь сопоставлений. При нахождении имени помощника, добавляет префикс к распознанной фразе",
+
+            "console_logging": "Выводить ли в консоль логи",
+            "console_logging_level": "Уровень логирования консоли",
+            "file_logging": "Выводить ли в лог-файл логи",
+            "file_logging_level": "Уровень логирования лог-файла",
+            "log_file_name": "Имя лог-файла",
         },
 
         "default_options": {
@@ -65,7 +71,13 @@ def start(core:VACore):
 
             "voiceAssNameRunCmd": {
                 "альбина": "чатгпт"
-            }
+            },
+
+            "console_logging": False,  # Вывод логов в консоль
+            "console_logging_level": "WARNING",  # Записываются в лог сообщения с уровнем равным или выше этого уровня: NOTSET | DEBUG | INFO | WARNING | ERROR | CRITICAL
+            "file_logging": False,  # Вывод в лог-файл
+            "file_logging_level": "DEBUG",  # NOTSET | DEBUG | INFO | WARNING | ERROR | CRITICAL
+            "log_file_name": "log.txt",  # имя лог-файла
         },
 
     }
@@ -108,6 +120,36 @@ def start_with_options(core:VACore, manifest:dict):
 
     import lingua_franca
     lingua_franca.load_language(options["linguaFrancaLang"])
+
+    # Логирование
+    core.console_logging = options["console_logging"]
+    core.console_logging_level = options["console_logging_level"]
+    core.file_logging = options["file_logging"]
+    core.file_logging_level = options["file_logging_level"]
+    core.log_file_name = options["log_file_name"]
+    if core.console_logging or core.file_logging:
+        import logging  # Если не создать логгер здесь, то он всё равно будет создан при первом вызове из библиотек или подмодулей
+        root_logger = logging.getLogger()  # Получить объект логгера, если он уже создан или создать новый корневой...
+        for handler in root_logger.handlers[:]:  # ... т.к. запуск не из самого верхнего модуля
+            root_logger.removeHandler(handler)  # Удалить созданные обработчики, если они есть
+        root_logger.setLevel(min(core.console_logging_level, core.file_logging_level))  # Установить минимальный уровень, ниже которого события не обрабатываются
+        if core.console_logging:
+            console_handler = logging.StreamHandler()
+            console_handler.setLevel(core.console_logging_level)
+            console_formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+            console_handler.setFormatter(console_formatter)
+            root_logger.addHandler(console_handler)
+        if core.file_logging:
+            file_handler = logging.FileHandler(core.log_file_name)
+            file_handler.setLevel(core.file_logging_level)
+            file_formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+            file_handler.setFormatter(file_formatter)
+            root_logger.addHandler(file_handler)
+        logger = logging.getLogger(__name__)  # Создать логгер для этого модуля
+        if core.console_logging:
+            logger.info("Console logging enabled")
+        if core.file_logging:
+            logger.info("File logging enabled")
 
 
     return manifest

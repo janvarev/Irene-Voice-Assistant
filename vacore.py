@@ -81,6 +81,12 @@ class VACore(JaaCore):
 
         self.fastApiApp = None
 
+        self.console_logging = False
+        self.console_logging_level = "WARNING"
+        self.file_logging = False
+        self.file_logging_level = "DEBUG"
+        self.file_name = "log.txt"
+
 
     def init_with_plugins(self):
         self.init_plugins(["core"])
