@@ -1,5 +1,6 @@
 # Core plugin
 # author: Vladislav Janvarev
+from logging import WARNING
 
 from vacore import VACore
 
@@ -46,7 +47,7 @@ def start(core:VACore):
 
         "default_options": {
             "mpcIsUse": True,
-            "mpcHcPath": "C:\Program Files (x86)\K-Lite Codec Pack\MPC-HC64\mpc-hc64_nvo.exe",
+            "mpcHcPath": r"C:\Program Files (x86)\K-Lite Codec Pack\MPC-HC64\mpc-hc64_nvo.exe",
             "mpcIsUseHttpRemote": False,
 
             "isOnline": True,
