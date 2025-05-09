@@ -4,8 +4,13 @@
 import os
 
 from vacore import VACore
+import logging
+import re
+
 
 modname = os.path.basename(__file__)[:-3] # calculating modname
+logger = logging.getLogger(__name__)
+
 
 # функция на старте
 def start(core:VACore):
@@ -37,34 +42,37 @@ def start_with_options(core:VACore, manifest:dict):
 def init(core:VACore):
     from vosk_tts.model import Model
     from vosk_tts.synth import Synth
+    from time import time
 
+    model_init_start_time = time()
+    logger.info("Init model starting...")
     options = core.plugin_options(modname)
 
-    core.ttsModel = Model(model_name = options['modelId'])
     if options['useGPU']:
         try:
             import torch
             import onnxruntime
-            import pkg_resources
-            installed = {pkg.key for pkg in pkg_resources.working_set if pkg.key.startswith('onnxruntime-gpu')}
+            from importlib.metadata import distributions
+            installed = {dist.metadata['Name'].lower() for dist in distributions() if
+                         dist.metadata['Name'].lower().startswith('onnxruntime-gpu')}
             if not installed:
                 raise ImportError
         except ImportError:
-            print("Please install torch and onnxruntime-gpu")
+            logger.warning("Please install torch and onnxruntime-gpu")
         else:
             if torch.cuda.is_available():
-                providers = [("CUDAExecutionProvider", {"device_id": torch.cuda.current_device(),
-                                                        "user_compute_stream": str(torch.cuda.current_stream().cuda_stream)})]
-                so = onnxruntime.SessionOptions()
-                # so.log_severity_level = 1  # раскомментируйте, если хотите увидеть логи
-                session = onnxruntime.InferenceSession(core.ttsModel.onnx._model_path, providers=providers, sess_options=so)
-                core.ttsModel.onnx = session
+                logger.info("CUDA is available")
             else:
-                print("CUDA is not available")
-            # print(onnxruntime.get_available_providers())  # раскомментируйте, если хотите увидеть список доступных провайдеров
-    # print(core.ttsModel.onnx._providers)  # раскомментируйте, если хотите увидеть список используемых провайдеров
+                logger.info("CUDA is not available")
+            logger.debug(
+                f'Available providers: {onnxruntime.get_available_providers()}')  # список доступных провайдеров
 
+    core.ttsModel = Model(model_name=options['modelId'])
+    logger.debug(f'Used providers: {core.ttsModel.onnx._providers}')  # список используемых провайдеров
     core.ttsSynth = Synth(core.ttsModel)
+    model_init_end_time = time()
+    logger.info(f"Init done in {model_init_end_time - model_init_start_time:.1f} sec")
+
 
 def towavfile(core:VACore, text_to_speech:str,wavfile:str):
     """
