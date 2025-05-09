@@ -4,7 +4,7 @@ import queue
 import sounddevice as sd
 import vosk
 import sys
-import traceback
+import logging
 import json
 
 from vacore import VACore
@@ -61,6 +61,9 @@ if __name__ == "__main__":
         '-r', '--samplerate', type=int, help='sampling rate')
     args = parser.parse_args(remaining)
     #args = {}
+
+    # настраиваем логирование
+    logger = logging.getLogger('runva_vosk')  # задаём конкретное имя, иначе здесь будет  __main__
 
     try:
         if args.model is None:
@@ -132,6 +135,7 @@ if __name__ == "__main__":
         print('\nDone')
         parser.exit(0)
     except Exception as e:
+        logger.exception(e)
         parser.exit(type(e).__name__ + ': ' + str(e))
 
 
