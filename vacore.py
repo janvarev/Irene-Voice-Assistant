@@ -14,6 +14,10 @@ from collections.abc import Callable
 
 version = "10.9.4"
 
+import logging
+
+logger = logging.getLogger(__name__)
+
 # main VACore class
 
 class VACore(JaaCore):
@@ -81,11 +85,11 @@ class VACore(JaaCore):
 
         self.fastApiApp = None
 
-        self.console_logging = False
-        self.console_logging_level = "WARNING"
-        self.file_logging = False
-        self.file_logging_level = "DEBUG"
-        self.file_name = "log.txt"
+        self.log_console = True
+        self.log_console_level = "WARNING"
+        self.log_file = False
+        self.log_file_level = "DEBUG"
+        self.log_file_name = "log.txt"
 
 
     def init_with_plugins(self):
@@ -342,6 +346,7 @@ class VACore(JaaCore):
                 # print(e)
                 # import traceback
                 # traceback.print_exc()
+                logger.exception(e)
                 res = self.fuzzy_processors[fuzzy_processor_k][1](self, command, context)
 
             # fuzzy processor должен вернуть либо None либо
@@ -425,7 +430,7 @@ class VACore(JaaCore):
                 if self.contextTimer != None:
                     self.context_set(self.context,self.contextTimerLastDuration)
         except Exception as err:
-            print(traceback.format_exc())
+            logger.exception(err)
 
     # fuzzy util
     def fuzzy_get_command_key_from_context(self, predicted_command:str, context:dict):

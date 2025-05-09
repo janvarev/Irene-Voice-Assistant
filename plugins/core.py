@@ -37,10 +37,10 @@ def start(core:VACore):
 
             "voiceAssNameRunCmd": "Словарь сопоставлений. При нахождении имени помощника, добавляет префикс к распознанной фразе",
 
-            "console_logging": "Выводить ли в консоль логи",
-            "console_logging_level": "Уровень логирования консоли",
-            "file_logging": "Выводить ли в лог-файл логи",
-            "file_logging_level": "Уровень логирования лог-файла",
+            "log_console": "Выводить ли в консоль логи",
+            "log_console_level": "Уровень логирования консоли",
+            "log_file": "Выводить ли в лог-файл логи",
+            "log_file_level": "Уровень логирования лог-файла",
             "log_file_name": "Имя лог-файла",
         },
 
@@ -73,10 +73,11 @@ def start(core:VACore):
                 "альбина": "чатгпт"
             },
 
-            "console_logging": False,  # Вывод логов в консоль
-            "console_logging_level": "WARNING",  # Записываются в лог сообщения с уровнем равным или выше этого уровня: NOTSET | DEBUG | INFO | WARNING | ERROR | CRITICAL
-            "file_logging": False,  # Вывод в лог-файл
-            "file_logging_level": "DEBUG",  # NOTSET | DEBUG | INFO | WARNING | ERROR | CRITICAL
+            "log_console": True,  # Вывод логов в консоль
+            "log_console_level": "WARNING",
+            # Записываются в лог сообщения с уровнем равным или выше этого уровня: NOTSET | DEBUG | INFO | WARNING | ERROR | CRITICAL
+            "log_file": False,  # Вывод в лог-файл
+            "log_file_level": "DEBUG",  # NOTSET | DEBUG | INFO | WARNING | ERROR | CRITICAL
             "log_file_name": "log.txt",  # имя лог-файла
         },
 
@@ -122,33 +123,34 @@ def start_with_options(core:VACore, manifest:dict):
     lingua_franca.load_language(options["linguaFrancaLang"])
 
     # Логирование
-    core.console_logging = options["console_logging"]
-    core.console_logging_level = options["console_logging_level"]
-    core.file_logging = options["file_logging"]
-    core.file_logging_level = options["file_logging_level"]
+    core.log_console = options["log_console"]
+    core.log_console_level = options["log_console_level"]
+    core.log_file = options["log_file"]
+    core.log_file_level = options["log_file_level"]
     core.log_file_name = options["log_file_name"]
-    if core.console_logging or core.file_logging:
+    if core.log_console or core.log_file:
         import logging  # Если не создать логгер здесь, то он всё равно будет создан при первом вызове из библиотек или подмодулей
         root_logger = logging.getLogger()  # Получить объект логгера, если он уже создан или создать новый корневой...
         for handler in root_logger.handlers[:]:  # ... т.к. запуск не из самого верхнего модуля
             root_logger.removeHandler(handler)  # Удалить созданные обработчики, если они есть
-        root_logger.setLevel(min(core.console_logging_level, core.file_logging_level))  # Установить минимальный уровень, ниже которого события не обрабатываются
-        if core.console_logging:
+        root_logger.setLevel(min(core.log_console_level,
+                                 core.log_file_level))  # Установить минимальный уровень, ниже которого события не обрабатываются
+        if core.log_console:
             console_handler = logging.StreamHandler()
-            console_handler.setLevel(core.console_logging_level)
+            console_handler.setLevel(core.log_console_level)
             console_formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
             console_handler.setFormatter(console_formatter)
             root_logger.addHandler(console_handler)
-        if core.file_logging:
+        if core.log_file:
             file_handler = logging.FileHandler(core.log_file_name)
-            file_handler.setLevel(core.file_logging_level)
+            file_handler.setLevel(core.log_file_level)
             file_formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
             file_handler.setFormatter(file_formatter)
             root_logger.addHandler(file_handler)
         logger = logging.getLogger(__name__)  # Создать логгер для этого модуля
-        if core.console_logging:
+        if core.log_console:
             logger.info("Console logging enabled")
-        if core.file_logging:
+        if core.log_file:
             logger.info("File logging enabled")
 
 
