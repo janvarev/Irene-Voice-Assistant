@@ -12,7 +12,7 @@ from jaa import JaaCore
 
 from collections.abc import Callable
 
-version = "10.9.4"
+version = "11.0.0"
 
 import logging
 
@@ -41,6 +41,9 @@ class VACore(JaaCore):
         self.playwavs = {
         }
 
+        self.normalizers = {
+        }
+
         self.fuzzy_processors: Dict[str, tuple[Callable,Callable]] = {
         }
 
@@ -60,6 +63,7 @@ class VACore(JaaCore):
         self.ttsEngineId = ""
         self.ttsEngineId2 = ""
         self.playWavEngineId = ""
+
 
         self.logPolicy = ""
         self.tmpdir = "temp"
@@ -90,6 +94,10 @@ class VACore(JaaCore):
         self.log_file = False
         self.log_file_level = "DEBUG"
         self.log_file_name = "log.txt"
+
+        self.normalization_engine:str = "" # отвечает за нормализацию текста для русских TTS
+
+
 
 
     def init_with_plugins(self):
@@ -130,6 +138,11 @@ class VACore(JaaCore):
             for cmd in manifest["playwav"].keys():
                 self.playwavs[cmd] = manifest["playwav"][cmd]
 
+        # adding playwav engines from plugin manifest
+        if "normalizer" in manifest:  # process commands
+            for cmd in manifest["normalizer"].keys():
+                self.normalizers[cmd] = manifest["normalizer"][cmd]
+
         # adding fuzzy processors engines from plugin manifest
         if "fuzzy_processor" in manifest: # process commands
             for cmd in manifest["fuzzy_processor"].keys():
@@ -159,6 +172,16 @@ class VACore(JaaCore):
             self.print_red('Попробуйте установить в options/core.json: "playWavEngineId": "sounddevice"')
             self.print_red('...временно переключаюсь на консольный вывод ответа...')
             self.ttsEngineId = "console"
+
+        # init normalization engine
+        if self.normalization_engine != "none":
+            try:
+                self.normalizers[self.normalization_engine][0](self)
+            except Exception as e:
+                self.print_error(f"Ошибка инициализации нормализатора {self.normalization_engine}", e)
+                self.print_red('Попробуйте установить в options/core.json: "normalization_engine": "none"')
+                self.normalization_engine = "none"
+
 
         # init tts engine
         try:
@@ -195,6 +218,12 @@ class VACore(JaaCore):
                 self.fuzzy_processors[k][0](self)
             except Exception as e:
                 self.print_error("Ошибка инициализации fuzzy_processor {0}".format(k), e)
+
+    def normalize(self, text:str):
+        if self.normalization_engine == "none":
+            return text
+        else:
+            return self.normalizers[self.normalization_engine][1](self, text)
 
     def play_voice_assistant_speech(self,text_to_speech:str):
         self.lastSay = text_to_speech

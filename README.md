@@ -154,7 +154,18 @@ https://github.com/timhok/IreneVA-hassio-script-trigger-plugin
     "voiceAssNames": "ирина|ирины|ирину", # Если это появится в звуковом потоке, то дальше будет команда. (Различные имена помощника, рекомендуется несколько)
     "voiceAssNameRunCmd": { # если вы обратитесь к помощнику по этому имени, то в начало вашей команды будет подставлено соответствующее слово
         "альбина": "чатгпт"
-    }
+    },
+    "log_console": True,  # Вывод логов в консоль
+    "log_console_level": "WARNING",
+    # Записываются в лог сообщения с уровнем равным или выше этого уровня: NOTSET | DEBUG | INFO | WARNING | ERROR | CRITICAL
+    "log_file": False,  # Вывод в лог-файл
+    "log_file_level": "DEBUG",  # NOTSET | DEBUG | INFO | WARNING | ERROR | CRITICAL
+    "log_file_name": "log.txt",  # имя лог-файла
+
+    "normalization_engine": "numbers", # нормализация текста для русских TTS. 
+    # Нормализация позволяет транслировать 1, 2, 3 в "один, два, три", что нужно, например, для VOSK TTS, который не знает числа
+    # Добавляется плагинами. Рекомендуется runorm для качества (но runorm тяжела в обработке)
+  
 }
 ```
 
