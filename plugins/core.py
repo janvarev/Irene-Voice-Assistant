@@ -7,7 +7,7 @@ from vacore import VACore
 def start(core:VACore):
     manifest = {
         "name": "Core plugin",
-        "version": "4.3",
+        "version": "4.4",
         "description": "Плагин с основными настройками Ирины.\nПосмотрите другие плагины, чтобы понять, какие команды можно использовать.",
 
         "options_label": {
@@ -42,6 +42,8 @@ def start(core:VACore):
             "log_file": "Выводить ли в лог-файл логи",
             "log_file_level": "Уровень логирования лог-файла",
             "log_file_name": "Имя лог-файла",
+
+            "normalization_engine": "Нормализация текста для русских TTS. Используйте runorm для качественного результата"
         },
 
         "default_options": {
@@ -79,6 +81,9 @@ def start(core:VACore):
             "log_file": False,  # Вывод в лог-файл
             "log_file_level": "DEBUG",  # NOTSET | DEBUG | INFO | WARNING | ERROR | CRITICAL
             "log_file_name": "log.txt",  # имя лог-файла
+
+            "normalization_engine": "numbers", # нормализация текста для русских TTS.
+            # Добавляется плагинами. Рекомендуется runorm для качества (но runorm тяжела в обработке)
         },
 
     }
@@ -121,6 +126,8 @@ def start_with_options(core:VACore, manifest:dict):
 
     import lingua_franca
     lingua_franca.load_language(options["linguaFrancaLang"])
+
+    core.normalization_engine = options["normalization_engine"]
 
     # Логирование
     core.log_console = options["log_console"]

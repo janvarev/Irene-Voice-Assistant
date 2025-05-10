@@ -1,5 +1,3 @@
-from plugins.plugin_tts_vosk import logger
-
 # Голосовой ассистент Ирина
 
 Ирина - русский голосовой ассистент для работы оффлайн. Требует Python 3.5+ (зависимость может быть меньше, но в любом случае Python 3)
@@ -157,12 +155,17 @@ https://github.com/timhok/IreneVA-hassio-script-trigger-plugin
     "voiceAssNameRunCmd": { # если вы обратитесь к помощнику по этому имени, то в начало вашей команды будет подставлено соответствующее слово
         "альбина": "чатгпт"
     },
-  "log_console": True,  # Вывод логов в консоль
-  "log_console_level": "WARNING",
-  # Записываются в лог сообщения с уровнем равным или выше этого уровня: NOTSET | DEBUG | INFO | WARNING | ERROR | CRITICAL
-  "log_file": False,  # Вывод в лог-файл
-  "log_file_level": "DEBUG",  # NOTSET | DEBUG | INFO | WARNING | ERROR | CRITICAL
-  "log_file_name": "log.txt",  # имя лог-файла
+    "log_console": True,  # Вывод логов в консоль
+    "log_console_level": "WARNING",
+    # Записываются в лог сообщения с уровнем равным или выше этого уровня: NOTSET | DEBUG | INFO | WARNING | ERROR | CRITICAL
+    "log_file": False,  # Вывод в лог-файл
+    "log_file_level": "DEBUG",  # NOTSET | DEBUG | INFO | WARNING | ERROR | CRITICAL
+    "log_file_name": "log.txt",  # имя лог-файла
+
+    "normalization_engine": "numbers", # нормализация текста для русских TTS. 
+    # Нормализация позволяет транслировать 1, 2, 3 в "один, два, три", что нужно, например, для VOSK TTS, который не знает числа
+    # Добавляется плагинами. Рекомендуется runorm для качества (но runorm тяжела в обработке)
+  
 }
 ```
 
@@ -175,78 +178,6 @@ https://github.com/timhok/IreneVA-hassio-script-trigger-plugin
 * Подключить собственный навык можно, создав плагин в **plugins_**. Смотрите примеры.
 * Подключить собственный TTS можно плагином. Как примеры, смотрите plugins_tts_console.py, plugins_tts_pyttsx.py.
 * Также, создав собственный **runva_** файл, можно, при желании, подключить свойт Speech-To-Text движок.
-
-### Логирование
-
-Логирование реализовано с помощью библиотеки logging в модуле core.py.
-
-Параметры задаются в **options/core.json**:
-
-- если log_console=True, то выводится в консоль
-- если log_file=True, то выводится в лог-файл
-
-Значения по умолчанию:
-
-- log_console=True
-- log_file=False
-- log_console_level="WARNING"
-- log_file_level="DEBUG"
-- log_file_name="log.txt"
-
-Уровни логирования:
-
-- NOTSET = 0
-- DEBUG = 10
-- INFO = 20
-- WARNING = 30
-- ERROR = 40
-- CRITICAL = 50
-
-По умолчанию, логи выводятся в консоль с уровнем WARNING, а в лог-файл с уровнем DEBUG.
-Это означает, что в лог попадают все сообщения с установленным уровнем и выше (больше).
-Т.е. если указан уровень WARNING, то в лог попадут сообщения с уровнем WARNING, ERROR, CRITICAL.
-Если уровень установлен на DEBUG, то в лог попадут сообщения с уровнем DEBUG, INFO, WARNING, ERROR, CRITICAL.
-
-Рекомендуемое использование:
-В начале модуля, после всех импортов добавить следующие строки:
-
-```python
-import logging
-
-logger = logging.getLogger(__name__)
-```
-
-Добавление событий в лог осуществляется вызовом соответствующей функции:
-
-```python
-logger.debug("debug message")  # для детальных сообщений при отладке
-logger.info("info message")  # для информационных сообщений, когда всё выполняется как и задумывалось
-logger.warning("warning message")  # для предупреждений, когда что-то пошло не так, но работа продолжается
-logger.error("error message")  # для сообщений об ошибках и потере функционала
-logger.critical("critical message")  # для сообщений о критических ошибках, при невозможности дальнейшей работы
-```
-
-При выводе логов в блоках try/except можно использовать следующую конструкцию:
-
-```python
-try:
-  ...
-except Exception as e:
-  logger.exception(e)
-```
-
-или так:
-
-```python
-try:
-  import some_library
-except ImportError as e:
-  logger.exception(e)
-  logger.error("Library 'some_library' is not installed. Please install it with 'pip install some_library'")
-```
-
-Рекомендуется последний вариант, для обработки конкретных исключений, а не всего класса Exception.
-Использование logger.exception(e) обеспечивает вывод информации о трассировке стека (stack trace).
 
 ### Разработка плагинов
 

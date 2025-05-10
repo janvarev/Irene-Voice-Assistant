@@ -209,7 +209,7 @@ def prepare(text: str):
 
             text = ipa2ru(text)
             logger.info(f'Текст после всех преобразований: {text}')
-            logger.debug(f'Символы: {[f'{ch}: {ord(ch)}' for ch in text]}')
+            # logger.debug(f'Символы: {[f'{ch}: {ord(ch)}' for ch in text]}')
             return text
         else:
             logger.warning("Текст содержит латинские буквы, возможны ошибки в библиотеках TTS")
