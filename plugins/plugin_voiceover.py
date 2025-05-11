@@ -39,7 +39,6 @@ def say(core:VACore, phrase:str):
     if phrase == "":
         core.say2("Нечего сказать")
         return
-    phrase = prepare(phrase)
     core.say2(phrase)
 
 def say_clipboard(core:VACore, phrase:str):
@@ -77,7 +76,6 @@ def say_clipboard(core:VACore, phrase:str):
     if options["wavBeforeGeneration"]:
         core.play_wav(options["wavPath"])
 
-    text_to_speech = prepare(text_to_speech)
     try:
         if options["useTtsEngineId2"]:
             core.say2(text_to_speech)
