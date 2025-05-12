@@ -161,7 +161,7 @@ def normalize(core: VACore, text: str):
             text = ipa2ru(text)
             logger.info(f'Текст после всех преобразований: {text}')
             try:
-                logger.debug(f'Символы: {[f'{ch}: {ord(ch)}' for ch in text]}')
+                logger.debug(f"Символы: {[f'{ch}: {ord(ch)}' for ch in text]}")
             except Exception as e:
                 logger.exception(e)
             return text
