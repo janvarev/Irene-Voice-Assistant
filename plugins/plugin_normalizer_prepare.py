@@ -1,7 +1,13 @@
 # Latin text and some specsymbols normalizer plugin for russian TTS
 # required library: eng_to_ipa (`pip install eng_to_ipa`)
 # author: Sergey Savin aka Grayen
-
+"""
+    Подготовка текста к озвучиванию на русских моделях TTS.
+Т.к. многие модели либо пропускают некоторые символы (в лучшем случае),
+либо останавливаются с генерацией исключения. Производится замена слов
+на латинице в транскрипцию кириллицей и замена символов словами.
+    Автор не ставил цели добиться идеального произношения :)
+"""
 import os
 import logging
 import re
@@ -16,12 +22,26 @@ logger = logging.getLogger(__name__)
 def start(core: VACore):
     manifest = {
         "name": "Normalizer latin text and some specsymbols",
-        "version": "0.1",
+        "version": "0.2",
         "require_online": False,
 
         "normalizer": {
             "prepare": (init, normalize)  # первая функция инициализации, вторая - реализация нормализации
-        }
+        },
+
+        "description": "Подготовка текста к озвучиванию на русских моделях TTS.\n"
+                       "Замена символов и слов на латинице в транскрипцию кириллицей\n",
+
+        "default_options": {
+            "changeNumbers": "process",
+            # Заменять числа словами: "process" - заменять, "delete" - удалять, "no_process" - оставлять как есть
+            "changeLatin": "process",
+            # Заменять латиницу на кириллицу: "process" - заменять, "delete" - удалять, "no_process" - оставлять как есть
+            "changeSymbols": r"#$%&*+-/<=>@~[\]_`{|}№",  # Символы, заменяемые словами.
+            "keepSymbols": r",.?!;:() ",  # Символы, оставляемые в тексте без изменений
+            "deleteUnknownSymbols": True,  # Удалять все остальные символы
+        },
+
     }
     return manifest
 
@@ -38,15 +58,12 @@ def normalize(core: VACore, text: str):
     """
     Подготовка текста к озвучиванию
     """
+    options = core.plugin_options(modname)
     logger.debug(f'Текст до преобразований: {text}')
 
     # Если в строке только кириллица и пунктуация - оставляем как есть
     if not bool(re.search(r'[^,.?!;:"() ЁА-Яа-яё]', text)):
         return text
-
-    if bool(re.search(r'[0-9]', text)):
-        from utils.all_num_to_text import all_num_to_text
-        text = all_num_to_text(text)
 
     def replace_characters(input_string, replacement_dict):
         """
@@ -76,13 +93,42 @@ def normalize(core: VACore, text: str):
             # Unicode
             '№': ' номер ',
         }
-        text = replace_characters(text, symbol_dict)
-        text = re.sub(r'[\s]+', ' ', text)  # убрать лишние пробелы
-        logger.debug(f'Текст после подстановки символов: {text}')
 
-    if not bool(re.search('[a-zA-Z]', text)):
-        return text
-    else:
+        symbols_to_change = options['changeSymbols']
+        filtered_symbol_dict = {key: value for key, value in symbol_dict.items() if key in symbols_to_change}
+        logger.debug(f'Словарь замены символов: {filtered_symbol_dict}')
+
+        symbols_to_keep = options['keepSymbols']
+        filtered_symbol_dict.update({key: key for key in symbols_to_keep})
+        logger.debug(f'Словарь с сохраняемыми символами: {filtered_symbol_dict}')
+
+        if filtered_symbol_dict:
+            text = replace_characters(text, filtered_symbol_dict)
+            logger.debug(f'Текст после замены символов: {text}')
+
+        if options['deleteUnknownSymbols']:
+            text = re.sub(f'[^{symbols_to_change}{symbols_to_keep}A-Za-zЁА-Яа-яё ]', '',
+                          text)  # убрать все остальные символы
+            logger.debug(f'Текст после удаления символов: {text}')
+
+        text = re.sub(r'[\s]+', ' ', text)  # убрать лишние пробелы
+
+    if bool(re.search(r'[0-9]', text)):
+        if options['changeNumbers'].lower() == 'process':  # Заменяем числа словами
+            text = core.all_num_to_text(text)
+        elif options['changeNumbers'].lower() == 'delete':  # Удаляем числа
+            text = re.sub(r'[0-9]', '', text)
+        # 'no_process' оставляем как есть
+        logger.debug(f'Текст после замены чисел: {text}')
+
+    change_latin = options['changeLatin'].lower() == 'no_process'
+    if (not bool(re.search('[a-zA-Z]', text)) or  # Если нет латинских букв
+            change_latin):  # или не обрабатываем латиницу
+        return text  # оставляем как есть
+    elif change_latin == 'delete':  # Удаляем латиницу
+        text = re.sub('[a-zA-Z]', '', text)
+        logger.debug(f'Текст после удаления латиницы: {text}')
+    else:  # 'process' Заменяем латиницу на русский текст
         # Использовано:
         # "https://ru.stackoverflow.com/questions/1602040/Англо-русская-практическая-транскрипция-на-python"
 
