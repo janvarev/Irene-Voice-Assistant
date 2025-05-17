@@ -442,7 +442,8 @@ class VACore(JaaCore):
 
             payload["tools"] = self.calc_ai_tools_manifest()
 
-            print(payload)
+            logger.info("AI Call Tool payload")
+            logger.info(payload)
 
 
             response = requests.post(
