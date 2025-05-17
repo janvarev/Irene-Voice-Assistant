@@ -7,7 +7,7 @@ from vacore import VACore
 def start(core:VACore):
     manifest = {
         "name": "Core plugin",
-        "version": "4.5",
+        "version": "5.0",
         "description": "Плагин с основными настройками Ирины.\nПосмотрите другие плагины, чтобы понять, какие команды можно использовать.",
 
         "options_label": {
@@ -44,6 +44,8 @@ def start(core:VACore):
             "log_file_name": "Имя лог-файла",
 
             "normalization_engine": "Нормализация текста для русских TTS. Используйте runorm для качественного результата"
+
+
         },
 
         "default_options": {
@@ -84,6 +86,16 @@ def start(core:VACore):
 
             "normalization_engine": "default", # нормализация текста для русских TTS.
             # Добавляется плагинами. Рекомендуется runorm для качества (но runorm тяжела в обработке)
+
+            "plugin_types": "default", # список разрешенных ТИПОВ плагинов через ,
+            # например: classic, ai, или "classic,ai"
+
+            "openai_base_url": "https://api.vsegpt.ru/v1",
+            "openai_key": "",
+            "openai_tools_model": "openai/gpt-4o-mini",
+            "openai_tools_system_prompt": "",
+            "openai_generic_model": "openai/gpt-4o-mini",
+            "openai_generic_system_prompt": "",
         },
 
     }
@@ -130,6 +142,23 @@ def start_with_options(core:VACore, manifest:dict):
     core.normalization_engine = options["normalization_engine"]
     if core.normalization_engine == "default":
         core.normalization_engine = "prepare"
+
+    # Вычисляем обрабатываемые типы плагинов
+    plugin_types = options["plugin_types"]
+    if plugin_types == "default":
+        # plugin_types = "classic,ai"
+        plugin_types = "classic" # на время бета-версии включены только классические плагины.
+        # Включите AI-плагины самостоятельно
+
+    core.plugin_types = plugin_types.replace(" ","").split(",")
+
+    # ai
+    core.openai_base_url = options["openai_base_url"]
+    core.openai_key = options["openai_key"]
+    core.openai_tools_model = options["openai_tools_model"]
+    core.openai_tools_system_prompt = options["openai_tools_system_prompt"]
+    core.openai_generic_model = options["openai_generic_model"]
+    core.openai_generic_system_prompt = options["openai_generic_system_prompt"]
 
     # Логирование
     core.log_console = options["log_console"]

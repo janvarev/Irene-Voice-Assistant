@@ -1,18 +1,22 @@
+import json
 import os
 import traceback
 import hashlib
+import copy
+
+import requests
 
 from termcolor import colored, cprint
 import time
 from threading import Timer
 
-from typing import Dict
+from typing import Dict, List, Tuple
 
 from jaa import JaaCore
 
 from collections.abc import Callable
 
-version = "11.1.0"
+version = "12.0.0"
 
 import logging
 
@@ -97,6 +101,16 @@ class VACore(JaaCore):
 
         self.normalization_engine:str = "" # отвечает за нормализацию текста для русских TTS
 
+        self.plugin_types:list[str] = []
+
+        self.openai_base_url:str = ""
+        self.openai_key:str = ""
+        self.openai_tools_model:str = ""
+        self.openai_tools_system_prompt:str = ""
+        self.openai_generic_model: str = ""
+        self.openai_generic_system_prompt: str = ""
+
+        self.ai_tools:Dict[str, Dict] = {}
 
 
 
@@ -147,6 +161,11 @@ class VACore(JaaCore):
         if "fuzzy_processor" in manifest: # process commands
             for cmd in manifest["fuzzy_processor"].keys():
                 self.fuzzy_processors[cmd] = manifest["fuzzy_processor"][cmd]
+
+        # adding ai_tools from plugin manifest
+        if "ai_tools" in manifest:  # process ai_tools
+            for cmd in manifest["ai_tools"].keys():
+                self.ai_tools[cmd] = manifest["ai_tools"][cmd]
 
     def stub_online_required(self,core,phrase):
         self.play_voice_assistant_speech(self.plugin_options("core")["replyOnlineRequired"])
@@ -389,8 +408,59 @@ class VACore(JaaCore):
 
         return None
 
+    def calc_ai_tools_manifest(self):
+        res = []
+        for ai_tool_name in self.ai_tools.keys():
+            ai_tool = self.ai_tools.get(ai_tool_name)
+            cur = {}
+            if ai_tool.get("v") == "1":
+                cur = copy.deepcopy(ai_tool.get("manifest"))
+                cur["function"]["name"] = ai_tool_name # дополнительный процессинг устанавливает имя
+            else:
+                logger.warning(f"Не могу обработать AI Tool {ai_tool_name} - данная версия V не поддерживается текущей версией Ирины")
+            res.append(cur)
+        return res
+
+
+    def call_ai_tools(self, query: str) -> Tuple[int, str]:
+        """Makes request to API and returns tuple of (status_code, response_text)"""
+        # time.sleep(numb*0.01)
+        try:
+            messages = []
+            if self.openai_tools_system_prompt != "":
+                messages.append({"role": "system", "content": self.openai_tools_system_prompt})
+
+            messages.append({"role": "user", "content": query})
+
+            payload:dict = {
+                    "model": self.openai_tools_model,
+                    "messages": messages,
+                    "temperature": 0.1,
+                    "max_tokens": 4096,
+                    "tool_choice": "auto",
+                }
+
+            payload["tools"] = self.calc_ai_tools_manifest()
+
+            print(payload)
+
+
+            response = requests.post(
+                url=f"{self.openai_base_url}/chat/completions",
+                headers={
+                    "Authorization": f"Bearer {self.openai_key}",
+                    "X-Title": f"Irene Voice Assistant (tools)"
+                },
+                json=payload
+            )
+            return response.status_code, response.text
+        except Exception as e:
+            return 500, str(e)
+
     def execute_next(self,command,context):
+        is_first_call = False
         if context == None: # первый вход
+            is_first_call = True
             context = self.commands
             self.input_cmd_full = command # нужно для василия
 
@@ -404,11 +474,43 @@ class VACore(JaaCore):
             return
 
         try:
-            res = self.find_best_cmd_with_fuzzy(command,context,True)
-            if res is not None:
-                keyall, probability, rest_phrase = res
-                next_context = context[keyall]
-                self.execute_next(rest_phrase, next_context)
+            is_allow_classic_plugins = (not is_first_call) or ("classic" in self.plugin_types)
+            if is_allow_classic_plugins:
+                res = self.find_best_cmd_with_fuzzy(command,context,True)
+                if res is not None:
+                    keyall, probability, rest_phrase = res
+                    next_context = context[keyall]
+                    self.execute_next(rest_phrase, next_context)
+                    return
+
+            if is_first_call and ("ai" in self.plugin_types): # разрешены плагины ИИ
+                res_code, res = self.call_ai_tools(command)
+                logger.info(f"AI tool result code: {res_code}")
+                logger.info(res)
+                # self.say("Вызов успешен!")
+                if res_code == 200: # основной вариант успешного вызова
+                    response = json.loads(res)
+                    message = response["choices"][0]["message"]
+                    if message.get("tool_calls") is not None:
+                        # тулза найдена успешно
+                        tools_param:dict = message["tool_calls"][0].get("function")
+                        func_name = tools_param.get("name")
+                        func_params = json.loads(tools_param.get("arguments"))
+
+                        # непосредственно вызываем процедуру
+                        self.ai_tools[func_name]["function"](self, **func_params)
+                    else:
+                        # Непонятно, нейросеть переспрашивает. Но Контекст не вводим!
+
+                        # этот код позволяет озвучить ответ от нейросети
+                        # answer = message["content"]
+                        # self.say(answer)
+
+                        self.say(self.plugin_options("core")["replyNoCommandFound"])
+                else:
+                    logger.error(["Error during AI call, code", res_code, res])
+                    self.say("Ошибка при вызове ИИ для определения инструмента. Посмотрите логи")
+
                 return
 
             # первый проход - ищем полное совпадение
@@ -655,3 +757,4 @@ class VACore(JaaCore):
 
     def format_print_key_list(self, key:str, value:list):
         print(colored(key+": ", "blue")+", ".join(value))
+
