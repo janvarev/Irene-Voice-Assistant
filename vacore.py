@@ -12,7 +12,7 @@ from jaa import JaaCore
 
 from collections.abc import Callable
 
-version = "11.0.0"
+version = "11.1.0"
 
 import logging
 

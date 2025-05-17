@@ -7,7 +7,7 @@ from vacore import VACore
 def start(core:VACore):
     manifest = {
         "name": "Core plugin",
-        "version": "4.4",
+        "version": "4.5",
         "description": "Плагин с основными настройками Ирины.\nПосмотрите другие плагины, чтобы понять, какие команды можно использовать.",
 
         "options_label": {
@@ -82,7 +82,7 @@ def start(core:VACore):
             "log_file_level": "DEBUG",  # NOTSET | DEBUG | INFO | WARNING | ERROR | CRITICAL
             "log_file_name": "log.txt",  # имя лог-файла
 
-            "normalization_engine": "numbers", # нормализация текста для русских TTS.
+            "normalization_engine": "default", # нормализация текста для русских TTS.
             # Добавляется плагинами. Рекомендуется runorm для качества (но runorm тяжела в обработке)
         },
 
@@ -128,6 +128,8 @@ def start_with_options(core:VACore, manifest:dict):
     lingua_franca.load_language(options["linguaFrancaLang"])
 
     core.normalization_engine = options["normalization_engine"]
+    if core.normalization_engine == "default":
+        core.normalization_engine = "prepare"
 
     # Логирование
     core.log_console = options["log_console"]

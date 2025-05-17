@@ -358,6 +358,8 @@ https://github.com/Oknolaz/vasisualy
 
 AlphaCephei за прекрасную библиотеку распознавания Vosk ( https://alphacephei.com/vosk/index.ru ) 
 
+
+
 ## Поддержка проекта
 
 Основная сложность в опенсорс - это не писать код. Писать код интересно.
