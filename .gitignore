@@ -12,3 +12,38 @@
 *.pyc
 /tts_cache/
 /runva_webapi.json
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+coverage.xml
+*.py[cod]
+*$py.class
+__pycache__/
+
+# Claude settings
+.claude/*
+
+# Build artifacts
+build/
+dist/
+*.egg-info/
+*.egg
+
+# Virtual environments
+env/
+ENV/
+venv/
+VENV/
+virtualenv/
+
+# IDE files
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Logs
+*.log
