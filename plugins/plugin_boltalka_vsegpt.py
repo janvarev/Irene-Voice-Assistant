@@ -82,8 +82,8 @@ def start(core:VACore):
             "apiKey": "", #
             "apiBaseUrl": "https://api.vsegpt.ru/v1",  #
             "system": "Ты - Ирина, голосовой помощник, помогающий человеку. Давай ответы кратко и по существу.",
-            "model": "openai/gpt-3.5-turbo",
-            "model_spravka": "perplexity/pplx-70b-online",
+            "model": "openai/gpt-4o-mini",
+            "model_spravka": "perplexity/latest-large-online",
             "tts_model": "tts-openai/tts-1",
             "tts_voice": "nova",
             "tts_response_format": "mp3",
