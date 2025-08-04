@@ -3,73 +3,147 @@
 ## Некоторые проблемы при установке под Linux
 
 Основные проблемы две:
+
 - сделать, чтобы проигрывался wav-файл
 - сделать, чтобы работал TTS
 
+### Установка Python и подготовка окружения
+
+Если Python не установлен или его версия ниже 3.5, выполните:
+
+```bash
+sudo add-apt-repository ppa:deadsnakes/ppa
+sudo apt update
+sudo apt install python3 python3-pip python3-venv libgirepository-2.0-dev libcairo2-dev
+```
+
+Создайте и активируйте виртуальное окружение:
+
+```bash
+python3 -m venv venv
+source venv/bin/activate
+```
+
+Установка зависимостей:
+
+```bash
+pip install --upgrade pip
+pip install -r requirements.txt
+
+
+pip install PyGObject
+```
+
 ### Проигрывание WAV
 
-По дефолту в `options/core.json` установлено
-`"playWavEngineId": "audioplayer",`
+По умолчанию в `options/core.json` указано:
 
-Эта библиотека не всегда удобно ставится под Linux.
-Вроде можно
-```apt install portaudio19-dev```
-но не всегда работает.
+```json
+"playWavEngineId": "audioplayer",
+```
 
-Рекомендуется переключиться на один из других движков проигрывания WAV. 
-Список - в [docs/PLUGINS.md](/docs/PLUGINS.md#PlayWav), в разделе с PlayWav плагинами.
+Однако этот движок не всегда корректно работает на Linux.
 
-Для Linux рекомендуется либо:
-`"playWavEngineId": "aplay",` (играть через запуск aplay)
-либо
-`"playWavEngineId": "sounddevice",`
+Возможно, поможет установка:
+
+```bash
+sudo apt install portaudio19-dev
+```
+
+но она не всегда решает проблему.
+
+Рекомендуется переключиться на один из других движков воспроизведения WAV.
+Список доступен в [docs/PLUGINS.md](/docs/PLUGINS.md#PlayWav), в разделе с плагинами PlayWav.
+
+Для Linux рекомендуется использовать один из следующих вариантов:
+
+- `"playWavEngineId": "aplay"` — воспроизведение через утилиту `aplay`
+- `"playWavEngineId": "sounddevice"` — через Python-библиотеку `sounddevice`
+
+---
 
 ### Работа TTS (Text-to-Speech) движка
 
 Также есть проблемы с запуском TTS движка. Варианта 2:
 
-**1 вариант. Оставить pyttsx**
+**1 вариант. Использовать pyttsx (по умолчанию)**
 
 pyttsx идет по умолчанию.
 
-Под него нужно ```apt install espeak-ng```
+Для работы требуется:
 
-Далее в плагине plugins/plugin_tts_pyttsx.py поменять строку на
-core.ttsEngine.setProperty("voice", "russian") либо найти нужный id языка
-и установить его в options/plugin_tts_pyttsx.json sysId
-
-Тогда звук будет идти через espeak-ng, и говорят, он не очень на русском.
-
-**2 вариант. Поставить TTS rhvoice_rest и запустить Докер для rhvoice_rest**
-
-Прстой вариант, чтобы не париться с зависимостями.
-1. Установите в options/core.json `"ttsEngineId": "rhvoice_rest"`
-2. Использует докер-сервер https://github.com/Aculeasis/rhvoice-rest для
-   генерации голоса. Зайдите туда и запустите нужный вам докер.
-
-Если вам нужна качественная генерация через silero (требует больше ресурсов)
-1. Установите в options/core.json `"ttsEngineId": "silero_rest"`
-2. Использует докер-сервер https://github.com/janvarev/silero_rest_service для
-   генерации голоса. Зайдите туда и запустите нужный вам докер.
-
-**3 вариант. Поставить TTS rhvoice**
-
-1. Скопируйте plugin_tts_rhvoice из plugins_active в plugins
-2. Установите в options/core.json "ttsEngineId": "rhvoice"
-3. Посмотрите в [PLUGINS.md](/docs/PLUGINS.md), что нужно для плагина rhvoice.
-
-На Linux-системе говорят, что для установки rhvoice-wrapper-bin
-требуется
+```bash
+sudo apt install espeak-ng
 ```
-apt install libspeechd-dev
+
+Далее в плагине `plugins/plugin_tts_pyttsx.py` замените строку на:
+
+```python
+core.ttsEngine.setProperty("voice", "russian")
+```
+
+или найдите нужный ID языка и пропишите его в `options/plugin_tts_pyttsx.json`, поле `sysId`.
+
+Звук будет воспроизводиться через `espeak-ng`, но качество русской озвучки невысокое.
+
+---
+
+**2 вариант. Установить TTS `rhvoice_rest` и запустить Docker-контейнер**
+
+Простой вариант, не требующий ручной установки зависимостей.
+
+1. Установите в options/core.json
+
+```json
+"ttsEngineId": "rhvoice_rest"
+```
+
+2. Используется Docker-сервер:  
+   https://github.com/Aculeasis/rhvoice-rest  
+   Перейдите по ссылке и запустите нужный контейнер.
+
+Если нужна более качественная озвучка через `silero` (но потребуется больше ресурсов):
+
+1. В `options/core.json`:
+
+```json
+"ttsEngineId": "silero_rest"
+```
+
+2. Используется Docker-сервер:  
+   https://github.com/janvarev/silero_rest_service  
+   Перейдите по ссылке и запустите нужный контейнер
+
+**3 вариант. Установить TTS `rhvoice` локально**
+
+1. Скопируйте `plugin_tts_rhvoice` из `plugins_active` в `plugins`:
+
+```bash
+cp -r plugins_active/plugin_tts_rhvoice plugins/
+```
+
+2. В `options/core.json` установите:
+
+```json
+"ttsEngineId": "rhvoice"
+```
+
+3. Посмотрите в [PLUGINS.md](/docs/PLUGINS.md), какие зависимости нужны для плагина `rhvoice`.
+
+Для установки `rhvoice-wrapper-bin` на Linux могут понадобиться:
+
+```bash
+sudo apt install libspeechd-dev
 pip3 install scons lxml
 ```
- 
-Проблемы обсуждались в этой ветке комментариев: https://habr.com/ru/post/595855/#comment_24043171
 
-**Важно:** если соберетесь использовать rhvoice, переключите настройку в core.json:
-`"playWavEngineId": "sounddevice",`
-потому что через audioplayer не проигрывает WAV по неизвестным причинам.
+Обсуждение проблем — в комментариях на Хабре:  
+https://habr.com/ru/post/595855/#comment_24043171
 
+**Важно:** если вы используете `rhvoice`, установите в `core.json`:
 
+```json
+"playWavEngineId": "sounddevice"
+```
 
+Так как `audioplayer` не воспроизводит WAV в этом случае по неизвестным причинам.
