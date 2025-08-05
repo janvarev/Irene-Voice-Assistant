@@ -31,7 +31,7 @@ source .venv/bin/activate
 Установка зависимостей:
 
 ```bash
-pip install -r requirements.txt
+pip install -r requirements_fixed.txt
 ```
 
 ##### Если возникает ошибка plugin_playwav_audioplayer error on load: No module named 'gi', выполните:
