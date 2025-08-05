@@ -12,5 +12,5 @@ audioplayer~=0.6
 python-dateutil~=2.9.0.post0
 gradio~=5.39.0
 fsspec==2025.7.0
-openai==1.98.0
+openai==0.28.0
 elevenlabs==2.8.1
