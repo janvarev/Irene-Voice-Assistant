@@ -12,6 +12,8 @@
 - Поддерживает TTS от OpenAI (если сложно установить что-то локально)
 [(Инструкция по настройке плагина)](https://vsegpt.ru/ExtTools/IreneVA). (Также можно использовать любой OpenAI-совместимый endpoint)
 
+## Установка
+
 ### Самая быстрая установка под Windows
 
 Зайдите в https://github.com/janvarev/Irene-VA-win-installer, скачайте код (Code/Download ZIP) и следуйте инструкциям.
@@ -223,7 +225,7 @@ https://github.com/timhok/IreneVA-hassio-script-trigger-plugin
 }
 ```
 
-### Отладка и разработка (для разработчиков)
+### Отладка и разработка (для разработчиков) 
 
 Для отладки можно использовать запуск системы через файл **runva_cmdline.py**. 
 
@@ -233,7 +235,7 @@ https://github.com/timhok/IreneVA-hassio-script-trigger-plugin
 * Подключить собственный TTS можно плагином. Как примеры, смотрите plugins_tts_console.py, plugins_tts_pyttsx.py.
 * Также, создав собственный **runva_** файл, можно, при желании, подключить свойт Speech-To-Text движок.
 
-### Логирование
+### Логирование 
 
 Логирование реализовано с помощью библиотеки logging в модуле core.py.
 
