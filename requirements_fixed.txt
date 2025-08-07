@@ -1,0 +1,16 @@
+wikipedia-api==0.5.4
+pyttsx3==2.99
+vosk==0.3.45
+vosk-tts==0.3.60
+termcolor==1.1.0
+sounddevice==0.5.2
+soundfile==0.13.1
+pyautogui==0.9.54
+requests==2.32.4
+numpy==2.2.6
+audioplayer==0.6
+python-dateutil==2.9.0.post0
+gradio==5.39.0
+fsspec==2025.7.0
+openai==0.28.0
+elevenlabs==2.8.1
