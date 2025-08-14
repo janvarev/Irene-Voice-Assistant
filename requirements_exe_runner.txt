@@ -1,5 +1,5 @@
 pyttsx3==2.90
-vosk~=0.3.45
+vosk==0.3.52
 termcolor~=1.1.0
 sounddevice
 soundfile
