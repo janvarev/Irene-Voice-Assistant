@@ -16,7 +16,7 @@ from jaa import JaaCore
 
 from collections.abc import Callable
 
-version = "12.0.0"
+version = "12.0.1"
 
 import logging
 
@@ -736,11 +736,41 @@ class VACore(JaaCore):
         self.format_print_key_list("Assistant names", self.voiceAssNames)
 
 
+        cprint("Режим работы плагинов (параметр plugin_types в core.json): "+",".join(self.plugin_types)+" "+"#"*20, "blue")
 
-        cprint("Commands list: "+"#"*65, "blue")
-        for plugin in self.plugin_commands:
-            self.format_print_key_list(plugin, self.plugin_commands[plugin])
-        cprint("#"*80, "blue")
+        if ("classic" in self.plugin_types):
+            cprint("- Классические плагины (classic) ВКЛЮЧЕНЫ (вы должны ТОЧНО указывать команды, например, ирина привет)", "green")
+        else:
+            cprint("- Классические плагины (classic) ВЫКЛЮЧЕНЫ", "red")
+
+        if ("ai" in self.plugin_types):
+            cprint("- AI-плагины (ai) ВКЛЮЧЕНЫ (команды в свободной форме в зависимости от плагинов)", "green")
+        else:
+            cprint("- AI-плагины (classic) ВЫКЛЮЧЕНЫ", "red")
+
+        if ("classic" in self.plugin_types):
+            cprint("Classic commands list: "+"#"*55, "blue")
+            for plugin in self.plugin_commands:
+                self.format_print_key_list(plugin, self.plugin_commands[plugin])
+            cprint("#"*80, "blue")
+
+        if ("ai" in self.plugin_types):
+            # cprint("AI settings check: " + "#" * 55, "blue")
+            if self.openai_base_url == "https://api.vsegpt.ru/v1":
+                if self.openai_key == "":
+                    cprint("Для AI-плагинов установлена API-точка доступа VseGPT, но не установлен API-ключ; работать плагины не будут. Получите ваш ключ бесплатно после регистрации: https://vsegpt.ru/Reg или установите другую точку доступа.",
+                           "red")
+
+            cprint("AI functions list: " + "#" * 55, "blue")
+            if len(self.ai_tools.keys()) > 0:
+                print(", ".join(self.ai_tools.keys()))
+            else:
+                cprint("AI-плагины не зарегистрировали ни одного навыка. Добавьте AI-плагины в вашу систему.", "red")
+            cprint("#" * 80, "blue")
+
+
+
+
 
         # dump assistant names, cmds, numbers to file
 
