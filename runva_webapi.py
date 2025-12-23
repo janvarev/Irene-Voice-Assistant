@@ -297,7 +297,7 @@ async def startup_event():
 
 
 # рендерит текст в wav
-@app.get("/ttsWav")
+@app.get("/ttsWav") # получение рендеренного WAV на клиенте
 async def ttsWav(text:str):
     #runCmd(cmd,returnFormat)
     tmpformat = core.remoteTTS
@@ -305,6 +305,15 @@ async def ttsWav(text:str):
     core.play_voice_assistant_speech(text)
     core.remoteTTS = tmpformat
     return core.remoteTTSResult
+
+@app.get("/ttsSay") # озвучка выбранного текста на сервере
+async def ttsSay(text:str):
+    #runCmd(cmd,returnFormat)
+    tmpformat = core.remoteTTS
+    core.remoteTTS = "none"
+    core.play_voice_assistant_speech(text)
+    core.remoteTTS = tmpformat
+    return ""
 
 
 # выполняет команду Ирины
