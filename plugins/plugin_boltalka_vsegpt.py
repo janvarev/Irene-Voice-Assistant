@@ -62,7 +62,7 @@ modname = os.path.basename(__file__)[:-3] # calculating modname
 def start(core:VACore):
     manifest = {
         "name": "Болталка с ChatGPT с сохранением контекста через Vsegpt.ru или другой OpenAI сервер",
-        "version": "3.2",
+        "version": "3.3",
         "require_online": True,
         "description": "После указания apiKey позволяет вести диалог с ChatGPT.\n"
                        "Голосовая команда: поболтаем|поговорим (для обычной модели с чатом), справка (для точных фактов)",
@@ -87,7 +87,7 @@ def start(core:VACore):
             "tts_model": "tts-openai/tts-1",
             "tts_voice": "nova",
             "tts_response_format": "mp3",
-            "prompt_tpl_spravka": "Вопрос: {0}. Ответь на русском языке максимально кратко - только запрошенные данные. ",
+            "prompt_tpl_spravka": "Вопрос пользователя: '{0}'. Ответь на вопрос пользователя на русском языке максимально кратко - только запрошенные данные. Не используй Markdown в ответе.",
         },
 
         "commands": {
@@ -193,7 +193,12 @@ def boltalka_spravka(core:VACore, phrase:str):
         # print(response)
         # decoded_value = response["content"].encode().decode('utf-8')
         # print("-", decoded_value)
-        core.say(response["content"])
+        answer = response["content"]
+        for i in range(1, 101):
+            answer = answer.replace(f'[{i}]', '')
+        # print(answer)
+        print(answer)
+        core.say(answer)
         # core.context_set(boltalka, 20)
 
     except:
