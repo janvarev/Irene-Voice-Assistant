@@ -30,6 +30,7 @@ def start(core:VACore):
             "replyOnlineRequired": "ответ при вызове в оффлайн функции плагина, требующего онлайн",
 
             "contextDefaultDuration": "Время в секундах, пока Ирина находится в контексте (контекст используется в непрерывном чате, играх и пр.; в контексте не надо использовать слово Ирина)",
+            "contextExitCommand": "Команда досрочного выхода из контекста - слово чтобы выйти из контекста раньше, не дожидаясь автоматического сброса по таймауту.",
             "contextRemoteWaitForCall": "(ПРО) При использовании WEB-API - ждать ли команды от клиента, что звук уже проигрался?",
 
             "tempDir": "адрес директории для временных файлов",
@@ -68,6 +69,7 @@ def start(core:VACore):
             "replyOnlineRequired": "Для этой команды необходим онлайн",
 
             "contextDefaultDuration": 10,
+            "contextExitCommand": "", # команда досрочного выхода из контекста. Если значение отсутствует - команда не будет использоваться (по умолчанию).
             "contextRemoteWaitForCall": False,
 
             "tempDir": "temp",
@@ -120,6 +122,7 @@ def start_with_options(core:VACore, manifest:dict):
     core.logPolicy = options["logPolicy"]
 
     core.contextDefaultDuration = options["contextDefaultDuration"]
+    core.contextExitCommand = options["contextExitCommand"]
     core.contextRemoteWaitForCall = options["contextRemoteWaitForCall"]
 
     core.tmpdir = options["tempDir"]

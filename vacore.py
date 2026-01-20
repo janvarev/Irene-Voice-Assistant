@@ -79,6 +79,7 @@ class VACore(JaaCore):
 
         self.context = None
         self.contextTimer = None
+        self.contextExitCommand = ""
         self.contextTimerLastDuration = 0
 
         self.contextDefaultDuration = 10
@@ -471,7 +472,12 @@ class VACore(JaaCore):
             # it is function to call!
             #context(self,command)
             self.context_clear()
-            self.call_ext_func_phrase(command,context)
+            if command == self.contextExitCommand and self.contextExitCommand != '':
+                print('Context cleared.')
+                self.contextTimer = None
+            else:
+                self.call_ext_func_phrase(command,context)
+            
             return
 
         try:
