@@ -4,7 +4,7 @@
 
 Поддерживает плагины (скиллы). 
 
-[Статья на Хабре](https://habr.com/ru/post/595855/) | [Вторая статья на Хабре](https://habr.com/ru/post/660715/) | [Третья статья на Хабре](https://habr.com/ru/articles/725066/) | [Группа в Телеграм](https://t.me/irene_va)
+[Статья на Хабре](https://habr.com/ru/post/595855/) | [Вторая статья на Хабре](https://habr.com/ru/post/660715/) | [Третья статья на Хабре](https://habr.com/ru/articles/725066/) | [Четвертая статья на Хабре - про 12 версию и ИИ-плагины](https://habr.com/ru/articles/932072/) | [Группа в Телеграм](https://t.me/irene_va) 
 
 Через сервис [VseGPT.ru](https://vsegpt.ru/), еще один проект автора Ирины: 
 - Поддерживает общение с ChatGPT, GPT-4, Claude 3.    
