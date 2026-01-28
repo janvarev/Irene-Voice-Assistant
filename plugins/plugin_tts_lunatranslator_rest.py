@@ -63,13 +63,11 @@ class TTS:
 def start(core:VACore):
     manifest = {
         "name": "TTS Luna Translator (REST)",
-        "version": "1.0",
+        "version": "1.1",
         "require_online": False,
 
         "default_options": {
-            "voiceId": "anna", # id голоса
             "urlRHVoiceRestServer": "http://127.0.0.1:2333/api/tts",
-            "format": "mp3", # по странным причинам WAV отрабатывает отвратительно, зато MP3 работает
         },
 
         "tts": {
@@ -87,14 +85,14 @@ def init(core:VACore):
 
 def towavfile(core:VACore, text_to_speech:str, wavfile:str):
     # simple way
-    voiceid = core.plugin_options(modname)["voiceId"]
+    # voiceid = core.plugin_options(modname)["voiceId"]
     url = core.plugin_options(modname)["urlRHVoiceRestServer"]
-    format = core.plugin_options(modname)["format"]
+    # format = core.plugin_options(modname)["format"]
 
     # print("lunatranslator call")
     try:
 
-        res = TTS(text=text_to_speech,url=url,voice=voiceid,format_=format)
+        res = TTS(text=text_to_speech,url=url)
 
         res.save(wavfile)
     except Exception as e:
