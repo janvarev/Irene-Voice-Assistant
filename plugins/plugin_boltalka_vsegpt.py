@@ -4,15 +4,16 @@
 
 from vacore import VACore
 
-import json
+
 import os
-import openai
+import requests
+import json
 
 # ---------- from https://github.com/stancsz/chatgpt ----------
 class ChatApp:
-    def __init__(self, model="gpt-3.5-turbo", load_file='', system=''):
-        # Setting the API key to use the OpenAI API
+    def __init__(self, model="gpt-3.5-turbo", load_file='', system='', options = {}):
         self.model = model
+        self.options = options
         self.messages = []
         if system != '':
             self.messages.append({"role": "system", "content" : system})
@@ -28,14 +29,42 @@ class ChatApp:
             return "(saved)"
         self.messages.append({"role": "user", "content": message})
 
-        response = openai.ChatCompletion.create(
-            model=self.model,
-            messages=self.messages,
-            temperature=0.8,
-            n=1,
-            max_tokens=200,
+
+
+        options = self.options
+
+        headers = {
+            "Authorization": f"Bearer {options['apiKey']}",
+            "Content-Type": "application/json",
+        }
+
+        # adding header for VseGPT
+        if str(options["apiBaseUrl"]).startswith("https://api.vsegpt.ru"):
+            headers["X-Title"] = "Irene VA"
+
+        response_full = requests.post(
+            url=options["apiBaseUrl"] + "/chat/completions",
+            headers=headers,
+            data=json.dumps({
+                "model":self.model,
+                "messages":self.messages,
+                "temperature":0.8,
+                "max_tokens":200
+            }, ensure_ascii=True)
         )
-        self.messages.append({"role": "assistant", "content": response["choices"][0]["message"].content})
+
+        if response_full.status_code == 200:
+            # with open(wavfile, "wb") as wavfile:
+            #     wavfile.write(response.content)
+            pass
+        else:
+
+            print("Не могу связаться с сервером", response_full.status_code, response_full.text, "\n", response_full.content)
+            response_full.raise_for_status()
+
+        response = json.loads(response_full.content)
+
+        self.messages.append({"role": "assistant", "content": response["choices"][0]["message"]["content"]})
         return response["choices"][0]["message"]
     def save(self):
         try:
@@ -113,9 +142,6 @@ def run_start(core:VACore, phrase:str):
         core.play_voice_assistant_speech("Нужен ключ апи для доступа к всегепете точка ру")
         return
 
-    openai.api_key = options["apiKey"]
-    openai.api_base = options["apiBaseUrl"]
-
     new_chat(core)
 
     if phrase == "":
@@ -126,11 +152,11 @@ def run_start(core:VACore, phrase:str):
 
 def new_chat(core:VACore):
     options = core.plugin_options(modname)
-    core.chatapp = ChatApp(model=options["model"], system=options["system"])  # создаем новый чат
+    core.chatapp = ChatApp(model=options["model"], system=options["system"], options=options)  # создаем новый чат
 
 def new_chat_spravka(core:VACore):
     options = core.plugin_options(modname)
-    core.chatapp = ChatApp(model=options["model_spravka"])  # создаем новый чат для perplexity
+    core.chatapp:ChatApp = ChatApp(model=options["model_spravka"], options=options)  # создаем новый чат для perplexity
 
 
 def boltalka(core:VACore, phrase:str):
@@ -167,9 +193,6 @@ def run_start_spravka(core:VACore, phrase:str):
     if options["apiKey"] == "":
         core.play_voice_assistant_speech("Нужен ключ апи для доступа к всегепете точка ру")
         return
-
-    openai.api_key = options["apiKey"]
-    openai.api_base = options["apiBaseUrl"]
 
     new_chat_spravka(core)
 
