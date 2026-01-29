@@ -85,8 +85,11 @@ class VACore(JaaCore):
         self.contextDefaultDuration = 10
         self.contextRemoteWaitForCall = False
 
-        import mpcapi.core
-        self.mpchc = mpcapi.core.MpcAPI()
+        try:
+            import mpcapi.core
+            self.mpchc = mpcapi.core.MpcAPI()
+        except Exception as e:
+            self.mpchc = None
 
         self.cur_callname:str = ""
 
