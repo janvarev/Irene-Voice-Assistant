@@ -12,3 +12,4 @@
 *.pyc
 /tts_cache/
 /runva_webapi.json
+/model-vosk-sherpa

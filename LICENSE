@@ -2,7 +2,7 @@ Irene - russian offline voice assistant
 
 MIT License
 
-Copyright (c) 2021-2022 Vladislav Janvarev
+Copyright (c) 2021-2026 Vladislav Janvarev
 Copyright (c) 2020 EnjiRouz
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -30,6 +30,12 @@ Russian vosk-model-ru-0.22
 - located in "model" folder
 - licensed under Apache 2.0
 - URL: https://alphacephei.com/vosk/models
+
+Russian vosk-model-ru-0.56
+- located in "model-vosk-sherpa" folder
+- licensed under Apache 2.0
+- URL: https://alphacephei.com/vosk/models
+
 
 Jaa.py plugin framework
 - jaa.py file
@@ -61,4 +67,8 @@ MycroftAI/lingua-franca:
 Vosk-Browser
 - licensed under Apache License 2.0
 - URL: https://github.com/ccoreilly/vosk-browser
+
+Sherpa-onnx
+- licensed under Apache License 2.0
+- URL: https://github.com/k2-fsa/sherpa-onnx
 
