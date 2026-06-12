@@ -247,6 +247,8 @@ def main():
 
                 recognizer.reset(stream)
 
+            core._update_timers()
+
 
 if __name__ == "__main__":
 
