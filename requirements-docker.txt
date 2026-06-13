@@ -22,6 +22,6 @@ soundfile~=0.10.3.post1
 
 # Общие
 termcolor~=1.1.0
-requests~+2.27.1
+requests~=2.27.1
 python-dateutil~=2.6.0
 lingua-franca~=0.4.3
