@@ -5,6 +5,7 @@
 import json
 import asyncio
 import sys
+import time
 import websockets
 import logging
 import sounddevice as sd
@@ -22,8 +23,14 @@ def block_mic():
 
 # ------------------- gigastt ------------------
 
-BACKOFF_MAX_SECS = 30  # cap for the reconnect backoff
-ROTATE_AT = 0.9        # rotate the session at 90% of the server-side cap
+BACKOFF_MAX_SECS = 30      # cap for the reconnect backoff
+ROTATE_AT = 0.9            # rotate the session at 90% of the server-side cap
+READY_WAIT_SECS = 45       # the server pool checkout alone may take 30 s
+HEALTHY_SESSION_SECS = 30  # a session this long resets the reconnect backoff
+COMMAND_WAIT_SECS = 120    # session teardown waits this long for a command thread
+POOL_CLOSED_RETRY_MS = 5000  # pool_closed carries no retry hint - wait this much
+
+command_thread = None  # asyncio.Task of the command currently running in a thread
 
 def int_or_str(text):
     """Helper function for argument parsing."""
@@ -45,14 +52,17 @@ def callback(indata, frames, time, status):
     if status:
         print(status, file=sys.stderr)
     if not mic_blocked:
+        # PortAudio reuses indata once the callback returns - copy it here,
+        # on the caller thread, not later on the event loop
+        data = bytes(indata)
         def enqueue():
             try:
-                audio_queue.put_nowait(bytes(indata))
+                audio_queue.put_nowait(data)
             except asyncio.QueueFull:
                 # queue is full: drop the oldest block, fresh audio wins
                 try:
                     audio_queue.get_nowait()
-                    audio_queue.put_nowait(bytes(indata))
+                    audio_queue.put_nowait(data)
                 except (asyncio.QueueEmpty, asyncio.QueueFull):
                     pass
         loop.call_soon_threadsafe(enqueue)
@@ -62,11 +72,27 @@ async def send_audio(websocket):
         data = await audio_queue.get()
         await websocket.send(data)
 
+async def run_command(core, text):
+    """Runs a recognized command in a worker thread: command handling (incl.
+    TTS) may take minutes and the loop must keep answering server pings. The
+    thread cannot be cancelled, so it is tracked in command_thread and session
+    teardown waits for it instead of orphaning it."""
+    global mic_blocked, command_thread
+    try:
+        command_thread = asyncio.ensure_future(
+            asyncio.to_thread(core.run_input_str, text, block_mic))
+        await command_thread
+    except Exception as e:
+        print("Command failed:", e)
+    finally:
+        command_thread = None
+        mic_blocked = False
+
 async def receive_results(websocket, core):
     """Handles server messages until the connection closes.
-    Returns retry_after_ms when the server asked to back off, -1 on a fatal
-    server error, None when the connection just closed."""
-    global mic_blocked
+    Returns the pause in ms the server asked for before reconnecting
+    (0 = reconnect at once), -1 on a fatal server error, None when the
+    connection just closed."""
     async for res in websocket:
         try:
             msg = json.loads(res)
@@ -80,25 +106,29 @@ async def receive_results(websocket, core):
         elif msg_type == "final":
             voice_input_str = (msg.get("text") or "").strip()
             if voice_input_str != "":
-                # command execution (incl. TTS) may take minutes - run it in a
-                # thread so the loop keeps answering server keepalive pings
-                try:
-                    await asyncio.to_thread(core.run_input_str, voice_input_str, block_mic)
-                except Exception as e:
-                    print("Command failed:", e)
-                finally:
-                    mic_blocked = False
+                await run_command(core, voice_input_str)
         elif msg_type == "error":
-            print("Server error: {0} (code: {1})".format(msg.get("message"), msg.get("code")))
+            code = msg.get("code")
+            print("Server error: {0} (code: {1})".format(msg.get("message"), code))
             retry_after_ms = msg.get("retry_after_ms")
-            if retry_after_ms:
+            # a 0 ms hint is still a hint - test for None, not falsiness
+            if retry_after_ms is not None:
                 print("Server is busy, retry after {0} ms".format(retry_after_ms))
                 return retry_after_ms
-            return -1
+            if code in ("max_session_duration_exceeded", "idle_timeout"):
+                # the session is over but the server is healthy - reconnect at once
+                return 0
+            if code == "pool_closed":
+                # the server is draining and sent no hint - give it a moment
+                return POOL_CLOSED_RETRY_MS
+            if code in ("inference_error", "inference_panic"):
+                # the server keeps the session open after these - carry on
+                continue
+            return -1  # any other server error is fatal
     return None
 
-async def graceful_stop(websocket):
-    """Finalize the session: flush trailing words, read the last final, close."""
+async def graceful_stop(websocket, core):
+    """Finalize the session: flush trailing words, run the last final, close."""
     try:
         await websocket.send('{"type":"stop"}')
         # partials may still arrive before the final
@@ -106,8 +136,10 @@ async def graceful_stop(websocket):
             res = await asyncio.wait_for(websocket.recv(), timeout=5)
             msg = json.loads(res)
             if msg.get("type") == "final":
-                if args.debug:
-                    print("Final on stop:", msg.get("text"))
+                text = (msg.get("text") or "").strip()
+                if text != "":
+                    # trailing words are a command too - run it like any final
+                    await run_command(core, text)
                 break
     except Exception:
         pass
@@ -161,16 +193,33 @@ async def run_session(core, websocket, ready):
                         retry_after_ms = t.result()
                     # a finished rotation timer just means: rotate now
             finally:
-                # stop both tasks before graceful_stop, otherwise its recv
-                # races the receiver and the trailing final gets swallowed
+                # 1. stop feeding audio at once
+                sender.cancel()
+                await asyncio.gather(sender, return_exceptions=True)
+                # 2. a command runs in a thread and cannot be cancelled - wait
+                # for it (bounded), so its finally unblocks the mic and two
+                # commands never run at once; the receiver may still pick one
+                # more command from an already-buffered final, so re-check
+                while command_thread is not None:
+                    try:
+                        await asyncio.wait_for(asyncio.shield(command_thread),
+                                               timeout=COMMAND_WAIT_SECS)
+                    except asyncio.TimeoutError:
+                        print("Command thread still runs after {0} s, leaving it behind".format(
+                            COMMAND_WAIT_SECS))
+                        break
+                    except Exception:
+                        pass  # the command already printed its own failure
+                # 3. only now cancel the receiver: it is never killed mid-command
                 for t in tasks:
                     t.cancel()
                 await asyncio.gather(*tasks, return_exceptions=True)
-                await graceful_stop(websocket)
+                await graceful_stop(websocket, core)
             if retry_after_ms is not None and retry_after_ms < 0:
                 sys.exit(1)  # fatal server error, no point reconnecting
             return (retry_after_ms or 0) / 1000
-    except sd.PortAudioError as e:
+    except (sd.PortAudioError, ValueError) as e:
+        # a dead device raises PortAudioError, an unmatched -d substring ValueError
         print("Cannot open the microphone: {0}".format(e))
         print("Pass a valid input device via -d and one of the server supported rates via -r: {0}".format(
             supported_rates))
@@ -187,7 +236,7 @@ async def run_connection(core):
         sys.exit(1)
 
     async with websocket:
-        res = await asyncio.wait_for(websocket.recv(), timeout=15)
+        res = await asyncio.wait_for(websocket.recv(), timeout=READY_WAIT_SECS)
         try:
             ready = json.loads(res)
         except ValueError:
@@ -196,9 +245,12 @@ async def run_connection(core):
             # a busy server (pool saturation) refuses before sending ready
             print("Server error: {0} (code: {1})".format(ready.get("message"), ready.get("code")))
             retry_after_ms = ready.get("retry_after_ms")
-            if retry_after_ms:
+            if retry_after_ms is not None:
                 print("Server is busy, retry after {0} ms".format(retry_after_ms))
                 return retry_after_ms / 1000
+            if ready.get("code") == "pool_closed":
+                # a draining server sends no hint - retry in a few seconds
+                return POOL_CLOSED_RETRY_MS / 1000
             sys.exit(1)
         if ready.get("type") != "ready":
             print("Unexpected first message from server:", res)
@@ -222,12 +274,18 @@ async def run_test():
     backoff = 1
     while True:
         try:
+            started = time.monotonic()
             delay = await run_connection(core)
-            backoff = 1  # a full session ran - reset the backoff
+            if time.monotonic() - started >= HEALTHY_SESSION_SECS:
+                backoff = 1  # a long healthy session resets the backoff
             if delay > 0:
                 await asyncio.sleep(delay)  # server asked for a pause
             else:
-                print("Session ended, reconnecting...")
+                # never reconnect in a hot loop: a fast-dying session doubles
+                # the pause until a session proves healthy again
+                print("Session ended, reconnecting in {0} s...".format(backoff))
+                await asyncio.sleep(backoff)
+                backoff = min(backoff * 2, BACKOFF_MAX_SECS)
         except (OSError, asyncio.TimeoutError, websockets.exceptions.InvalidHandshake,
                 websockets.exceptions.ConnectionClosed) as e:
             print("Cannot connect to gigastt server at {0}: {1}".format(args.uri, e))
