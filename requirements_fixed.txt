@@ -5,6 +5,7 @@ vosk-tts==0.3.52
 termcolor==1.1.0
 sounddevice==0.5.2
 soundfile==0.13.1
+websockets==15.0.1
 pyautogui==0.9.54
 requests==2.32.4
 numpy==2.2.6
