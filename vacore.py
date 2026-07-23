@@ -16,7 +16,7 @@ from jaa import JaaCore
 
 from collections.abc import Callable
 
-version = "13.0.1"
+version = "13.1.0"
 
 import logging
 
