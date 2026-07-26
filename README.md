@@ -382,7 +382,10 @@ except ImportError as e:
 - Установите сервер по инструкции из репозитория и запустите его: `gigastt serve`
 (модель скачается автоматически при первом запуске).
 - Запустите `runva_gigastt.py`. Он будет читать данные с микрофона и отправлять на сервер
-для распознавания.
+для распознавания. Важно: рекомендуется запускать с параметрами 
+`gigastt serve --endpoint-mode assistant --vad --vad-min-silence-ms 1200`,
+чтобы gigastt не резал конец фразы слишком быстро, а ждал паузы после окончания команды.
+Подробнее см. https://github.com/janvarev/Irene-Voice-Assistant/pull/75 , https://github.com/janvarev/Irene-Voice-Assistant/pull/76 
 
 В случае, если сервер запущен на другой машине -
 используйте параметр -u (--uri): `runva_gigastt.py -u=ws://100.100.100.100:9876`
