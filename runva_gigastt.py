@@ -161,7 +161,7 @@ async def run_session(core, websocket, ready):
             samplerate = 16000
 
         # configure must be sent before the first audio frame
-        await websocket.send(json.dumps({"type": "configure", "sample_rate": samplerate, "punctuation": False, "itn": False}))
+        await websocket.send(json.dumps({"type": "configure", "sample_rate": samplerate, "punctuation": False, "itn": False, "endpoint_mode": "assistant"}))
 
         # drop audio captured while there was no live session
         while not audio_queue.empty():
